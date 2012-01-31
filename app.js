@@ -3,16 +3,31 @@
  * Module dependencies.
  */
 
-var express = require('express')
-  , routes = require('./routes')
+var express = require('express'),
+    routes = require('./routes'),
+    swig = require('swig');
 
 var app = module.exports = express.createServer();
 
 // Configuration
 
 app.configure(function(){
+  
   app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
+  
+  app.register('.html', swig);
+  app.set('view engine', 'html');
+  
+  swig.init({
+    root: __dirname + '/views',
+    cache: false,
+    allowErrors: true // allows errors to be thrown and caught by express
+  });
+  
+  // Don't allow express to automatically pipe templates into a layout.html file
+  // Setting this to false allows you to properly use {% extends %} and {% block %} tags
+  app.set('view options', { layout: false });
+  
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(app.router);
