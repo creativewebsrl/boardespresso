@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]> <html class="no-js ie6"> <![endif]-->
-<!--[if IE 7]> <html class="no-js ie7"> <![endif]-->
-<!--[if IE 8]> <html class="no-js ie8"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   <title></title>
@@ -11,13 +11,36 @@
   <meta name="description" content="" />
   <meta name="author" content="" />
   
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width" />
   
+  {% block metarobots %}{% endblock %}
+  
+  <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+  
+  {% block reset_css %}
+  <link rel="stylesheet" href="/css/normalize.css" />
+  {% endblock %}
+   
+  {% block stylesheet %}
+  <link rel="stylesheet" href="/css/main.css" />
+  {% endblock %}
+  
+  {% block head_javascript %}
+     {# here goes javascript code that for some rare reason should go in the head tag #}
+     <!-- when ready pass to a custom version of modernizr -->
+     <script src="/js/modernizr.js"></script>
+
+  {% endblock %}
+
 </head>
 <body id="body">
 
-  {% block content %}
-  {% endblock%}
+    {% block content %}{% endblock %}
+    
+    {% block javascript %}
+      {# most of the javascript code should be here #}
+      
+    {% endblock %}
 
 </body>
 </html>
