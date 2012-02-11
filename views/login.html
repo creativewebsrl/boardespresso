@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+{% if not everyauth.loggedIn %}
+    
+    <form action="{{ url_login }}" method="POST">
+        {% if errors.generic %}
+        <span class="error">{{ errors.generic }}</span>
+        {% endif %}
+        
+        <div class="field">
+            <label for="login">Username</label>
+            <input id="login" type="text" name="{{ everyauth.password.loginFormFieldName }}" value="{{ login }}" />
+            {% if errors.login %}
+            <span class="error">{{ errors.login }}</span>
+            {% endif %}
+        </div>
+        
+        <div class="field">
+            <label for="password">Password</label>
+            <input id="password" type="text" name="{{ everyauth.password.passwordFormFieldName }}"/>
+            {% if errors.password %}
+            <span class="error">{{ errors.password }}</span>
+            {% endif %}
+        </div>
+        <input type="hidden"     name="PIO" value="MIAO" />
+        <input type="submit" value="send"/>
+    </form>
+    <p>New user? <a href="{{ url_register }}">register</a></p>
+{% else %}
+    <p>Logged in as {{ everyauth.user.name.first }} {{ everyauth.user.name.last }} <a href="{{ url_logout }}">(logout)</a></p>
+{% endif %}
+
+{% endblock %}

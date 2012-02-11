@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<form action="{{ url_register }}" method="POST">
+    {% if errors.generic %}
+    <span class="error">{{ errors.generic }}</span>
+    {% endif %}
+
+    <div class="field">
+        <label for="login">Username</label>
+        <input id="login" type="text" name="{{ everyauth.password.loginFormFieldName }}" value="{{ prev.login }}" />
+        {% if errors.login %}
+        <span class="error">{{ errors.login }}</span>
+        {% endif %}
+    </div>
+    
+    <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" name="{{ everyauth.password.passwordFormFieldName }}" value="" />
+        {% if errors.password %}
+        <span class="error">{{ errors.password }}</span>
+        {% endif %}
+    </div>
+
+    <div class="field">
+        <label for="password_">Retype password</label>
+        <input id="password_" type="password" name="password_" value="" />
+        {% if errors.password_ %}
+        <span class="error">{{ errors.password_ }}</span>
+        {% endif %}
+    </div>
+    
+    <div class="field">
+        <label for="first_name">First name</label>
+        <input id="first_name" type="text" name="name.first" value="{{ prev.name.first }}"/>
+        {% if errors.first_name %}
+        <span class="error">{{ errors.first_name }}</span>
+        {% endif %}
+    </div>
+    
+    <div class="field">
+        <label for="last_name">Last name</label>
+        <input id="last_name" type="text" name="name.last" value="{{ prev.name.last }}"/>
+        {% if errors.last_name %}
+        <span class="error">{{ errors.last_name }}</span>
+        {% endif %}
+    </div>
+    
+    <div class="field">
+        <label for="email">E-mail</label>
+        <input id="email" type="text" name="email" value="{{ prev.email }}"/>
+        {% if errors.email %}
+        <span class="error">{{ errors.email }}</span>
+        {% endif %}
+    </div>
+
+  
+    <input type="submit" value="send"/>
+</form>
+
+
+{% if not everyauth.loggedIn %}
+    <p>not logged in</p>
+{% else %}
+    <p>ya! logged in <a href="/logout">click</a></p>
+    <p>btw you are {{ everyauth.user.login }}</p>
+{% endif %}
+
+{% endblock %}
