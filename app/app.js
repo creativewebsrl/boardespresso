@@ -4,24 +4,19 @@
  * Module dependencies.
  */
 
+require('globalmod');
+
 var express = require('express'),
-    routes = require('./routes'),
     swig = require('swig'),
     mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     mongooseAuth = require('mongoose-auth');
 
-require('./global_modules.js');
-
-var everyauth = require('everyauth');
-everyauth.debug = true;
-
-var UserSchema = new Schema({}),
+var conf = require('./config'),
+    routes = require('./routes'),
+    UserSchema = new Schema({}),
     User;
 
-var auth = require('./config/auth');
-var common = require('./config/common');
-var db = require('./config/database');
 
 UserSchema.plugin(mongooseAuth, {
     everymodule: {
@@ -98,8 +93,8 @@ UserSchema.plugin(mongooseAuth, {
             var promise = this.Promise();
             var response = ['errors'];
             var errors = response;
-            var MIN_LOGIN_LENGTH = auth.password.username_min_length;
-            var MIN_PASSWORD_LENGTH = auth.password.password_min_length;
+            var MIN_LOGIN_LENGTH = conf.auth.password.username_min_length;
+            var MIN_PASSWORD_LENGTH = conf.auth.password.password_min_length;
             
             var data = newUserAttrs;
             
@@ -232,12 +227,9 @@ UserSchema.plugin(mongooseAuth, {
     }
 });
 
-mongoose.model('User', UserSchema);
+mongoose.connect(conf.db.host,conf.db.database,conf.db.port);
 
-mongoose.connect(db.host,db.database,db.port);
-
-User = mongoose.model('User');
-//User = mongoose.model('User', UserSchema);
+User = mongoose.model('User', UserSchema);
 
 var app = module.exports = express.createServer();
 
@@ -263,7 +255,7 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.session({ secret: common.session_secret }));
+  app.use(express.session({ secret: conf.common.session_secret }));
   //  mongooseAuth will add routing, must not use the default app.router
   //  app.use(app.router);
   app.use(mongooseAuth.middleware());
@@ -285,5 +277,5 @@ mongooseAuth.helpExpress(app);
 app.get('/', routes.index);
 
 
-app.listen(common.server.port);
+app.listen(conf.common.server.port);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
