@@ -9,17 +9,17 @@ require('globalmod');
 var express = require('express'),
     swig = require('swig'),
     mongoose = require('mongoose'),
-    Schema = mongoose.Schema,
     mongooseAuth = require('mongoose-auth'),
     mongoStore = require('connect-mongodb');
 
 var conf = require('./config'),
-    routes = require('./routes');
+    routes = require('./routes'),
+    db = require('database');
 
 var dashboardAuth = require('dashboard-auth');
 dashboardAuth.init(conf.auth);
 
-mongoose.connect(conf.db.host,conf.db.databaseName,conf.db.port);
+db.init(conf.db);
 
 var app = module.exports = express.createServer();
 
@@ -68,6 +68,9 @@ mongooseAuth.helpExpress(app);
 // Routes
 
 app.get('/', routes.index);
+app.get('/dashboard', routes.dashboard);
+app.get('/user_settings', routes.user_settings);
+app.get('/sample_update/:user_id/:service_id', routes.sample_update);
 
 if (require.main === module) {
     app.listen(conf.common.server.port);
