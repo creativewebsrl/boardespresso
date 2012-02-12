@@ -41,13 +41,6 @@ app.configure(function(){
   // Don't allow express to automatically pipe templates into a layout.html file
   // Setting this to false allows you to properly use {% extends %} and {% block %} tags
   app.set('view options', { layout: false });
-  console.log({
-                dbname: conf.db.databaseName,
-                host: conf.db.host,
-                port: conf.db.port
-                //username: conf.db.username,
-                //password: conn.db.password
-        });
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
