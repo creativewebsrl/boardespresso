@@ -10,7 +10,8 @@ var express = require('express'),
     swig = require('swig'),
     mongoose = require('mongoose'),
     Schema = mongoose.Schema,
-    mongooseAuth = require('mongoose-auth');
+    mongooseAuth = require('mongoose-auth'),
+    mongoStore = require('connect-mongodb');
 
 var conf = require('./config'),
     routes = require('./routes');
@@ -18,7 +19,7 @@ var conf = require('./config'),
 var dashboardAuth = require('dashboard-auth');
 dashboardAuth.init(conf.auth);
 
-mongoose.connect(conf.db.host,conf.db.database,conf.db.port);
+mongoose.connect(conf.db.host,conf.db.databaseName,conf.db.port);
 
 var app = module.exports = express.createServer();
 
@@ -40,11 +41,21 @@ app.configure(function(){
   // Don't allow express to automatically pipe templates into a layout.html file
   // Setting this to false allows you to properly use {% extends %} and {% block %} tags
   app.set('view options', { layout: false });
-  
+  console.log({
+                dbname: conf.db.databaseName,
+                host: conf.db.host,
+                port: conf.db.port
+                //username: conf.db.username,
+                //password: conn.db.password
+        });
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.session({ secret: conf.common.session_secret }));
+  app.use(express.session({
+    secret: conf.common.session_secret,
+    cookie: { maxAge: 60*60*18*1000 }, // 18 hours
+    store : new mongoStore({db:mongoose.connection.db})
+  }));
   //  mongooseAuth will add routing, must not use the default app.router
   //  app.use(app.router);
   app.use(mongooseAuth.middleware());
@@ -65,6 +76,7 @@ mongooseAuth.helpExpress(app);
 
 app.get('/', routes.index);
 
-
-app.listen(conf.common.server.port);
-console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+if (require.main === module) {
+    app.listen(conf.common.server.port);
+    console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+}

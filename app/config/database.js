@@ -5,7 +5,7 @@
 module.exports = {
     host : 'localhost',
     port : '1234',
-    database : 'dbName'
+    databaseName : 'dbName'
 }
 
 // Say this is foo.js. We're going to update it with values found in foo.local.js
