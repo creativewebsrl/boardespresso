@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>{{ user.name.first }} {{ user.name.last }}</h2>
+
+{# if not active and we're using emails, show a link to have sent a confirmation e-mail #}
+
+<form action="{{ url_user_settings }}" method="POST">
+    {% if errors.generic %}
+    <span class="error">{{ errors.generic }}</span>
+    {% endif %}
+    
+    <div class="field">
+        <label for="first_name">First name</label>
+        <input id="first_name" type="text" name="name[first]" value="{{ user.name.first }}"/>
+        {% if errors.first_name %}
+        <span class="error">{{ errors.first_name }}</span>
+        {% endif %}
+    </div>
+    
+    <div class="field">
+        <label for="last_name">Last name</label>
+        <input id="last_name" type="text" name="name[last]" value="{{ user.name.last }}"/>
+        {% if errors.last_name %}
+        <span class="error">{{ errors.last_name }}</span>
+        {% endif %}
+    </div>
+    
+</form>
+
+<div id="services">
+    
+    {% if user.services %}
+    
+    {% for service in user.services %}
+        <div class="service" data-id="{{ service._id }}">
+            <div><label>description</label><span>{{ service.desc }}</span></div>
+            <div><label>hash</label><span>{{ service._id }}</span></div>
+            <div><label>last update</label><span>{{ service.updated_at }}</span></div>
+            <div><label>last value</label><span>{{ service.last_value }}</span></div>
+            <button class="delete">delete</button> 
+        </div>
+    {% endfor %}
+    
+    {% else %}
+    
+    <span>No services configured yet</span>
+    
+    {% endif %}
+    
+    <button id="new-service" onclick="return false">new service</button>
+    
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+{% parent %}
+
+<script type="text/javascript">
+$(document).ready(function($){
+    
+    $('#new-service').click(function(ev){
+        
+        $.ajax({
+            url: '/api/services/{{ user._id }}',
+            type: "post",
+            success: function(data,textStatus,jqXHR){
+                console.log("Post resposne:");
+                console.dir(data);
+                console.log(textStatus);
+                console.dir(jqXHR); 
+            }
+        });
+        
+    });
+    
+    
+    $('#services .service .delete').click(function(ev){
+        
+        $.ajax({
+            url: '/api/service/{{ user._id }}/'+$(this).parent('.service:first').data('id'),
+            type: "delete",
+            success: function(data,textStatus,jqXHR){
+                console.log("Delete response:");
+                console.dir(data);
+                console.log(textStatus);
+                console.dir(jqXHR); 
+            }
+        });
+        
+        return false;
+        
+    });
+    
+});
+</script>
+
+{% endblock%}

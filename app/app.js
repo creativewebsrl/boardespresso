@@ -66,11 +66,18 @@ app.configure('production', function(){
 mongooseAuth.helpExpress(app);
 
 // Routes
-
 app.get('/', routes.index);
 app.get('/dashboard', routes.dashboard);
 app.get('/user_settings', routes.user_settings);
 app.get('/sample_update/:user_id/:service_id', routes.sample_update);
+
+// services api
+app.get ('/api/services/:user_id', routes.api.services.read);
+app.post('/api/services/:user_id', routes.api.services.create);
+
+// single service api
+app.put('/api/service/:user_id/:service_id', routes.api.service.update);
+app.del('/api/service/:user_id/:service_id', routes.api.service.delete);
 
 if (require.main === module) {
     app.listen(conf.common.server.port);
