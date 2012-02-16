@@ -16,8 +16,12 @@ module.exports = {
                     else res.send(500);
                 }
             );
-        },
+        }
         
+    },
+    'service' : {
+        
+        // generate a service and add it to the user
         'create' : function(req,res){
             var user_id = req.params.user_id
                 description = req.body.description || ''
@@ -63,8 +67,35 @@ module.exports = {
                 
             }
         },
-    },
-    'service' : {
+        
+        // send a stub object if no service_id is passed, or that service
+        'read' : function(req,res){
+            var user_id = req.params.user_id
+                service_id = req.params.service_id;
+            
+            if (!req.user || req.user._id != user_id) {
+                res.send(403);
+            }
+            else {
+                
+                if (!service_id) {
+                    var serviceModel = new db.model('Service'),
+                        stubService = new serviceModel();
+                    stubService._id = undefined;
+                    return res.json(stubService);
+                }
+                // XXX would be best to select directly the service
+                // https://jira.mongodb.org/browse/SERVER-828
+                else db.model('User').getUserServices(user_id,function(err,services){
+                    if (err) res.send(500);
+                    else {
+                        var result = _.find(services,function(elem){ return elem._id==service_id });
+                        if (!result) res.send(500);
+                        else res.json(result);
+                    }
+                });
+            }
+        },
         
         'update' : function(req,res){
             var user_id = req.params.user_id
@@ -101,15 +132,23 @@ module.exports = {
                 { $set : whatToUpdate
                 },
                 // callback
-                function(err,count){
+                function(err){
+                    // XXX not atomic. Should use findAndModify instead (and return the new version)
                     if (err) return res.send(500);
-                    else if (count===0) return res.send([]);
-                    else return db.model('User').getUserServices(user_id,function(err,services){
-                            if (!err) res.json(services);
-                            else res.send(500);
+                    // XXX would be best to select directly the service
+                    // https://jira.mongodb.org/browse/SERVER-828
+                    else db.model('User').getUserServices(user_id,function(err,services){
+                        if (err) res.send(500);
+                        else {
+                            var result = _.find(services,function(elem){ return elem._id==service_id });
+                            if (!result) res.send(500);
+                            else res.json(result);
+                        }
                     });
                 }
             );
+            
+            
         },
         'delete' : function(req,res){
             var user_id = req.params.user_id
@@ -128,9 +167,9 @@ module.exports = {
                     // update (remove)
                     { '$pull' : { services: { _id : db.ObjectId(service_id) } } },
                     // callback
-                    function(err,count){
+                    function(err){
                         if (err) return res.send(500);
-                        else return res.json(count>0);
+                        else return res.json(true);
                     }
                 );
             }

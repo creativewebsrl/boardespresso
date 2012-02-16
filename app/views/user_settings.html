@@ -32,7 +32,7 @@
 <div id="services">
     
     {% if user.services %}
-    
+    {#
     {% for service in user.services %}
         <div class="service" data-id="{{ service._id }}">
             <div><label>description</label><span>{{ service.desc }}</span></div>
@@ -42,6 +42,7 @@
             <button class="delete">delete</button> 
         </div>
     {% endfor %}
+    #}
     
     {% else %}
     
@@ -49,9 +50,20 @@
     
     {% endif %}
     
-    <button id="new-service" onclick="return false">new service</button>
     
 </div>
+
+<button id="new-service" onclick="return false">new service</button>
+
+<script type="text/template" id="service-template">
+    <div class="service" data-id="<%- service._id %>">
+        <div><label>description</label><span><%- service.desc %></span></div>
+        <div><label>hash</label><span><%- service._id %></span></div>
+        <div><label>last update</label><span><%- service.updated_at %></span></div>
+        <div><label>last value</label><span><%- service.last_value %></span></div>
+        <button class="delete">delete</button> 
+    </div>
+</script>
 
 {% endblock %}
 
@@ -60,39 +72,98 @@
 
 <script type="text/javascript">
 $(document).ready(function($){
+
+    var user_id = '{{ user._id }}';
+    var startingServices = {{ user.services|json_encode|raw }};
+    
+    var ServiceModel = Backbone.Model.extend({
+        defaults : {
+            _id : undefined,
+            desc : "",
+            last_value : "",
+            updated_at : null
+        },
+        idAttribute: '_id',
+        url: function(){
+            var _id = this.get('_id');
+            return '/api/service/'+user_id+(_id ? '/'+_id : '');
+        },
+        initialize : function(){
+            
+        }
+        
+    });
+    
+    var ServicesCollection = Backbone.Collection.extend({
+        model: ServiceModel,
+        url : '/api/services/'+user_id
+    });
+    
+    
+    var ServiceViewClass = Backbone.View.extend({
+        tagName: "div",
+        className : "",
+        
+        events : {
+            "click button.delete" : "delete_model"
+        },
+        
+        template: _.template($("#service-template").html()),
+    
+        initialize: function(){ 
+            _.bindAll(this, 'render', 'remove','delete_model');
+            this.model.bind('change', this.render);
+            this.model.bind('destroy', this.remove);
+        },
+        render: function(){
+            var html = this.template({'service':this.model.toJSON()});
+            this.$el.html(html);
+            return this;
+        },
+        remove: function(){
+            this.$el.remove();
+        },
+        delete_model: function(){
+            this.model.destroy();
+        }
+    });
+    
+    
+    var ServiceListViewClass = Backbone.View.extend({
+        initialize: function(){
+            this.setElement($('#services'));
+            
+            _.bindAll(this, 'render');
+            
+            this.collection.on('change add reset', this.render);
+            // XXX on change and add should modify/append just that element
+            
+        },
+        render: function(){
+            this.$el.html('');
+            _.each(this.collection.models,
+                function(model,idx,list){
+                    var view = new ServiceViewClass({'model':model});
+                    view.render();
+                    this.$el.append(view.el);
+                },
+                this);
+            return this;
+        }
+    });
+    
+    
+    var services = new ServicesCollection();
+    
+    var servicesListView = new ServiceListViewClass({'collection':services});
+    services.reset(_.map(startingServices,function(x){ return new ServiceModel(x);}));
     
     $('#new-service').click(function(ev){
-        
-        $.ajax({
-            url: '/api/services/{{ user._id }}',
-            type: "post",
-            success: function(data,textStatus,jqXHR){
-                console.log("Post resposne:");
-                console.dir(data);
-                console.log(textStatus);
-                console.dir(jqXHR); 
-            }
-        });
-        
+        var newService = new ServiceModel();
+        newService.save();
+        services.add(newService);
     });
     
-    
-    $('#services .service .delete').click(function(ev){
-        
-        $.ajax({
-            url: '/api/service/{{ user._id }}/'+$(this).parent('.service:first').data('id'),
-            type: "delete",
-            success: function(data,textStatus,jqXHR){
-                console.log("Delete response:");
-                console.dir(data);
-                console.log(textStatus);
-                console.dir(jqXHR); 
-            }
-        });
-        
-        return false;
-        
-    });
     
 });
 </script>

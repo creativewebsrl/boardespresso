@@ -73,11 +73,13 @@ app.get('/sample_update/:user_id/:service_id', routes.sample_update);
 
 // services api
 app.get ('/api/services/:user_id', routes.api.services.read);
-app.post('/api/services/:user_id', routes.api.services.create);
 
 // single service api
-app.put('/api/service/:user_id/:service_id', routes.api.service.update);
-app.del('/api/service/:user_id/:service_id', routes.api.service.delete);
+app.post('/api/service/:user_id', routes.api.service.create);
+app.get ('/api/service/:user_id/:service_id?', routes.api.service.read);
+app.put ('/api/service/:user_id/:service_id', routes.api.service.update);
+app.del ('/api/service/:user_id/:service_id', routes.api.service.delete);
+
 
 if (require.main === module) {
     app.listen(conf.common.server.port);
