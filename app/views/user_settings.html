@@ -31,25 +31,9 @@
 
 <div id="services">
     
-    {% if user.services %}
-    {#
-    {% for service in user.services %}
-        <div class="service" data-id="{{ service._id }}">
-            <div><label>description</label><span>{{ service.desc }}</span></div>
-            <div><label>hash</label><span>{{ service._id }}</span></div>
-            <div><label>last update</label><span>{{ service.updated_at }}</span></div>
-            <div><label>last value</label><span>{{ service.last_value }}</span></div>
-            <button class="delete">delete</button> 
-        </div>
-    {% endfor %}
-    #}
-    
-    {% else %}
-    
+    {% if not user.services %}
     <span>No services configured yet</span>
-    
     {% endif %}
-    
     
 </div>
 
@@ -57,10 +41,15 @@
 
 <script type="text/template" id="service-template">
     <div class="service" data-id="<%- service._id %>">
-        <div><label>description</label><span><%- service.desc %></span></div>
+        <div>
+            <label>description</label>
+            <input class="desc" type="text" />
+        </div>
         <div><label>hash</label><span><%- service._id %></span></div>
         <div><label>last update</label><span><%- service.updated_at %></span></div>
         <div><label>last value</label><span><%- service.last_value %></span></div>
+
+        <button class="save">save</button>
         <button class="delete">delete</button> 
     </div>
 </script>
@@ -72,6 +61,8 @@
 
 <script type="text/javascript">
 $(document).ready(function($){
+    
+    Backbone.ModelBinding.Configuration.configureAllBindingAttributes("class");
 
     var user_id = '{{ user._id }}';
     var startingServices = {{ user.services|json_encode|raw }};
@@ -105,29 +96,43 @@ $(document).ready(function($){
         className : "",
         
         events : {
-            "click button.delete" : "delete_model"
+            "click button.delete" : "doDelete",
+            "click button.save" : "doSave",
         },
         
         template: _.template($("#service-template").html()),
     
         initialize: function(){ 
-            _.bindAll(this, 'render', 'remove','delete_model');
-            this.model.bind('change', this.render);
-            this.model.bind('destroy', this.remove);
+            _.bindAll(this, 'render', 'remove','doDelete','doSave');
+            
+            this.model.on('destroy', this.remove);
+            
+            //commented to use Backbone.ModelBinding to listen to model changes
+            //this.model.on('change', this.render);
+            
         },
         render: function(){
             var html = this.template({'service':this.model.toJSON()});
             this.$el.html(html);
+            
+            Backbone.ModelBinding.bind(this);
+            
             return this;
         },
         remove: function(){
+            this.model.off('change',this.render);
+            this.model.off('destroy',this.remove);
+            Backbone.ModelBinding.unbind(this);
+            
             this.$el.remove();
         },
-        delete_model: function(){
+        doDelete: function(){
             this.model.destroy();
+        },
+        doSave: function(){
+            this.model.save();
         }
     });
-    
     
     var ServiceListViewClass = Backbone.View.extend({
         initialize: function(){
@@ -135,7 +140,7 @@ $(document).ready(function($){
             
             _.bindAll(this, 'render');
             
-            this.collection.on('change add reset', this.render);
+            this.collection.on('add reset', this.render);
             // XXX on change and add should modify/append just that element
             
         },

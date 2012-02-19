@@ -24,7 +24,7 @@ module.exports = {
         // generate a service and add it to the user
         'create' : function(req,res){
             var user_id = req.params.user_id
-                description = req.body.description || ''
+                description = req.body.desc || ''
                 ;
             
             if (!req.user || req.user._id != user_id) {
@@ -100,7 +100,7 @@ module.exports = {
         'update' : function(req,res){
             var user_id = req.params.user_id
                 service_id = req.params.service_id,
-                description = req.body.description,
+                description = req.body.desc,
                 last_value = req.body.last_value 
                 ;
             
