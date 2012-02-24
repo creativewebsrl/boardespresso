@@ -12,3 +12,7 @@ exports.index = function(req, res){
 exports.user_settings = function(req, res){
   res.render('user_settings', { });
 };
+
+exports.dashboard = function(req, res){
+  res.render('dashboard', {  });
+};

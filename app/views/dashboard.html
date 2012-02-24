@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div id="grid">
+    
+</div>
+
+{% endblock %}
+
+
+{% block javascript %}
+{% parent %}
+
+<script type="text/javascript">
+$(document).ready(function($){
+    var $window = $(window),
+        $grid = $("#grid");
+    
+    function draw_background($container,squareSide,gutterWidth){
+        
+        // the background image is a square with a border at left and bottom.
+        // The border is wide as 'gutterWith', wich at present is wide 10%
+        // of the square side
+        $container.css('background-size',''+(squareSide+gutterWidth)+'px '+(squareSide+gutterWidth)+'px');
+        $container.css('background-image','url(/images/dashboard_bg.png');
+    }
+    
+    function on_window_resize() {
+        
+        /*
+        
+        ###########
+        #    #    # <- # is the gutter
+        #    #    #
+        ###########
+        #    #    # <- square side
+        #    #    # <- square side
+        ###########
+        
+        */
+        
+        var ratio = 16/10, // 16/10 work on 16/9 too, but not the other way around
+            height = $window.height() * 0.98, // take less to ensure do not trigger scroll
+            maxWidth = height*ratio,
+            rows = 12,
+            fatSquareHeight = height/rows, // "fat" because has margins too
+            gutterAmp = 10, // % of square side, is the distance between squares
+            
+            pixTo1amp = height / ( (gutterAmp+100)*rows+gutterAmp ),
+            
+            squareHeight =  pixTo1amp * 100,  // square side in pixels
+            gutterWidth = (height-squareHeight*rows)/(rows+1), // gutter width in pixels
+            squareAmp = squareHeight*100/height, // percent of the side of the square respect to the height
+            gutterRealAmp = gutterWidth*100/height // percent of the gutter width respect to the height
+            ;
+        
+        
+        $grid.height(height);
+        // resize the width so that it hold the maximum number of squares at this ratio
+        $grid.width(Math.floor((maxWidth-gutterWidth) / (squareHeight+gutterWidth))*(squareHeight+gutterWidth)+gutterWidth);
+        
+        draw_background($grid,squareHeight,gutterWidth);
+        
+    }
+    
+    $window.resize(on_window_resize).resize();
+});
+</script>
+{% endblock %}
+
+{% block stylesheet %}
+{% parent %}
+<style type="text/css">
+
+html,body {
+    height: 100%;
+    margin:0;
+    padding:0;
+    background:#C8CFD0;
+}
+
+
+</style>
+{% endblock %}
