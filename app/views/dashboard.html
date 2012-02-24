@@ -2,8 +2,8 @@
 
 {% block content %}
 
-<div id="grid">
-    
+<div id="dashboard">
+    <div class="g-cell" style="background-color:red"></div>
 </div>
 
 {% endblock %}
@@ -12,21 +12,15 @@
 {% block javascript %}
 {% parent %}
 
+<script type="text/javascript" src="/js/jss.js"></script>
+
 <script type="text/javascript">
 $(document).ready(function($){
-    var $window = $(window),
-        $grid = $("#grid");
     
-    function draw_background($container,squareSide,gutterWidth){
-        
-        // the background image is a square with a border at left and bottom.
-        // The border is wide as 'gutterWith', wich at present is wide 10%
-        // of the square side
-        $container.css('background-size',''+(squareSide+gutterWidth)+'px '+(squareSide+gutterWidth)+'px');
-        $container.css('background-image','url(/images/dashboard_bg.png');
-    }
-    
-    function on_window_resize() {
+    /**
+     * Make a grid at elemOrSelector
+     */
+    function create_grid(elemOrSelector,options) {
         
         /*
         
@@ -40,31 +34,86 @@ $(document).ready(function($){
         
         */
         
-        var ratio = 16/10, // 16/10 work on 16/9 too, but not the other way around
-            height = $window.height() * 0.98, // take less to ensure do not trigger scroll
-            maxWidth = height*ratio,
-            rows = 12,
-            fatSquareHeight = height/rows, // "fat" because has margins too
-            gutterAmp = 10, // % of square side, is the distance between squares
+        var o = $.extend({
+            rows  : 12,
+            ratio : 16/10, // 16/10 work on 16/9 too, but not the other way around
+            sizeTarget : window,
+            drawBackground : true,
+            heightRatio : 1,
+            gutterAmp : 10  // % of square side, is the distance between squares
             
-            pixTo1amp = height / ( (gutterAmp+100)*rows+gutterAmp ),
+        },options || {});
+        
+        $(o.sizeTarget).resize(function(){
             
-            squareHeight =  pixTo1amp * 100,  // square side in pixels
-            gutterWidth = (height-squareHeight*rows)/(rows+1), // gutter width in pixels
-            squareAmp = squareHeight*100/height, // percent of the side of the square respect to the height
-            gutterRealAmp = gutterWidth*100/height // percent of the gutter width respect to the height
-            ;
+            var $grid = $(elemOrSelector),
+                rows = o.rows,
+                ratio = o.ratio, 
+                height = $(o.sizeTarget).height() * o.heightRatio, // take less to ensure do not trigger scroll
+                maxWidth = height*ratio,
+                gutterAmp = o.gutterAmp,
+                
+                pixTo1amp = height / ( (gutterAmp+100)*rows+gutterAmp ),
+                
+                squareSide =  pixTo1amp * 100,  // square side in pixels
+                gutterWidth = (height-squareSide*rows)/(rows+1), // gutter width in pixels
+                squareAmp = squareSide*100/height, // percent of the side of the square respect to the height
+                gutterRealAmp = gutterWidth*100/height // percent of the gutter width respect to the height
+                
+                // set the width so that it holds the maximum number of squares at this ratio
+                width = Math.floor((maxWidth-gutterWidth) / (squareSide+gutterWidth))*(squareSide+gutterWidth)+gutterWidth,
+                tmpSize = null,
+                tmpPos = null
+                ;
+                
+            $grid.height(height);
+            $grid.width(width);
+            
+            $grid.css('position','relative');
+            
+            jss('.g-cell', {
+                position:'absolute'
+            });
+            
+            for(var i=1;i<rows*2+1;i++){
+                
+                tmpSize = (squareSide+gutterWidth)*i-gutterWidth;
+                tmpPos = gutterWidth+(squareSide+gutterWidth)*(i-1);
+                
+                jss('.g-pos-x-'+i, {
+                    left: tmpPos+'px'
+                });
+                
+                jss('.g-width-'+i, {
+                    width: tmpSize+'px'
+                });
+                
+                if (i>rows) continue; // avoid unnecessary classes for height 
+                
+                jss('.g-height-'+i, {
+                    height: tmpSize+'px'
+                });
+                
+                jss('.g-pos-y-'+i, {
+                    top: tmpPos+'px'
+                });
+                
+            }
+            
+            if (o.drawBackground) {
+                // the background image is a square with a border at left and bottom.
+                // The border is wide as 'gutterWith', wich at present is wide 10%
+                // of the square side
+                $grid.css('background-size',''+(squareSide+gutterWidth)+'px '+(squareSide+gutterWidth)+'px');
+                $grid.css('background-image','url(/images/dashboard_bg.png');
+            }
         
-        
-        $grid.height(height);
-        // resize the width so that it hold the maximum number of squares at this ratio
-        $grid.width(Math.floor((maxWidth-gutterWidth) / (squareHeight+gutterWidth))*(squareHeight+gutterWidth)+gutterWidth);
-        
-        draw_background($grid,squareHeight,gutterWidth);
+        }).resize();
         
     }
     
-    $window.resize(on_window_resize).resize();
+    create_grid('#dashboard');
+    
 });
 </script>
 {% endblock %}
@@ -77,7 +126,14 @@ html,body {
     height: 100%;
     margin:0;
     padding:0;
-    background:#C8CFD0;
+}
+
+body {
+    background-color: #C8CFD0;
+}
+
+#dashboard {
+    margin: 0 auto;
 }
 
 
