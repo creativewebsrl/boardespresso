@@ -1,0 +1,16 @@
+
+<div class="widget-status widget template">
+    
+    <% if (status.show_visual_alarm) { %>
+        <div class="visual-alarm <%- alarmClass %>"></div>
+    <% } %>
+    
+    <% if (status.show_text_value) { %>
+        <div class="text-value"><% if (status.value!==null){ %><%- status.value %><% } %></div>
+    <% } %>
+    
+    <% if (status.show_direction) { %>
+        <div class="value-direction <%- valueDirection %>"><%- valueDirection %></div>
+    <% } %>
+    
+</div>
