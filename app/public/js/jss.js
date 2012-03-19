@@ -1,18 +1,22 @@
 /*
- * JSS v0.3 - JavaScript Stylesheets
+ * JSS v0.3 (modified) - JavaScript Stylesheets
  * https://github.com/Box9/jss
  *
  * Copyright (c) 2011, David Tang
  * MIT Licensed (http://www.opensource.org/licenses/mit-license.php)
+ *
+ * Modified by Riccardo Attilio Galli <riccardo@sideralis.org> to have it
+ * support the Asynchronous Module Definition (AMD)
+ * 
  */
-
-var jss = (function (undefined) {
+define(function() {
     var jss,
         Jss,
         // Shortcuts
         doc = document,
         head = doc.head || doc.getElementsByTagName('head')[0],
-        sheets = doc.styleSheets;
+        sheets = doc.styleSheets,
+        undefined;
     
     jss = function (selector, sheet) {
         var obj = new Jss();
@@ -238,4 +242,6 @@ var jss = (function (undefined) {
     };
     
     return jss;
-})();
+});
+
+define.amd = {};

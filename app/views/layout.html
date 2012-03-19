@@ -39,12 +39,26 @@
     
     {% block javascript %}
       {# most of the javascript code should be here #}
-      <script src="/js/jquery-1.7.1.min.js"></script>
-      <script src="/js/underscore-min.js"></script>
-      <script src="/js/backbone-min.js"></script>
-      <script src="/js/backbone.modelbuilding.min.js"></script>
-      <script src="/js/main.js"></script>
       <script src="/socket.io/socket.io.js"></script>
+      
+      <script src="/js/require.js"></script>
+      
+      <script>
+        
+      require.config({
+          baseUrl: 'js',
+          paths: {
+            'jquery'       : 'jquery-1.7.1.min',
+            'jquery-ui'    : 'jquery-ui-1.8.18.custom.min',
+            'underscore'   : 'underscore-min',
+            'backbone'     : 'backbone-min',
+            'modelbinding' : 'backbone.modelbuilding.min'
+          },
+          priority: ['jquery']
+      });
+      
+      </script>
+      
     {% endblock %}
 
 </body>
