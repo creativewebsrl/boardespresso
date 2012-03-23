@@ -60,115 +60,23 @@
 {% parent %}
 
 <script type="text/javascript">
-$(document).ready(function($){
-    
-    Backbone.ModelBinding.Configuration.configureAllBindingAttributes("class");
 
-    var user_id = '{{ user._id }}';
-    var startingServices = {{ user.services|json_encode|raw }};
-    
-    var ServiceModel = Backbone.Model.extend({
-        defaults : {
-            _id : undefined,
-            desc : "",
-            last_value : "",
-            updated_at : null
-        },
-        idAttribute: '_id',
-        url: function(){
-            var _id = this.get('_id');
-            return '/api/service/'+user_id+(_id ? '/'+_id : '');
-        },
-        initialize : function(){
-            
-        }
+require(['jquery','user_settings'],
+    function($,userSettings){
         
-    });
-    
-    var ServicesCollection = Backbone.Collection.extend({
-        model: ServiceModel,
-        url : '/api/services/'+user_id
-    });
-    
-    
-    var ServiceViewClass = Backbone.View.extend({
-        tagName: "div",
-        className : "",
+        var user_id = '{{ user._id }}';
+        var startingServices = {{ user.services|json_encode|raw }};
         
-        events : {
-            "click button.delete" : "doDelete",
-            "click button.save" : "doSave",
-        },
+        var settings = userSettings.init(user_id);
         
-        template: _.template($("#service-template").html()),
-    
-        initialize: function(){ 
-            _.bindAll(this, 'render', 'remove','doDelete','doSave');
+        $(document).ready(function($) {
             
-            this.model.on('destroy', this.remove);
+            settings.render($('#services'),startingServices);
             
-            //commented to use Backbone.ModelBinding to listen to model changes
-            //this.model.on('change', this.render);
-            
-        },
-        render: function(){
-            var html = this.template({'service':this.model.toJSON()});
-            this.$el.html(html);
-            
-            Backbone.ModelBinding.bind(this);
-            
-            return this;
-        },
-        remove: function(){
-            this.model.off('change',this.render);
-            this.model.off('destroy',this.remove);
-            Backbone.ModelBinding.unbind(this);
-            
-            this.$el.remove();
-        },
-        doDelete: function(){
-            this.model.destroy();
-        },
-        doSave: function(){
-            this.model.save();
-        }
-    });
-    
-    var ServiceListViewClass = Backbone.View.extend({
-        initialize: function(){
-            this.setElement($('#services'));
-            
-            _.bindAll(this, 'render');
-            
-            this.collection.on('add reset', this.render);
-            // XXX on change and add should modify/append just that element
-            
-        },
-        render: function(){
-            this.$el.html('');
-            _.each(this.collection.models,
-                function(model,idx,list){
-                    var view = new ServiceViewClass({'model':model});
-                    view.render();
-                    this.$el.append(view.el);
-                },
-                this);
-            return this;
-        }
-    });
-    
-    
-    var services = new ServicesCollection();
-    
-    var servicesListView = new ServiceListViewClass({'collection':services});
-    services.reset(_.map(startingServices,function(x){ return new ServiceModel(x);}));
-    
-    $('#new-service').click(function(ev){
-        var newService = new ServiceModel();
-        newService.save();
-        services.add(newService);
-    });
-    
+            $('#new-service').click(function(ev){
+                settings.add_service();
+            });
+        });
     
 });
 </script>
