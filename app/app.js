@@ -29,7 +29,7 @@ var app = module.exports = express.createServer();
 global['GLOB']['app'] = app;
 
 global['GLOB']['BASE_PATH'] = __dirname;
-global['GLOB']['PLUGINS_PATH'] = __dirname+'/public/plugins';
+global['GLOB']['PLUGINS_PATH'] = __dirname+'/public/js/plugins';
 
 // Configuration
 
