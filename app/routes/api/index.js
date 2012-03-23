@@ -3,4 +3,4 @@ module.exports = {
   
 };
 
-_.extend(module.exports,require('./service'));
+_.extend(module.exports,require('./service'),require('./plugin'));

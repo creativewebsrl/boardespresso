@@ -1,6 +1,10 @@
 
-require(['jquery','jss','jquery-ui'],
-  function($,jss){ $(document).ready(function($){
+
+if (!window.dboard) window.dboard = {};
+if (!window.dboard.plugins) window.dboard.plugins = {};
+
+define(['jquery','use!jss','jquery-ui','plugins'],
+  function($,jss,jqueryUi,plugins){
     
     /**
      * Make a grid at elemOrSelector
@@ -54,10 +58,13 @@ require(['jquery','jss','jquery-ui'],
             return info;
         }
         
+        var $grid = $(elemOrSelector);
+        
+        var getDraggableOptions = function(){ return {}; };
+        
         $(o.sizeTarget).resize(function(){
             
-            var $grid = $(elemOrSelector),
-                rows = o.rows,
+            var rows = o.rows,
                 ratio = o.ratio, 
                 height = $(o.sizeTarget).height() * o.heightRatio, // take less to ensure do not trigger scroll
                 maxWidth = height*ratio,
@@ -119,7 +126,7 @@ require(['jquery','jss','jquery-ui'],
             }
             
             if (o.boxesDraggable) {
-                $('.g-box').draggable({
+                getDraggableOptions = function(){return {
                     containment : 'parent',
                     grid : [(squareSide+gutterWidth),(squareSide+gutterWidth)],
                     handle : o.dragHandle,
@@ -168,14 +175,67 @@ require(['jquery','jss','jquery-ui'],
                         
                         $(this).css({left:'',top:'',zIndex:''});
                     }
-                });
+                  };
+                };
+                
+                $('.g-box').draggable(getDraggableOptions());
             }
+            
         
         }).resize();
         
+        $grid.bind('insert-widget',function(ev,plugin) {
+            
+            var $elem = $(plugin.getElement());
+            
+            // XXX must find if and where I can insert the plugin inside the dashboard
+            $elem.addClass('g-pos-x-'+plugin.confModel.get('x'));
+            $elem.addClass('g-pos-y-'+plugin.confModel.get('y'));
+            
+            $elem.addClass('g-width-'+plugin.confModel.get('width'));
+            $elem.addClass('g-height-'+plugin.confModel.get('height'));
+            
+            if (o.boxesDraggable) {
+              $elem.draggable(getDraggableOptions());
+            }
+            
+            $grid.append($elem);
+        });
+        
     }
     
-    create_grid('#dashboard');
+    function addPluginToDashboard($dboard,pluginName){
+      plugins.getPlugin(pluginName,function(res){
+        
+        if (!res.success) {
+          // XXX alert the user
+          console.error(res.success);
+        } else {
+          var plugin = res['message'];
+          
+          plugin.init(function(){
+            $dboard.trigger('insert-widget',[plugin]);
+          });
+          
+        }
+        
+      });
+    }
     
-});    
+    function initDashboard($dboard){
+      
+      create_grid($dboard);
+      
+      var $pluginsList = plugins.makePluginsList('pluginsList');
+      
+      $(document).on('new-plugin',function(ev,pluginName){
+        addPluginToDashboard($dboard,pluginName);
+      });
+      
+      $('body').append($pluginsList);
+    }
+    
+    $(document).ready(function($){
+      initDashboard($('#dashboard'));
+    });    
 });

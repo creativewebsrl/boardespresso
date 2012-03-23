@@ -28,6 +28,9 @@ sessionStore = new mongoStore({db:mongoose.connection.db}); // I should put it a
 var app = module.exports = express.createServer();
 global['GLOB']['app'] = app;
 
+global['GLOB']['BASE_PATH'] = __dirname;
+global['GLOB']['PLUGINS_PATH'] = __dirname+'/public/plugins';
+
 // Configuration
 
 app.configure(function(){
@@ -85,6 +88,12 @@ app.post('/api/service/:user_id', routes.api.service.create);
 app.get ('/api/service/:user_id/:service_id?', routes.api.service.read);
 app.put ('/api/service/:user_id/:service_id', routes.api.service.update);
 app.del ('/api/service/:user_id/:service_id', routes.api.service.delete);
+
+// plugins api
+app.get('/api/plugins', routes.api.plugins.read);
+
+// single plugin api
+app.get('/api/plugin/:name', routes.api.plugin.read);
 
 if (require.main === module) {
     
