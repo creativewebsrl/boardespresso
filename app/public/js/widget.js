@@ -1,7 +1,7 @@
 
 
-define(['jquery','underscore','backbone','modelbinding'],
-    function($,_,Backbone, ModelBinding){
+define(['jquery','underscore','backbone','modelbinding','main'],
+    function($,_,Backbone,ModelBinding,main){
       
       var WidgetConfModel = Backbone.Model.extend({
           defaults : {
@@ -17,6 +17,8 @@ define(['jquery','underscore','backbone','modelbinding'],
               
               set_error_after_n_seconds: 10, // seconds
               
+              updated_at : null,
+              
               x : 1,
               y : 1,
               width : 3,
@@ -25,10 +27,19 @@ define(['jquery','underscore','backbone','modelbinding'],
           idAttribute: '_id',
           url: function(){
               var _id = this.get('_id');
-              return '/api/service/'+user_id+(_id ? '/'+_id : '');
+              return '/api/service/'+main.getUserId()+(_id ? '/'+_id : '');
           },
           initialize : function(){
-              
+              var that = this;
+              main.getSocket().on('service-update', function(data) {
+                // update the model status without syncing to the server (no love for infinite loops)
+                
+                that.set({
+                  value : data['last_value'],
+                  label : data['desc'],
+                  updated_at : data['updated_at']
+                });
+              });
           },
           getCurrentValue : function(){
               return this.get('value');
@@ -80,7 +91,14 @@ define(['jquery','underscore','backbone','modelbinding'],
               
           },
           render: function(){
-              this.$el.html(this.doRender());
+              this.$el.html('');
+              
+              var titleBar = _.template('<div class="title"><%= label %><div class="confButton"></div></div>',{
+                'label' : this.model.get('label')
+              });
+              
+              this.$el.append(titleBar);
+              this.$el.append(this.doRender());
               
               //uncomment to use Backbone.ModelBinding to listen to model changes
               //Backbone.ModelBinding.bind(this);

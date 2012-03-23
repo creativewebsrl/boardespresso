@@ -6,14 +6,12 @@ module.exports = {
         
         'read' : function(req,res){
             var user_id = req.params.user_id;
-            console.log(req.user._id,user_id);
+            
             if (!req.user || req.user._id != user_id) {
                 res.send(403);
             }
             else return db.model('User').getUserServices(user_id,
                 function(err,services){
-                    console.log(req.sessionId);
-                    GLOBAL['GLOB']['sio'].sockets.in(req.sessionId).emit('ok',{'lots':'of love'});
                     if (!err) res.json(services);
                     else res.send(500);
                 }
@@ -143,8 +141,12 @@ module.exports = {
                         if (err) res.send(500);
                         else {
                             var result = _.find(services,function(elem){ return elem._id==service_id });
+                            
                             if (!result) res.send(500);
-                            else res.json(result);
+                            else {
+                                GLOBAL['GLOB']['sio'].sockets.in(user_id).emit('service-update',result);
+                                res.json(result);
+                            }
                         }
                     });
                 }

@@ -146,9 +146,9 @@ if (require.main === module) {
         // this way I could easily send messages from a "controller" to the
         // socket owner using
         // (GLOBAL.) sio.sockets.in(req.sessionID).send('a message')
-        socket.join(hs.sessionID);
-
-        //socket.join(hs.session.user_id);
+        //socket.join(hs.sessionID);
+        
+        socket.join(hs.session.user_id);
         console.log('uid',hs.session.user_id);
         
         socket.on('message',function(data){console.log('ricevuto',data);});
