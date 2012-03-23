@@ -2,8 +2,8 @@
 <html>
 <title></title>
 <head>
-    <link rel="stylesheet" href="../../css/normalize.css" />
-    <link rel="stylesheet" href="../../css/jquery-ui-1.8.18.custom.css" />
+    <link rel="stylesheet" href="/css/normalize.css" />
+    <link rel="stylesheet" href="/css/jquery-ui-1.8.18.custom.css" />
     
     <link rel="stylesheet" href="style.css" />
 
@@ -14,15 +14,34 @@
     <div style="width:48%;float:left;" id="right-side"></div>
     
     
-    <script src="../../js/jquery-1.7.1.min.js"></script>
-    <script src="../../js/jquery-ui-1.8.18.custom.min.js"></script>
-    <script src="../../js/underscore-min.js"></script>
-    <script src="../../js/backbone.js"></script>
-    <script src="../../js/backbone.modelbuilding.min.js"></script>
-    
-    <script src="logic.js"></script>
-    
+    <script src="/js/require.js"></script>
+      
     <script>
+        
+        require.config({
+            baseUrl: '/js',
+            paths: {
+              'jquery'       : 'jquery-1.7.1.min',
+              'jquery-ui'    : 'jquery-ui-1.8.18.custom.min',
+              'underscore'   : 'underscore',
+              'backbone'     : 'backbone',
+              'modelbinding' : 'backbone.modelbuilding',
+              'plugins'      : 'plugins',
+              'use'          : 'use.min',
+              'text'         : 'text',
+              'boardWidget'  : 'widget'
+            },
+            use: {
+              jss: { attach: 'jss' }
+            },
+            priority: ['jquery']
+        });
+        
+        require(['jquery','plugins/status/logic'],function($,plugin){
+            plugin.init(function(){
+                $('#left-side').append(plugin.getElement());
+            });
+        });
         
     </script>
     
