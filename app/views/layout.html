@@ -28,7 +28,7 @@
   {% block head_javascript %}
      {# here goes javascript code that for some rare reason should go in the head tag #}
      <!-- when ready pass to a custom version of modernizr -->
-     <script src="/js/modernizr.js"></script>
+     <script src="/js/lib/modernizr.js"></script>
 
   {% endblock %}
 
@@ -41,21 +41,22 @@
       {# most of the javascript code should be here #}
       <script src="/socket.io/socket.io.js"></script>
       
-      <script src="/js/require.js"></script>
+      <script src="/js/lib/require.js"></script>
       
       <script>
         
       require.config({
           baseUrl: 'js',
           paths: {
-            'jquery'       : 'jquery-1.7.1.min',
-            'jquery-ui'    : 'jquery-ui-1.8.18.custom.min',
-            'underscore'   : 'underscore',
-            'backbone'     : 'backbone',
-            'modelbinding' : 'backbone.modelbuilding',
+            'jquery'       : 'lib/jquery-1.7.1.min',
+            'jquery-ui'    : 'lib/jquery-ui-1.8.18.custom.min',
+            'underscore'   : 'lib/underscore',
+            'backbone'     : 'lib/backbone',
+            'modelbinding' : 'lib/backbone.modelbuilding',
+            'use'          : 'lib/use.min',
+            'text'         : 'lib/text',
+            'jss'          : 'lib/jss',
             'plugins'      : 'plugins',
-            'use'          : 'use.min',
-            'text'         : 'text',
             'boardWidget'  : 'widget'
           },
           use: {
