@@ -14,5 +14,7 @@ exports.user_settings = function(req, res){
 };
 
 exports.dashboard = function(req, res){
-  res.render('dashboard', {  });
+  if (!req.user) res.send(403);
+  
+  res.render('dashboard', { 'user_id' : req.user._id });
 };

@@ -234,8 +234,8 @@ define(['jquery','use!jss','jquery-ui','plugins'],
       
       $('body').append($pluginsList);
     }
-    
-    $(document).ready(function($){
-      initDashboard($('#dashboard'));
-    });    
+    ;
+    return {
+      'init' : initDashboard
+    }
 });

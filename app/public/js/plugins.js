@@ -92,7 +92,6 @@ define([
       pluginsListView.render();
       
       var $pluginsList = pluginsListView.$el;
-      $pluginsList.css({position:'fixed',top:10,right:10});
       
       pluginsCollection.fetch();
       

@@ -22,7 +22,19 @@
 {% parent %}
 
 <script>
-    require(['dashboard']);
+  require(['main'],function(main){
+    
+    main.init('{{ user_id }}');
+    
+    require(['jquery','dashboard'],function($,dashboard){
+      
+      $(document).ready(function($){
+        dashboard.init($('#dashboard'));
+      })
+      
+    });
+  });
+    
 </script>
 
 {% endblock %}
