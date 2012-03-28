@@ -15,7 +15,7 @@
     
     
     <script src="/js/lib/require.js"></script>
-      
+    <script src="/socket.io/socket.io.js"></script>
     <script>
         
         require.config({
@@ -38,9 +38,14 @@
             priority: ['jquery']
         });
         
-        require(['jquery','plugins/status/logic'],function($,plugin){
-            plugin.init(function(){
-                $('#left-side').append(plugin.getElement());
+        
+        require(['main'],function(main){
+            main.init('anonymous');
+            
+            require(['jquery','plugins/status/logic'],function($,plugin){
+                plugin.init(function(){
+                    $('#left-side').append(plugin.getElement());
+                });
             });
         });
         
