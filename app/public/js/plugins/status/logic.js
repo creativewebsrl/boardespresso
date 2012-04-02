@@ -5,20 +5,43 @@ define(['jquery','underscore','backbone','modelbinding','boardWidget'],
       var plugin = {
           'name' : 'status',
           'init' : function(cb){
-            this.confModel = null;
+            this.confModel = new StatusModel();
+            this.confModel.set('label',this.name);
             this.view = null;
+            this.confView = null;
+            
+            var that = this;
             
             this._getWidgetTemplate(function(templateHtml){
-              this.confModel = new CustomWidgetConfModel();
               
-              this.view = new StatusViewClass({
+              this.view = new StatusView({
                   'model'    : this.confModel,
                   'template' : templateHtml
               });
               
+              _.extend(this.view , Backbone.Events);
+              
               this.view.render();
               
-              cb.call(this,plugin);
+              this._getConfTemplate(function(templateHtml){
+                
+                var confView = this.confView = new StatusPreferencesView({
+                    'name'     : this.name,
+                    'model'    : this.confModel,
+                    'template' : templateHtml
+                });
+                
+                this.view.on('conf-request',function(){
+                  confView.render();
+                  confView.$el.dialog({
+                    title : that.name + ' configuration',
+                    autoOpen: true
+                  });
+                });
+                
+                cb.call(this,plugin);
+              });
+              
             });
             
           },
@@ -40,10 +63,8 @@ define(['jquery','underscore','backbone','modelbinding','boardWidget'],
           }
       };
       
-      var baseConfModel = boardWidget.getConfModelClass();
-      
-      var CustomWidgetConfModel = baseConfModel.extend({
-          defaults : _.extend({},baseConfModel.prototype.defaults,{
+      var StatusModel = boardWidget.Model.extend({
+          defaults : _.extend({},boardWidget.Model.prototype.defaults,{
               
               show_text_value : true,
               show_visual_alarm : true,
@@ -57,9 +78,7 @@ define(['jquery','underscore','backbone','modelbinding','boardWidget'],
           })
       });
       
-      var baseWidgetClass = boardWidget.getWidgetViewClass();
-      
-      var StatusViewClass = baseWidgetClass.extend({
+      var StatusView = boardWidget.StandardView.extend({
           doRender: function(){
               var jsonModel = this.model.toJSON();
               
@@ -74,6 +93,18 @@ define(['jquery','underscore','backbone','modelbinding','boardWidget'],
                   'alarmClass' : value > this.model.get('treshold_alarm') ? 'red' : 'green',
                   'valueDirection' : curr_value===prev_value
                                      ? 'equal' : (curr_value > prev_value ? 'greater' : 'lesser')
+              });
+              
+              return html;
+          }
+      });
+      
+      var StatusPreferencesView = boardWidget.PreferencesView.extend({
+          doRender: function(){
+              var jsonModel = this.model.toJSON();
+              
+              var html = this.template({
+                  
               });
               
               return html;

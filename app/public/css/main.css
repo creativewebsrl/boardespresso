@@ -12,3 +12,8 @@ a {
   top:10px;
   right:10px;
 }
+
+form span.error {
+  display: block;
+  color:red;
+}

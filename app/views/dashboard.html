@@ -24,7 +24,7 @@
 <script>
   require(['main'],function(main){
     
-    main.init('{{ user_id }}');
+    main.init({user_id : '{{ user_id }}'});
     
     require(['jquery','dashboard'],function($,dashboard){
       

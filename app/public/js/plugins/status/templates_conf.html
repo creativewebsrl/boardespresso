@@ -1,4 +1,70 @@
 
 <div class="widget-status conf template">
     
+    <form>
+        
+      <span class="error generic"></span>
+    
+      <label>
+        <span class="field">Title</span>
+        <input type="text" name="title" placeholder="the widget's title" />
+        <span class="error title"></span>
+      </label>
+      
+      <fieldset><legend>Data source</legend>
+        
+        <span class="error data_source"></span>
+        
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <label><input type="radio" name="data_source" value="service_id"></label>
+              </td>
+              <td>
+                <label>
+                  <span class="field">Service id</span>
+                  <input type="text" name="service_id" placeholder="id used by an app on your own server to push updates" />
+                  <span class="error service_id"></span>
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label><input type="radio" name="data_source" value="url"></label>
+              </td>
+              <td>
+                <ol>
+                  <li>
+                    <label>
+                      <span class="field">Url</span>
+                      <input type="text" name="url" placeholder="address where to take the data from" />
+                    </label>
+                    <span class="error url"></span>
+                  </li>
+                  <li>
+                    <label>
+                      <span class="field">Poll frequency</span>
+                      <input type="text" name="poll_frequency" placeholder="how often to read the url" />
+                      <span class="error poll_frequency"></span>
+                    </label>
+                  </li>
+                </ol>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <label>
+          <span class="field">Timeout (seconds)</span>
+          <input type="text" name="timeout" placeholder="maximum waiting time" />
+          <span class="error timeout"></span>
+        </label>
+      
+      </fieldset>
+      
+      <input type="submit" />
+      
+    </form>
+    
 </div>

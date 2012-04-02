@@ -150,16 +150,20 @@ define(['jquery','underscore','backbone','modelbinding','main'],
       var WidgetModel = Backbone.Model.extend({
           defaults : {
               _id : null,
-              label : "title",
+              title : "widget title",
               
               value : null,
               last_values : [null],
               keep_last_n_values : 2,
               
               service_id: null,
-              url: null,
               
-              set_error_after_n_seconds: 10, // seconds
+              url: null,
+              poll_frequency: 1, // check url each n seconds
+              
+              timeout: 10, // set error after n seconds
+              
+              data_source : 'url',
               
               updated_at : null,
               
@@ -180,7 +184,7 @@ define(['jquery','underscore','backbone','modelbinding','main'],
                 
                 that.set({
                   value : data['last_value'],
-                  label : data['desc'],
+                  title : data['desc'],
                   updated_at : data['updated_at']
                 });
               });
@@ -208,14 +212,64 @@ define(['jquery','underscore','backbone','modelbinding','main'],
                   }
               }
               
-              Backbone.Model.prototype.set.call(this, attributes, options);
+              return Backbone.Model.prototype.set.call(this, attributes, options);
+          },
+          validate : function(attrs){
+            var errors = {},
+                value = null;
+            
+            for (var key in attrs) {
+              var value = attrs[key];
               
-              return this;
+              switch(key) {
+                case 'title':
+                  attrs[key] = value = $.trim(value);
+                  if (! value) {
+                    errors[key] = "title can't be empty"
+                  }
+                  break;
+                
+              }
+            }
+            
+            //new Validator("1e2").isNumeric().toNumber().isInteger().gt(1).lt(1000)
+            
+            if (attrs['data_source']==='url') {
+              if (! attrs['url'] || $.trim(attrs['url'])==='') {
+                errors['url'] = 'Cannot be empty';
+              }
+              else if (! (Validator.isString(attrs['url']) && Validator.String.isUrl(attrs['url']))) {
+                errors['url'] = 'Not a valid url';
+              }
+              
+              if (! attrs['poll_frequency'] || $.trim(attrs['poll_frequency'])===''
+                  || $.trim(attrs['poll_frequency'])==='0'){
+                errors['poll_frequency'] = 'Cannot be empty or 0';
+              }
+              else if (! (Validator.isString(attrs['poll_frequency']) && Validator.isNumeric(attrs['poll_frequency'])
+                          && Validator.isInteger(parseFloat(attrs['poll_frequency'])) // ensure we don't truncate a number as 2.3
+                          && parseInt(attrs['poll_frequency']) > 0
+                          )) {
+                errors['poll_frequency'] = 'Not a positive integer';
+              }
+              
+            } else if (attrs['data_source']==='service_id') {
+              if (! attrs['service_id']) {
+                errors['service_id'] = 'Cannot be empty';
+              }
+            }
+            else {
+             errors['data_source'] = 'data source must be one of "url" | "service_id"'
+            }
+            
+            if (!_.isEmpty(errors)) {
+              return errors;
+            }
           }
           
       });
       
-      var WidgetViewClass = Backbone.View.extend({
+      var StandardView = Backbone.View.extend({
           tagName: "div",
           className : "g-box widget-container",
           
@@ -237,12 +291,17 @@ define(['jquery','underscore','backbone','modelbinding','main'],
           render: function(){
               this.$el.html('');
               
-              var titleBar = _.template('<div class="title"><%= label %><div class="confButton"></div></div>',{
-                'label' : this.model.get('label')
+              var titleBar = _.template('<div><div class="title"><%= title %></div><div class="confButton">x</div></div>',{
+                'title' : this.model.get('title')
               });
               
               this.$el.append(titleBar);
               this.$el.append(this.doRender());
+              
+              var that = this;
+              $('.confButton',this.$el).click(function(){
+                that.trigger('conf-request');
+              });
               
               //uncomment to use Backbone.ModelBinding to listen to model changes
               //Backbone.ModelBinding.bind(this);
@@ -264,9 +323,120 @@ define(['jquery','underscore','backbone','modelbinding','main'],
           }
       });
       
+      var PreferencesView = Backbone.View.extend({
+          tagName: "div",
+          className : "dialog widget-conf",
+          
+          events : {
+              "click button.delete" : "doDelete"
+          },
+          
+          formInputNames : [
+              'title','service_id','url','poll_frequency',
+              'timeout','data_source'
+          ],
+          
+          initialize: function(opts){
+              this.template = _.template(opts['template']);
+              
+              this.name = opts['name'];
+              
+              _.bindAll(this, 'render', 'remove','doDelete');
+              
+              this.model.on('destroy', this.remove);
+              
+              //comment to use Backbone.ModelBinding to listen to model changes
+              //this.model.on('change', this.render);
+          },
+          render: function(){
+              this.$el.html('');
+              this.$el.append(this.doRender());
+              
+              //uncomment to use Backbone.ModelBinding to listen to model changes
+              //ModelBinding.bind(this, { all: "name" });
+              
+              var view = this,
+                  $form = this.$el.find('form')
+                  ;
+              
+              $form.on('submit',function(ev){
+                var form = this;
+                try {
+                  view.onSave(form);
+                } catch(e) {
+                  console.error(e);
+                }
+                return false;
+              });
+              
+              // The error callback will receive model,error,options as arguments
+              this.model.on('error',_.bind(this.onError,this));
+              
+              return this;
+          },
+          doRender: function(){
+              return '';
+          },
+          doGetFormData: function(form){
+            var data = {};
+            _.each( this.formInputNames
+                   ,function(key){
+                      if (! this[key].tagName ) { // can't use $.isArray, it's an array like object
+                        for(var i=0,il=this[key].length;i<il;i++){
+                          if (this[key][i].checked) {
+                            data[key] = this[key][i].value;
+                            break;
+                          }
+                        }
+                      } else data[key] = this[key].value;
+                    }
+                   ,form);
+            return data;
+          },
+          onSave: function(form){
+              // clean errors
+              $(form).find('.error').each(function(){$(this).html('')});
+              
+              var data = this.doGetFormData(form);
+              
+              console.log('data to set',data);
+              var dataIsValid = this.model.set(data);
+              console.log('dataIsValid =>',dataIsValid);
+              if (dataIsValid) {
+                this.model.save();
+                this.trigger('preferences-saved');
+                console.log('preferences-saved');
+              }
+              
+              return dataIsValid;
+          },
+          onError: function(model,errors,options){
+            if (!this.el) return;
+            
+            var $form = this.$el.find('form');
+            
+            for (var key in errors) {
+              $form.find('.error.'+key).html(errors[key]);
+            }
+            
+          },
+          remove: function(){
+              this.model.off('change',this.render);
+              this.model.off('destroy',this.remove);
+              //this.model.off('error'); // XXX this way I remove ALL errors handlers !! add the function !
+              ModelBinding.unbind(this);
+              
+              this.$el.remove();
+          },
+          doDelete: function(){
+              this.model.destroy();
+          }
+      });
+      
       return {
-        'getConfModelClass' : function() { return WidgetConfModel; },
-        'getWidgetViewClass' : function() { return WidgetViewClass; }
+        'Model' : WidgetModel,
+        'StandardView' : StandardView,
+        'PreferencesView' : PreferencesView
       };
 });
 
