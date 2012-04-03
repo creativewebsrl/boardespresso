@@ -1,0 +1,361 @@
+@import "css/normalize.css";
+@import "mixins.less";
+@import "font-awesome.less";
+
+//Colours
+@primaryTxtColor:#72706D;
+
+
+@backgroundColor:#312F2A;
+
+@widgetBackgroundColor:#26241F;
+@widgetBorder:#0D0B08;
+
+@titleBxGradientTop:#312F2A;
+@titleBxGradientBottom:#26241F;
+
+@white:#fff;
+@black:#000;
+@lightGray:#B3B2B0;
+@mediumGray:#474440;
+@green:#9ECC33;
+@blue:#4BB3D2;
+@pink:#D94D4D;
+@orange:#D98621;
+
+@font-size:1em;
+
+//Fonts
+
+@FontA:"BebasNeue-webfont";
+
+@baseFontFamily: @FontA,Helvetica, Arial, sans-serif;
+@sansSerifFamily:Arial, Helvetica, sans-serif;
+
+@borderBottomColor:#999;
+
+@font-face {
+    font-family: @FontA;
+    src: url('../fonts/@{FontA}.eot');
+    src: url('../fonts/@{FontA}.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/@{FontA}.woff') format('woff'),
+         url('../fonts/@{FontA}.ttf') format('truetype'),
+         url('../fonts/@{FontA}.svg#@{FontA}') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body{
+	background:url("../images/bodyBk.png") repeat 0 0 @backgroundColor;
+	font-family:@baseFontFamily;
+  color: @primaryTxtColor;
+}
+
+p{margin:0;}
+
+.display-block(@w,@h){
+  width:@w;
+  height:@h;
+  display:block;
+}
+
+.widget_general{	  
+    @widgetBorderRadius:0.5em;
+    @titleBoxHeight: 2em;
+    @settingsWidth: 2em;
+    .border-radius(@widgetBorderRadius);
+    background:@widgetBackgroundColor;
+    border-top:0.07em solid @black;
+    border-bottom:0.07em solid darken(@lightGray,10%);
+	.titleBox{
+    #gradient > .vertical(@titleBxGradientTop,@titleBxGradientBottom);
+    .border-radius(@widgetBorderRadius @widgetBorderRadius 0 0);
+    .box-shadow(0 0.04em @mediumGray);
+    position: relative;
+		height: @titleBoxHeight;
+		overflow: hidden;
+		border-bottom: 0.05em solid @widgetBorder; /* pixel, problema */
+		.title{	        
+            @paddingRight: 0em;
+            @paddingLeft:1em;
+            @paddingTop: 0em; /* use em for y padding because the parent use em for height *//*try (@titleBoxHeight - @font-size)/2*/
+            @paddingBottom: 0em; /* note: use 0em instead of 0 to not forget the unit to use */
+            padding: @paddingTop @paddingRight @paddingBottom @paddingLeft;
+            float: left;
+             /* reset the browser font-size (e.g. h3 has 1.17em in firefox) */
+            height:100%;
+            line-height:2em;
+            margin: 0; /* reset the browser h3 margin */
+            p{
+              margin:0;      
+              font-size: @font-size;
+              font-family:@sansSerifFamily;
+              font-weight:normal;
+              text-transform:uppercase;
+              color: @lightGray;   
+              text-shadow:0 -0.08em  @black;
+            }
+		}
+  
+/********** Settings ************/
+      
+		.settings{
+      /* dimensions */
+       #gradient > .vertical(@titleBxGradientTop,@titleBxGradientBottom);
+       .box-shadow(-0.04em 0 @mediumGray);
+      .border-radius(0 @widgetBorderRadius 0 0);
+      position:absolute;
+      color: @mediumGray;
+      text-decoration:none;
+      top:0;
+      right:0;
+      bottom:0;
+			width:@settingsWidth;
+			text-align: center;
+      text-shadow:0 -0.08em  @black;          
+		  line-height: @titleBoxHeight;
+			border-left: 0.05em solid @widgetBorder; /* pixel, problema */
+  		&:hover{
+        #gradient > .vertical(lighten(@titleBxGradientTop,5%),lighten(@titleBxGradientBottom,5%));
+        color: lighten(@mediumGray,15%);
+      }
+    }	
+
+	}
+
+/********** Data Container ************/
+	.dataContainer{
+	  padding:1em 1em 1em 1em;
+	  // overflow:hidden;
+    text-align:center;
+	  p,.colon{
+	    text-shadow:0 -0.08em  @black;
+	    text-align:left; 
+	  }
+
+  /********** Data Row ************/
+    .dataRow{
+      color: @blue;
+      font-size:2em;
+      & + .percentage{
+        color: lighten(@blue,15%);
+      }
+      &.positive{
+          color: @green;
+        & + .percentage {
+          color: lighten(@green,15%);
+        }
+        }
+      &.negative{
+          color:@pink;
+       & + .percentage {
+          color: lighten(@pink,15%);
+        }
+      }
+      }
+    .percentage{
+      font-size:1.5em;
+      color:#000;
+    }
+  }
+
+  /********** Led ************/
+
+  .ledWrapper{
+    @led-size:5em;
+    @led-color:@mediumGray;
+    display: inline-block; 
+    margin:0 1em;
+    .led{
+      .border-radius(100%);
+      font-size:@font-size;
+      display:inline-block;
+      vertical-align: middle; 
+      width:@led-size;
+      height:@led-size;
+      background:@led-color;
+      span{
+        .box-sizing(border-box); 
+        .display-block((@led-size - @led-size/10),(@led-size - (@led-size/10) );
+        .border-radius(100%);
+         #gradient > .vertical(lighten(@led-color,10%),darken(@led-color,10%));
+        .box-shadow(inset 0 -(@led-size/20) rgba(0,0,0,0.6));
+        border-top: (@led-size/20) solid rgba(255,255,255,0.6);     
+        margin:(@led-size/10)/2;
+      }      
+    }
+    p{
+        display: block;
+        color: @led-color;
+        font-family:@sansSerifFamily;
+        text-transform:uppercase;
+        font-size: @led-size/5;
+        line-height:(@led-size/5)*2;
+        margin:@led-size/5 0;
+        text-align:center;
+      }
+    @box-shadow-blur:@led-size/6;
+    &.ok{
+         @led-color:@green;
+        .led{
+          .box-shadow(0 0 @box-shadow-blur @led-color);
+          background:@led-color;
+        }
+        span{
+          #gradient > .vertical(lighten(@led-color,10%),darken(@led-color,10%));
+        }
+        p{
+          color: @led-color;
+        }
+      }
+      &.error{
+         @led-color:@pink;
+         .led{          
+          .box-shadow(0 0 @box-shadow-blur @led-color);
+          background:@led-color;
+         }
+        span{
+          #gradient > .vertical(lighten(@led-color,10%),darken(@led-color,10%));
+        }
+        p{
+          color: @led-color;
+        }
+      }
+      &.warning{
+          @led-color:@orange;
+        .led{  
+          .box-shadow(0 0 @box-shadow-blur @led-color);
+          background:@led-color;
+        }
+        span{
+          #gradient > .vertical(lighten(@led-color,10%),darken(@led-color,10%));
+        }
+        p{
+          color: @led-color;
+        }
+      }
+
+  /********** Led Row ************/
+
+    &.ledRow{
+      @led-size:1em;
+      .border-radius(@led-size/1.5);
+      .box-shadow(inset 0 -@led-size/15 @black);
+      text-align:left;
+      width:100%;
+      height:@led-size;
+      padding: @led-size*1.5 0;
+      margin: 0;
+      border-bottom:@led-size/10 solid rgba(255,255,255,0.3);
+
+      p{
+        text-transform:none;
+        text-align: left;
+        display: inline-block;
+        line-height:1em;
+        margin:0 0 0 1em;
+        font-size: @led-size;
+        height:1em;
+      }
+      .led{
+        font-size:@font-size;
+        width:@led-size;
+        height:@led-size;
+        float:right;
+        margin:0 @led-size 0 0;
+        span{
+          .display-block((@led-size - @led-size/10),(@led-size - (@led-size/10) );
+          .box-shadow(inset 0 -(@led-size/20) rgba(0,0,0,0.6));
+          border-top: (@led-size/20) solid rgba(255,255,255,0.6);     
+          margin:(@led-size/10)/2;
+        }
+
+      }
+      @box-shadow-blur:@led-size/6;
+    &.ok{
+         @led-color:@green;
+        .led{
+          .box-shadow(0 0 @box-shadow-blur @led-color);
+          background:@led-color;
+        }
+        span{
+          #gradient > .vertical(lighten(@led-color,10%),darken(@led-color,10%));
+        }
+      }
+      &.error{
+         @led-color:@pink;
+         .led{          
+          .box-shadow(0 0 @box-shadow-blur @led-color);
+          background:@led-color;
+         }
+        span{
+          #gradient > .vertical(lighten(@led-color,10%),darken(@led-color,10%));
+        }
+      }
+      &.warning{
+          @led-color:@orange;
+        .led{  
+          .box-shadow(0 0 @box-shadow-blur @led-color);
+          background:@led-color;
+        }
+        span{
+          #gradient > .vertical(lighten(@led-color,10%),darken(@led-color,10%));
+        }
+      }
+      &:nth-child(2n){
+        background:lighten(@backgroundColor,1%);
+      } 
+    }
+  }
+
+ /********** Time ************/
+
+  .time{
+    @timeFontSize:6em;
+    display: inline-block;
+    // margin:5% 20%;
+    .singlePart{
+      display: inline-block;
+      
+      > div{
+        color:@black;
+        font-size:@timeFontSize;
+        display:inline-block;
+        // width:(@timeFontSize/1.5)/8 - ((@timeFontSize/1.5)/20)*2;
+        // margin:0 (@timeFontSize/1.5)/20;
+        .timePartTop{
+          .border-radius(@timeFontSize/100 @timeFontSize/100 0 0);
+          #gradient > .vertical(@white,lighten(@black,30%));
+          .box-shadow(inset 0 -@timeFontSize/200 @black);
+          border-bottom:@timeFontSize/200 solid @lightGray;
+          padding:0 @timeFontSize/100;
+          margin:0 @timeFontSize/200;
+          background-color: #DDD;
+          height:0.5em;
+          line-height:1em;
+          overflow: hidden;
+        }
+        .timePartBottom{
+          .timePartTop;
+          .box-shadow(0 0.05em @lightGray);
+          .border-radius(0 0 @timeFontSize/100 @timeFontSize/100);
+          border-bottom:none;
+          line-height:0;
+        }
+      }
+    }
+    .colon{
+    display: inline-block;
+    font-size: @timeFontSize;
+    height: 1em;
+    line-height: 1em;
+    vertical-align: top;
+    }
+    p{
+      text-align: center;
+      font-size:@timeFontSize/3;
+    }
+  }
+
+  
+}
