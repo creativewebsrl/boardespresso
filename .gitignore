@@ -1,3 +1,7 @@
 .nvm/
 /node_modules/
 *local.js
+*pyc
+*pyo
+webServer.py
+!tools/webServer.py
