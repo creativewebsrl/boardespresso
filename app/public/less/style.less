@@ -50,6 +50,7 @@ body{
   color: @primaryTxtColor;
 }
 
+ul{margin: 0;padding: 0;}
 p{margin:0;}
 
 .display-block(@w,@h){
@@ -69,11 +70,11 @@ p{margin:0;}
 	.titleBox{
     #gradient > .vertical(@titleBxGradientTop,@titleBxGradientBottom);
     .border-radius(@widgetBorderRadius @widgetBorderRadius 0 0);
-    .box-shadow(0 0.04em @mediumGray);
+    .box-shadow(0 0.08em @mediumGray);
     position: relative;
 		height: @titleBoxHeight;
 		overflow: hidden;
-		border-bottom: 0.05em solid @widgetBorder; /* pixel, problema */
+		border-bottom: 0.08em solid @widgetBorder; /* pixel, problema */
 		.title{	        
             @paddingRight: 0em;
             @paddingLeft:1em;
@@ -101,7 +102,7 @@ p{margin:0;}
 		.settings{
       /* dimensions */
        #gradient > .vertical(@titleBxGradientTop,@titleBxGradientBottom);
-       .box-shadow(-0.04em 0 @mediumGray);
+       .box-shadow(-0.08em 0 @mediumGray);
       .border-radius(0 @widgetBorderRadius 0 0);
       position:absolute;
       color: @mediumGray;
@@ -113,7 +114,7 @@ p{margin:0;}
 			text-align: center;
       text-shadow:0 -0.08em  @black;          
 		  line-height: @titleBoxHeight;
-			border-left: 0.05em solid @widgetBorder; /* pixel, problema */
+			border-left: 0.08em solid @widgetBorder; /* pixel, problema */
   		&:hover{
         #gradient > .vertical(lighten(@titleBxGradientTop,5%),lighten(@titleBxGradientBottom,5%));
         color: lighten(@mediumGray,15%);
@@ -353,6 +354,44 @@ p{margin:0;}
     p{
       text-align: center;
       font-size:@timeFontSize/3;
+    }
+  }
+  /******** List ************/
+  .item{
+    @itemSize:1em;
+    .ledWrapper.ledRow;
+    padding: 0;
+    height:@itemSize*5;
+    list-style: none;
+    .imgWrapper{
+      .display-block(@itemSize*2,@itemSize*2);
+      .border-radius(@itemSize/2);
+      float: left;
+      border:@itemSize/4 solid @black;
+      background:@lightGray;
+      overflow: hidden;
+    }
+    .textWrapper{
+      .box-sizing(border-box);
+      color: @white;
+      padding:0 0 0 @itemSize;
+      font-size:@itemSize/1.2;
+      font-family: @sansSerifFamily;
+      max-width:80%;
+      float: left;
+      h4{
+        font-size:@itemSize;
+        margin:0;
+      }
+      .message{
+        margin:@itemSize/2 0;
+        line-height:@itemSize;
+        height:@itemSize*2;
+      }
+      .data{
+        font-size:@itemSize/1.4;
+        @lightGray;
+      }
     }
   }
 
