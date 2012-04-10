@@ -17,6 +17,7 @@
 @black:#000;
 @lightGray:#B3B2B0;
 @mediumGray:#474440;
+@darkGray:#191715;
 @green:#9ECC33;
 @blue:#4BB3D2;
 @pink:#D94D4D;
@@ -50,13 +51,20 @@ body{
   color: @primaryTxtColor;
 }
 
-ul{margin: 0;padding: 0;}
+ul{margin: 0;padding: 0;list-style:none}
 p{margin:0;}
 
 .display-block(@w,@h){
   width:@w;
   height:@h;
   display:block;
+}
+
+.positive{
+  color:@green !important;
+}
+.negative{
+  color:@pink !important;
 }
 
 .widget_general{	  
@@ -67,6 +75,7 @@ p{margin:0;}
     background:@widgetBackgroundColor;
     border-top:0.07em solid @black;
     border-bottom:0.07em solid darken(@lightGray,10%);
+  
 	.titleBox{
     #gradient > .vertical(@titleBxGradientTop,@titleBxGradientBottom);
     .border-radius(@widgetBorderRadius @widgetBorderRadius 0 0);
@@ -122,6 +131,7 @@ p{margin:0;}
     }	
 
 	}
+}
 
 /********** Data Container ************/
 	.dataContainer{
@@ -308,7 +318,7 @@ p{margin:0;}
     }
   }
 
- /********** Time ************/
+ /********** Time + Calendar ************/
 
   .time{
     @timeFontSize:6em;
@@ -326,8 +336,8 @@ p{margin:0;}
         .timePartTop{
           .border-radius(@timeFontSize/100 @timeFontSize/100 0 0);
           #gradient > .vertical(@white,lighten(@black,30%));
-          .box-shadow(inset 0 -@timeFontSize/200 @black);
-          border-bottom:@timeFontSize/200 solid @lightGray;
+          .box-shadow(inset 0 -0.03em @black);
+          border-bottom:0.03em solid @lightGray;
           padding:0 @timeFontSize/100;
           margin:0 @timeFontSize/200;
           background-color: #DDD;
@@ -355,21 +365,60 @@ p{margin:0;}
       text-align: center;
       font-size:@timeFontSize/3;
     }
+    &.calendar{
+      width:100%;
+      .singlePart{
+        width:100%;
+        .timeIntSx{
+          width:100%;
+          .timePartTop,.timePartBottom{
+            color: @white;
+            background: none !important;
+            margin:0;
+          }
+          .timePartTop{
+            margin-top:@timeFontSize/40;
+          }
+          .timePartBottom{
+            .box-shadow(none);
+            height:@timeFontSize/20;
+          }
+        }
+      }
+      p{
+        text-align: center;
+        font-size:@timeFontSize/2;
+        margin-bottom:@timeFontSize/20;
+      }
+    }
+  }
+
+  [data-kind="calendar"]{
+    padding:0;
   }
   /******** List ************/
-  .item{
+  .item1{
     @itemSize:1em;
     .ledWrapper.ledRow;
-    padding: 0;
+    padding:@itemSize*0.5 0 0 0;
     height:@itemSize*5;
     list-style: none;
     .imgWrapper{
+      height:100%;
+      width:10%;
+      float:left;
+    }
+    .imgStyle{
       .display-block(@itemSize*2,@itemSize*2);
       .border-radius(@itemSize/2);
       float: left;
       border:@itemSize/4 solid @black;
       background:@lightGray;
       overflow: hidden;
+      img{
+        width:150%;
+        margin-left:-25%;
+      }
     }
     .textWrapper{
       .box-sizing(border-box);
@@ -377,23 +426,167 @@ p{margin:0;}
       padding:0 0 0 @itemSize;
       font-size:@itemSize/1.2;
       font-family: @sansSerifFamily;
-      max-width:80%;
+      width:90%;
       float: left;
+      text-shadow:0 -@itemSize*0.08 @black;
       h4{
         font-size:@itemSize;
         margin:0;
       }
       .message{
-        margin:@itemSize/2 0;
-        line-height:@itemSize;
+        margin:@itemSize*0.2 0 @itemSize/2;
+        line-height:@itemSize*1.2;
         height:@itemSize*2;
+        color:@lightGray;
       }
       .data{
         font-size:@itemSize/1.4;
-        @lightGray;
+        color:@mediumGray;
+      }
+    }
+    &:nth-child(2n){
+      background:none;
+    }
+  }
+  
+  .item2{     
+      @itemSize:1em;
+      .border-radius(@itemSize/1.5);
+      .box-shadow(inset 0 -@itemSize/15 @black);
+      text-align:left;
+      width:100%;
+      height:@itemSize;
+      padding: @itemSize*0.7 0;
+      margin: 0;
+      border-bottom:@itemSize/10 solid rgba(255,255,255,0.3);
+      i{
+        text-shadow: 0 -@itemSize*0.08 @black;
+        margin:0 0 0 @itemSize*0.5;
+      }
+      p{
+        font-family:@sansSerifFamily;
+        text-transform:none;
+        text-align: left;
+        display: inline-block;
+        line-height:@itemSize;
+        margin:0 0 0 @itemSize*0.5;
+        font-size: @itemSize;
+        height:@itemSize;
+      }
+      span{
+          text-shadow: 0 -@itemSize*0.08 @black;
+          font-family:@baseFontFamily;
+          float:right;
+          font-size:@itemSize*1.5;
+          height:@itemSize;
+          line-height:@itemSize;
+          margin:0 @itemSize*0.5 0 0;
+      }
+      &:nth-child(2n){
+        background:lighten(@backgroundColor,1%);
+      } 
+    &.positive{
+      color:@green;
+      p{
+        color: lighten(@green,15%);
+      }
+    }
+    &.negative{
+      color:@pink;
+      p{
+        color: lighten(@pink,15%);
+      }
+    }
+    }
+  
+  
+  /******** Level ************/
+  @itemSize:1em;
+  [data-kind="level"]{
+    padding:0;
+    position:relative;
+  }
+  .levelMask{
+    position:absolute;
+    top:0;
+    left:50%;
+    z-index:1001;
+    margin-left:-@itemSize*6.8/2;
+    svg{
+    height:@itemSize*12.6;
+    width:@itemSize*6.8;
+    }
+  }
+  .level{
+    .display-block(@itemSize*6.5,@itemSize*12.5);
+    background:@mediumGray;
+    position:relative;
+    z-index:1000;
+     margin:@itemSize auto;
+    & > div{
+      .display-block(@itemSize*6.5,20%);
+      position:absolute;
+      bottom:0;
+      left:0;
+      background:@blue;
+      z-index:999;
+      &.positive{
+        background:@green;
+      }
+      &.negative{
+        background:@pink;
       }
     }
   }
-
   
+  /****** Percentage Box ************/
+ 
+ .percentageBox{
+    @fontSize:1em;
+   .display-block(@fontSize*2,@fontSize);
+   .border-radius(@fontSize/5);
+   margin:0 auto @fontSize/2;
+   color:@blue;
+   padding:@fontSize/4;
+   font-size:@fontSize*3;
+   background:@darkGray;
+   border-top:@fontSize/20 solid @black;
+   border-bottom:@fontSize/20 solid rgba(255,255,255,0.5);
+   text-shadow: 0 @fontSize*-0.08 @black;
+ }
+  
+  /****** Counter ************/
+  @itemSize:1em;
+  [data-kind="counter"]{
+    padding:0;
+    position:relative;
+  }
+.segments{
+  fill:@pink;
 }
+#segment1,#segment2,#segment3{
+  fill:@green;
+}
+.pointerMask{
+  .rotate(135deg);
+  position:absolute;
+  top:@itemSize*8;
+  height:@itemSize*1.2;
+  left:50%;
+  z-index:1001;
+  margin-left:-@itemSize*14/2;
+    svg{
+    height:@itemSize*2;
+    width:@itemSize*14;
+    margin-top:@itemSize*-0.4;
+    }
+  }
+.counterMask{
+  margin-bottom:@itemSize*-2;
+    svg{
+    height:@itemSize*12.5;
+    width:@itemSize*16;
+    }
+  }
+
+
