@@ -3,8 +3,8 @@
 if (!window.dboard) window.dboard = {};
 if (!window.dboard.plugins) window.dboard.plugins = {};
 
-define(['jquery','use!jss','jquery-ui','plugins'],
-  function($,jss,jqueryUi,plugins){
+define(['jquery','use!jss','jquery-ui','plugins','widget'],
+  function($,jss,jqueryUi,plugins,boardWidget){
     
     /**
      * Make a grid at elemOrSelector
@@ -204,33 +204,62 @@ define(['jquery','use!jss','jquery-ui','plugins'],
         
     }
     
-    function addPluginToDashboard($dboard,pluginName){
-      plugins.getPlugin(pluginName,function(res){
-        
-        if (!res.success) {
-          // XXX alert the user
-          console.error(res.success);
-        } else {
-          var plugin = res['message'];
-          
-          plugin.init(function(){
-            $dboard.trigger('insert-widget',[plugin]);
-          });
-          
-        }
-        
-      });
+    function addPluginToDashboard($dboard,pluginInstance){
+      console.log('add plug to dashboard',pluginInstance);
+      $dboard.trigger('insert-widget',[pluginInstance]);
     }
     
     function initDashboard($dboard){
       
       create_grid($dboard);
       
+      // Show a list of available plugins
       var $pluginsList = plugins.makePluginsList('pluginsList');
       
       $(document).on('new-plugin',function(ev,pluginName){
-        addPluginToDashboard($dboard,pluginName);
+        
+        plugins.getPlugin(pluginName,function(res){
+          
+          if (!res.success) {
+            // XXX alert the user
+            console.error(res['message']);
+          } else {
+            var plugin = res['message'];
+            
+            var p = plugin.make();
+            p.init(function(){
+              addPluginToDashboard($dboard,p);
+            });
+            
+          }
+          
+        });
       });
+      
+      // Load user widgets
+      boardWidget.getUserWidgets(function(list_widgets){
+        
+        _.each(list_widgets,function(elem,idx){
+          
+          plugins.getPlugin(elem.type,function(res){
+            
+            if (!res.success) {
+              // XXX alert the user
+              console.error(res['message']);
+            } else {
+              var plugin = res['message'];
+              
+              var p = plugin.make();
+              p.init(function(){
+                addPluginToDashboard($dboard,p);
+              },elem);
+              
+            }
+          });
+          
+        });
+      });
+      
       
       $('body').append($pluginsList);
     }

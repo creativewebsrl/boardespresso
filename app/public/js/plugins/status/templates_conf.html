@@ -7,7 +7,7 @@
     
       <label>
         <span class="field">Title</span>
-        <input type="text" name="title" placeholder="the widget's title" />
+        <input type="text" name="title" placeholder="the widget's title" value="<%- title %>" />
         <span class="error title"></span>
       </label>
       
@@ -19,33 +19,33 @@
           <tbody>
             <tr>
               <td>
-                <label><input type="radio" name="data_source" value="service_id"></label>
+                <label><input type="radio" name="data_source" value="service_id" checked="<% if (data_source==='service_id') { %>checked<% } %>"></label>
               </td>
               <td>
                 <label>
                   <span class="field">Service id</span>
-                  <input type="text" name="service_id" placeholder="id used by an app on your own server to push updates" />
+                  <input type="text" name="service_id" placeholder="id used by an app on your own server to push updates" value="<%- service_id ? service_id : '' %>" />
                   <span class="error service_id"></span>
                 </label>
               </td>
             </tr>
             <tr>
               <td>
-                <label><input type="radio" name="data_source" value="url"></label>
+                <label><input type="radio" name="data_source" value="url" checked="<% if (data_source==='url') { %>checked<% } %>"</label>
               </td>
               <td>
                 <ol>
                   <li>
                     <label>
                       <span class="field">Url</span>
-                      <input type="text" name="url" placeholder="address where to take the data from" />
+                      <input type="text" name="url" placeholder="address where to take the data from" value="<%- url %>" />
                     </label>
                     <span class="error url"></span>
                   </li>
                   <li>
                     <label>
                       <span class="field">Poll frequency</span>
-                      <input type="text" name="poll_frequency" placeholder="how often to read the url" />
+                      <input type="text" name="poll_frequency" placeholder="how often to read the url" value="<%- poll_frequency %>" />
                       <span class="error poll_frequency"></span>
                     </label>
                   </li>
@@ -57,7 +57,7 @@
         
         <label>
           <span class="field">Timeout (seconds)</span>
-          <input type="text" name="timeout" placeholder="maximum waiting time" />
+          <input type="text" name="timeout" placeholder="maximum waiting time" value="<%- timeout %>" />
           <span class="error timeout"></span>
         </label>
       

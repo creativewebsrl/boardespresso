@@ -175,7 +175,7 @@ define(['jquery','underscore','backbone','modelbinding','main'],
           idAttribute: '_id',
           url: function(){
               var _id = this.get('_id');
-              return '/api/service/'+main.getUserId()+(_id ? '/'+_id : '');
+              return '/api/widget/'+main.getUserId()+(_id ? '/'+_id : '');
           },
           initialize : function(){
               var that = this;
@@ -246,8 +246,13 @@ define(['jquery','underscore','backbone','modelbinding','main'],
                   || $.trim(attrs['poll_frequency'])==='0'){
                 errors['poll_frequency'] = 'Cannot be empty or 0';
               }
-              else if (! (Validator.isString(attrs['poll_frequency']) && Validator.isNumeric(attrs['poll_frequency'])
-                          && Validator.isInteger(parseFloat(attrs['poll_frequency'])) // ensure we don't truncate a number as 2.3
+              else if (! (
+                          (
+                           Validator.isString(attrs['poll_frequency']) && Validator.isNumeric(attrs['poll_frequency'])
+                           ||
+                           Validator.isNumber(attrs['poll_frequency'])
+                          )
+                          && Validator.isInteger(parseFloat(attrs['poll_frequency'])) 
                           && parseInt(attrs['poll_frequency']) > 0
                           )) {
                 errors['poll_frequency'] = 'Not a positive integer';
@@ -399,13 +404,21 @@ define(['jquery','underscore','backbone','modelbinding','main'],
               
               var data = this.doGetFormData(form);
               
-              console.log('data to set',data);
               var dataIsValid = this.model.set(data);
-              console.log('dataIsValid =>',dataIsValid);
+              
               if (dataIsValid) {
-                this.model.save();
-                this.trigger('preferences-saved');
-                console.log('preferences-saved');
+                var view = this;
+                this.model.save(null,{
+                  error:function(model,response){
+                    console.error(response); // XXX alert the user, log the error
+                    view.trigger('preferences-saved',[false,response]);
+                  },
+                  success:function(model,response){
+                    view.trigger('preferences-saved',[true]);
+                  }
+                });
+                
+                
               }
               
               return dataIsValid;
@@ -436,7 +449,11 @@ define(['jquery','underscore','backbone','modelbinding','main'],
       return {
         'Model' : WidgetModel,
         'StandardView' : StandardView,
-        'PreferencesView' : PreferencesView
+        'PreferencesView' : PreferencesView,
+        'getUserWidgets' : function(cb){
+            $.get('/api/widgets/'+main.getUserId())
+            .done(cb);
+        }
       };
 });
 

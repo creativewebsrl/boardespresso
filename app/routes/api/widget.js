@@ -2,52 +2,51 @@
 var db = require('database');
 
 module.exports = {
-    'services' : {
+    'widgets' : {
         
+        // retrieve all the widgets owned by a user
         'read' : function(req,res){
             var user_id = req.params.user_id;
             
             if (!req.user || req.user._id != user_id) {
                 res.send(403);
             }
-            else return db.model('User').getServices(user_id,
-                function(err,services){
-                    if (!err) res.json(services);
+            else return db.model('User').getWidgets(user_id,
+                function(err,widgets){
+                    if (!err) res.json(widgets);
                     else res.send(500);
                 }
             );
         }
         
     },
-    'service' : {
+    'widget' : {
         
-        // generate a service and add it to the user
+        // generate a widget and add it to the user
         'create' : function(req,res){
             var user_id = req.params.user_id
-                description = req.body.desc || ''
                 ;
             
             if (!req.user || req.user._id != user_id) {
                 res.send(403);
             }
             else {
-                var serviceModel = db.model('Service'),
-                    service = new serviceModel();
+                var widgetModel = db.model('Widget'),
+                    widget = new widgetModel(req.body);
                 
-                service._id = db.ObjectId();
-                service.desc = description;
+                widget._id = db.ObjectId();
                 
                 // monoquery
                 db.model('User').update(
                     // query
                     { _id :  db.ObjectId(user_id)},
                     // update
-                    { $pushAll : { services : [service] } },
-                    { safe:false},
+                    { $pushAll : { widgets : [widget] } },
+                    { safe:true},
                     // callback
                     function(err){
                         if (err) return res.send(500);
-                        else res.json(service);
+                        else res.json(widget);
                     }
                 );
                 
@@ -56,10 +55,10 @@ module.exports = {
                 db.model('User').findById(user_id,function(err,user){
                     if (err) return res.send(500);
                     else {
-                        user.services.push(service);
+                        user.widgets.push(widget);
                         user.save(function(err){
                             if (err) return res.send(500);
-                            else return res.json(service);
+                            else return res.json(widget);
                         });
                     }
                 });
@@ -68,28 +67,28 @@ module.exports = {
             }
         },
         
-        // send a stub object if no service_id is passed, or that service
+        // send a stub object if no widget_id is passed, or that widget
         'read' : function(req,res){
             var user_id = req.params.user_id
-                service_id = req.params.service_id;
+                widget_id = req.params.widget_id;
             
             if (!req.user || req.user._id != user_id) {
                 res.send(403);
             }
             else {
                 
-                if (!service_id) {
-                    var serviceModel = db.model('Service'),
-                        stubService = new serviceModel();
-                    stubService._id = undefined;
-                    return res.json(stubService);
+                if (!widget_id) {
+                    var widgetModel = db.model('Widget'),
+                        stubwidget = new widgetModel();
+                    stubwidget._id = undefined;
+                    return res.json(stubwidget);
                 }
-                // XXX would be best to select directly the service
+                // XXX would be best to select directly the widget
                 // https://jira.mongodb.org/browse/SERVER-828
-                else db.model('User').getServices(user_id,function(err,services){
+                else db.model('User').getWidgets(user_id,function(err,widgets){
                     if (err) res.send(500);
                     else {
-                        var result = _.find(services,function(elem){ return elem._id==service_id });
+                        var result = _.find(widgets,function(elem){ return elem._id==widget_id });
                         if (!result) res.send(500);
                         else res.json(result);
                     }
@@ -99,64 +98,58 @@ module.exports = {
         
         'update' : function(req,res){
             var user_id = req.params.user_id
-                service_id = req.params.service_id,
-                description = req.body.desc,
-                last_value = req.body.last_value 
+                widget_id = req.params.widget_id
                 ;
             
             if (!req.user || req.user._id != user_id) {
                 res.send(403);
             }
             
-            var whatToUpdate = {};
-            if (description!==undefined) {
-                whatToUpdate["services.$.desc"] = description ;
-            }
-            if (last_value!==undefined) {
-                whatToUpdate["services.$.last_value"] = last_value ;
-                whatToUpdate["services.$.updated_at"] = new Date() ;
-            }
+            var widgetModel = db.model('Widget'),
+            widget = new widgetModel(req.body);
+            widget.updated_at = new Date();
             
-            if (_.isEmpty(whatToUpdate)) {
-                return db.model('User').getServices(user_id,function(err,services){
-                    if (!err) res.send(services);
-                    else res.send(500);
-                });
-            }
-            else return db.model('User').update(
+            // use orignal db connection because mongoose is using 'strict' on submodels too
+            return db.conn().collection('users',function(err,collection){
+              collection.update(
                 // query
-                { _id :  db.ObjectId(user_id),
-                    services : { '$elemMatch' : { _id : db.ObjectId(service_id) } }
+                {  _id :  db.ObjectId(user_id),
+                   widgets : { '$elemMatch' : { _id : db.ObjectId(widget_id) } }
                 },
                 // update
-                { $set : whatToUpdate
+                { $set : {'widgets.$' : widget.toJSON()}
                 },
                 // callback
-                function(err){
+                function(err,x){
                     // XXX not atomic. Should use findAndModify instead (and return the new version)
                     if (err) return res.send(500);
-                    // XXX would be best to select directly the service
+                    // XXX would be best to select directly the widget
                     // https://jira.mongodb.org/browse/SERVER-828
-                    else db.model('User').getServices(user_id,function(err,services){
+                    
+                    // XXX slow, I should just retrieve the single widget I need
+                    else db.model('User').getWidgets(user_id,function(err,widgets){
                         if (err) res.send(500);
                         else {
-                            var result = _.find(services,function(elem){ return elem._id==service_id });
+                            var result = _.find(widgets,function(elem){
+                              return elem._id==widget_id
+                            });
                             
                             if (!result) res.send(500);
                             else {
-                                GLOBAL['GLOB']['sio'].sockets.in(user_id).emit('service-update',result);
+                                GLOBAL['GLOB']['sio'].sockets.in(user_id).emit('widget-update',result);
                                 res.json(result);
                             }
                         }
                     });
                 }
-            );
+              );
+            });
             
             
         },
         'delete' : function(req,res){
             var user_id = req.params.user_id
-                service_id = req.params.service_id
+                widget_id = req.params.widget_id
                 ;
             
             if (!req.user || req.user._id != user_id) {
@@ -166,10 +159,10 @@ module.exports = {
                 db.model('User').update(
                     // query
                     {   _id :  db.ObjectId(user_id),
-                        services : { '$elemMatch' : { _id : db.ObjectId(service_id) } }
+                        widgets : { '$elemMatch' : { _id : db.ObjectId(widget_id) } }
                     },
                     // update (remove)
-                    { '$pull' : { services: { _id : db.ObjectId(service_id) } } },
+                    { '$pull' : { widgets: { _id : db.ObjectId(widget_id) } } },
                     // callback
                     function(err){
                         if (err) return res.send(500);

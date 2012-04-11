@@ -89,6 +89,15 @@ app.get ('/api/service/:user_id/:service_id?', routes.api.service.read);
 app.put ('/api/service/:user_id/:service_id', routes.api.service.update);
 app.del ('/api/service/:user_id/:service_id', routes.api.service.delete);
 
+// widgets api
+app.get ('/api/widgets/:user_id', routes.api.widgets.read);
+
+// single widget api
+app.post('/api/widget/:user_id', routes.api.widget.create);
+app.get ('/api/widget/:user_id/:widget_id?', routes.api.widget.read);
+app.put ('/api/widget/:user_id/:widget_id', routes.api.widget.update);
+app.del ('/api/widget/:user_id/:widget_id', routes.api.widget.delete);
+
 // plugins api
 app.get('/api/plugins', routes.api.plugins.read);
 
