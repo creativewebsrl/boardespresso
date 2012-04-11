@@ -5,7 +5,11 @@ module.exports = {
     'plugins' : {
       'read' : function(req,res){
         fs.readdir(GLOB['PLUGINS_PATH'],function(err,files){
-          res.json(_.map(files,function(fileName){return {'name':fileName}; }));
+          res.json(_.map(
+                          _.filter(files, function(fileName){ return fileName!='base' ;} ),
+                          function(fileName){ return {'name':fileName}; }
+                        ) 
+                  );
         });
       }
     },

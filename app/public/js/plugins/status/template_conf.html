@@ -1,70 +1,56 @@
 
-<div class="widget-status conf template">
+<div class="content">
     
-    <form>
-        
-      <span class="error generic"></span>
-    
-      <label>
-        <span class="field">Title</span>
-        <input type="text" name="title" placeholder="the widget's title" value="<%- title %>" />
-        <span class="error title"></span>
-      </label>
-      
-      <fieldset><legend>Data source</legend>
-        
-        <span class="error data_source"></span>
-        
-        <table>
-          <tbody>
-            <tr>
-              <td>
-                <label><input type="radio" name="data_source" value="service_id" checked="<% if (data_source==='service_id') { %>checked<% } %>"></label>
-              </td>
-              <td>
-                <label>
-                  <span class="field">Service id</span>
-                  <input type="text" name="service_id" placeholder="id used by an app on your own server to push updates" value="<%- service_id ? service_id : '' %>" />
-                  <span class="error service_id"></span>
-                </label>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label><input type="radio" name="data_source" value="url" checked="<% if (data_source==='url') { %>checked<% } %>"</label>
-              </td>
-              <td>
-                <ol>
-                  <li>
-                    <label>
-                      <span class="field">Url</span>
-                      <input type="text" name="url" placeholder="address where to take the data from" value="<%- url %>" />
-                    </label>
-                    <span class="error url"></span>
-                  </li>
-                  <li>
-                    <label>
-                      <span class="field">Poll frequency</span>
-                      <input type="text" name="poll_frequency" placeholder="how often to read the url" value="<%- poll_frequency %>" />
-                      <span class="error poll_frequency"></span>
-                    </label>
-                  </li>
-                </ol>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        
+    <ul>
+      <li>
         <label>
-          <span class="field">Timeout (seconds)</span>
-          <input type="text" name="timeout" placeholder="maximum waiting time" value="<%- timeout %>" />
-          <span class="error timeout"></span>
+            <span class="field">Show text value</span>
+            <input type="checkbox" name="show_text_value" placeholder="Show a label for that level" checked="<% if (jsonModel.show_text_value) { %>checked<% } %>"/>
+            <span class="error show_text_value"></span>
         </label>
-      
-      </fieldset>
-      
-      <input type="submit" />
-      
-    </form>
+      </li>
+      <li>
+        <label>
+            <span class="field">Show visual alarm</span>
+            <input type="checkbox" name="show_visual_alarm" placeholder="Show an icon for that level" checked="<% if (jsonModel.show_visual_alarm) { %>checked<% } %>" />
+            <span class="error show_visual_alarm"></span>
+        </label>
+      </li>
+      <li>
+        <label>
+            <span class="field">Show direction arrow</span>
+            <input type="checkbox" name="show_direction" placeholder="Show an arrow to know the progression" checked="<% if (jsonModel.show_direction) { %>checked<% } %>" />
+            <span class="error show_direction"></span>
+        </label>
+      </li>
+      <li>
+        <label>
+            <span class="field">Treshold warning</span>
+            <input type="number" name="treshold_warn" placeholder="After this value we enter warning mode" value="<% if (jsonModel.treshold_warn!==null) { %><%- jsonModel.treshold_warn %><% } %>" />
+            <span class="error treshold_warn"></span>
+        </label>
+      </li>
+      <li>
+        <label>
+            <span class="field">Treshold alert</span>
+            <input type="number" name="treshold_alarm" placeholder="After this value we enter alert mode" value="<% if (jsonModel.treshold_alarm!==null) { %><%- jsonModel.treshold_alarm %><% } %>"/>
+            <span class="error treshold_alarm"></span>
+        </label>
+      </li>
+      <li>
+        <label>
+            <span class="field">Minimum value</span>
+            <input type="text" name="min_value" placeholder="Minimum value or -inf" value="<% if (jsonModel.max_value!==null) { %><%- jsonModel.max_value %><% } %>" />
+            <span class="error min_value"></span>
+        </label>
+      </li>
+      <li>
+        <label>
+            <span class="field">Maximum value</span>
+            <input type="text" name="max_value" placeholder="Maximum value or +inf" value="<% if (jsonModel.min_value!==null) { %><%- jsonModel.min_value %><% } %>" />
+            <span class="error max_value"></span>
+        </label>
+      </li>
+    </ul>
     
 </div>

@@ -1,7 +1,7 @@
 
 
-define(['jquery','underscore','backbone','modelbinding','main'],
-    function($,_,Backbone,ModelBinding,main){
+define(['jquery','underscore','backbone','modelbinding','main','text!plugins/base/template_widget.html','text!plugins/base/template_conf.html'],
+    function($,_,Backbone,ModelBinding,main,templateWidget,templateConf){
       
       var Validator = {
         isNumber : function(value) {
@@ -338,11 +338,6 @@ define(['jquery','underscore','backbone','modelbinding','main'],
               "click button.delete" : "doDelete"
           },
           
-          formInputNames : [
-              'title','service_id','url','poll_frequency',
-              'timeout','data_source'
-          ],
-          
           initialize: function(opts){
               this.template = _.template(opts['template']);
               
@@ -356,8 +351,15 @@ define(['jquery','underscore','backbone','modelbinding','main'],
               //this.model.on('change', this.render);
           },
           render: function(){
-              this.$el.html('');
-              this.$el.append(this.doRender());
+              
+              this.$el.html(_.template(templateConf,{
+                'model' : this.model,
+                'jsonModel' : this.model.toJSON(),
+                'content' : this.template({
+                  'model' : this.model,
+                  'jsonModel' : this.model.toJSON()
+                })
+              }));
               
               //uncomment to use Backbone.ModelBinding to listen to model changes
               //ModelBinding.bind(this, { all: "name" });
@@ -386,9 +388,18 @@ define(['jquery','underscore','backbone','modelbinding','main'],
           },
           doGetFormData: function(form){
             var data = {};
-            _.each( this.formInputNames
+            
+            var formInputNames = _.unique(_.filter(_.map($(form).find('input,textarea'),
+                                                         function(el){ return el.name }
+                                                         ),
+                                                   function(el){return el!="";}
+                                                  )
+                                         );
+            
+            _.each( formInputNames
                    ,function(key){
-                      if (! this[key].tagName ) { // can't use $.isArray, it's an array like object
+                    
+                      if (! this[key].tagName ) { // can't use $.isArray, it's an array like object (e.g. a radio)
                         for(var i=0,il=this[key].length;i<il;i++){
                           if (this[key][i].checked) {
                             data[key] = this[key][i].value;
@@ -398,6 +409,7 @@ define(['jquery','underscore','backbone','modelbinding','main'],
                       } else data[key] = this[key].value;
                     }
                    ,form);
+            
             return data;
           },
           onSave: function(form){

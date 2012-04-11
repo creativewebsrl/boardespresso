@@ -1,0 +1,77 @@
+
+<div class="widget-status conf template">
+    
+    <form>
+      
+      <span class="error generic"></span>
+    
+      <label>
+        <span class="field">Title</span>
+        <input type="text" name="title" placeholder="the widget's title" value="<%- jsonModel.title %>" />
+        <span class="error title"></span>
+      </label>
+      
+      <fieldset><legend>Data source</legend>
+        
+        <span class="error data_source"></span>
+        
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <label><input type="radio" name="data_source" value="service_id" checked="<% if (jsonModel.data_source==='service_id') { %>checked<% } %>"></label>
+              </td>
+              <td>
+                <label>
+                  <span class="field">Service id</span>
+                  <input type="text" name="service_id" placeholder="id used by an app on your own server to push updates" value="<%- jsonModel.service_id ? service_id : '' %>" />
+                  <span class="error service_id"></span>
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label><input type="radio" name="data_source" value="url" checked="<% if (jsonModel.data_source==='url') { %>checked<% } %>"</label>
+              </td>
+              <td>
+                <ol>
+                  <li>
+                    <label>
+                      <span class="field">Url</span>
+                      <input type="text" name="url" placeholder="address where to take the data from" value="<%- jsonModel.url %>" />
+                    </label>
+                    <span class="error url"></span>
+                  </li>
+                  <li>
+                    <label>
+                      <span class="field">Poll frequency</span>
+                      <input type="text" name="poll_frequency" placeholder="how often to read the url" value="<%- jsonModel.poll_frequency %>" />
+                      <span class="error poll_frequency"></span>
+                    </label>
+                  </li>
+                </ol>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <label>
+          <span class="field">Timeout (seconds)</span>
+          <input type="text" name="timeout" placeholder="maximum waiting time" value="<%- jsonModel.timeout %>" />
+          <span class="error timeout"></span>
+        </label>
+      
+      </fieldset>
+      
+      
+      <% if (content) { %>
+      <div class="custom-conf">
+        <%= content %>
+      </div>
+      <% } %>
+      
+      <input type="submit" />
+      
+    </form>
+    
+</div>

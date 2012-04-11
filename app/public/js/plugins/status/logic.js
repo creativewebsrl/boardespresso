@@ -1,9 +1,9 @@
 
-define(['jquery','underscore','backbone','modelbinding','widget'],
-    function($,_,Backbone, ModelBinding,boardWidget){
+define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
+    function($,_,Backbone, ModelBinding,basePlugin){
       
-      var StatusModel = boardWidget.Model.extend({
-          defaults : _.extend({},boardWidget.Model.prototype.defaults,{
+      var StatusModel = basePlugin.Model.extend({
+          defaults : _.extend({},basePlugin.Model.prototype.defaults,{
               
               type: 'status',
               
@@ -19,7 +19,7 @@ define(['jquery','underscore','backbone','modelbinding','widget'],
           })
       });
       
-      var StatusView = boardWidget.StandardView.extend({
+      var StatusView = basePlugin.StandardView.extend({
           doRender: function(){
               
               var curr_value = this.model.getCurrentValue(),
@@ -38,10 +38,12 @@ define(['jquery','underscore','backbone','modelbinding','widget'],
           }
       });
       
-      var StatusPreferencesView = boardWidget.PreferencesView.extend({
+      var StatusPreferencesView = basePlugin.PreferencesView.extend({
           doRender: function(){
-              var jsonModel = this.model.toJSON();
-              var html = this.template(jsonModel);
+              var html = this.template({
+                model : this.model,
+                jsonModel : this.model.toJSON()
+              });
               return html;
           }
       });
@@ -103,7 +105,7 @@ define(['jquery','underscore','backbone','modelbinding','widget'],
                 this._getTemplate(cb,'template_widget.html');
               },
               '_getConfTemplate' : function(cb){
-                this._getTemplate(cb,'templates_conf.html');
+                this._getTemplate(cb,'template_conf.html');
               },
               '_getTemplate' : function(cb,fileName){
                 // XXX should I cache the results (and give a way to flush it) ?

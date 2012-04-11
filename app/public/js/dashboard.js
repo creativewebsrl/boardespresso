@@ -3,8 +3,8 @@
 if (!window.dboard) window.dboard = {};
 if (!window.dboard.plugins) window.dboard.plugins = {};
 
-define(['jquery','use!jss','jquery-ui','plugins','widget'],
-  function($,jss,jqueryUi,plugins,boardWidget){
+define(['jquery','use!jss','jquery-ui','plugins','plugins/base/logic'],
+  function($,jss,jqueryUi,plugins,basePlugin){
     
     /**
      * Make a grid at elemOrSelector
@@ -237,7 +237,7 @@ define(['jquery','use!jss','jquery-ui','plugins','widget'],
       });
       
       // Load user widgets
-      boardWidget.getUserWidgets(function(list_widgets){
+      basePlugin.getUserWidgets(function(list_widgets){
         
         _.each(list_widgets,function(elem,idx){
           
