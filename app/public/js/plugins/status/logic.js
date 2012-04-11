@@ -21,17 +21,15 @@ define(['jquery','underscore','backbone','modelbinding','widget'],
       
       var StatusView = boardWidget.StandardView.extend({
           doRender: function(){
-              var jsonModel = this.model.toJSON();
               
-              var value = this.model.get('value'),
-                  curr_value = this.model.getCurrentValue(),
+              var curr_value = this.model.getCurrentValue(),
                   prev_value = this.model.getPreviousValue()
-                  
                   ;
               
               var html = this.template({
-                  'status': jsonModel,
-                  'alarmClass' : value > this.model.get('treshold_alarm') ? 'red' : 'green',
+                  'model' : this.model,
+                  'jsonModel': this.model.toJSON(),
+                  'alarmClass' : curr_value > this.model.get('treshold_alarm') ? 'red' : 'green',
                   'valueDirection' : curr_value===prev_value
                                      ? 'equal' : (curr_value > prev_value ? 'greater' : 'lesser')
               });

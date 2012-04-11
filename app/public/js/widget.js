@@ -152,8 +152,7 @@ define(['jquery','underscore','backbone','modelbinding','main'],
               _id : null,
               title : "widget title",
               
-              value : null,
-              last_values : [null],
+              last_values : [],
               keep_last_n_values : 2,
               
               service_id: null,
@@ -190,7 +189,8 @@ define(['jquery','underscore','backbone','modelbinding','main'],
               });
           },
           getCurrentValue : function(){
-              return this.get('value');
+              var part = this.get('last_values').slice(-1);
+              return part.length ? part[0] : null;
           },
           getPreviousValue : function(){
               var last_values = this.get('last_values');
@@ -199,19 +199,21 @@ define(['jquery','underscore','backbone','modelbinding','main'],
           },
           set: function(attributes, options) {
               // update the values' history, dropping the oldest if needed
-              if (attributes['value'] !== undefined && !attributes['last_values']) {
-                  var curr_value = this.get('value'),
-                      last_values = this.get('last_values');
+              if (attributes['value'] !== undefined){
+                
+                if (!attributes['last_values']) {
+                  var last_values = this.get('last_values');
                   
-                  // save in attributes['value'] to pass it later to the parent method
                   attributes['value'] = parseFloat(attributes['value']);
                   
                   last_values.push(attributes['value']);
                   if (last_values.length > this.get('keep_last_n_values')) {
-                      last_values.splice(0,1);
+                      last_values.splice(0,1); // FIFO queue (drop the oldest)
                   }
+                }
+                
+                delete(attributes['value']);
               }
-              
               return Backbone.Model.prototype.set.call(this, attributes, options);
           },
           validate : function(attrs){
