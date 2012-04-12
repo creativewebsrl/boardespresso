@@ -4,27 +4,6 @@
     <ul>
       <li>
         <label>
-            <span class="field">Show text value</span>
-            <input type="checkbox" name="show_text_value" placeholder="Show a label for that level" <% if (jsonModel.show_text_value) { %>checked="checked"<% } %> />
-            <span class="error show_text_value"></span>
-        </label>
-      </li>
-      <li>
-        <label>
-            <span class="field">Show visual alarm</span>
-            <input type="checkbox" name="show_visual_alarm" placeholder="Show an icon for that level" <% if (jsonModel.show_visual_alarm) { %>checked="checked"<% } %> />
-            <span class="error show_visual_alarm"></span>
-        </label>
-      </li>
-      <li>
-        <label>
-            <span class="field">Show direction arrow</span>
-            <input type="checkbox" name="show_direction" placeholder="Show an arrow to know the progression" <% if (jsonModel.show_direction) { %>checked="checked"<% } %> />
-            <span class="error show_direction"></span>
-        </label>
-      </li>
-      <li>
-        <label>
             <span class="field">Treshold warning</span>
             <input type="number" name="treshold_warn" placeholder="After this value we enter warning mode" value="<% if (jsonModel.treshold_warn!==null) { %><%- jsonModel.treshold_warn %><% } %>" />
             <span class="error treshold_warn"></span>
@@ -39,16 +18,9 @@
       </li>
       <li>
         <label>
-            <span class="field">Minimum value</span>
-            <input type="text" name="min_value" placeholder="Minimum value or -inf" value="<% if (jsonModel.max_value!==null) { %><%- jsonModel.max_value %><% } %>" />
-            <span class="error min_value"></span>
-        </label>
-      </li>
-      <li>
-        <label>
-            <span class="field">Maximum value</span>
-            <input type="text" name="max_value" placeholder="Maximum value or +inf" value="<% if (jsonModel.min_value!==null) { %><%- jsonModel.min_value %><% } %>" />
-            <span class="error max_value"></span>
+            <span class="field">Show text value</span>
+            <input type="checkbox" name="show_text_value" placeholder="Show a label for that level" <% if (jsonModel.show_text_value) { %>checked="checked"<% } %> />
+            <span class="error show_text_value"></span>
         </label>
       </li>
     </ul>

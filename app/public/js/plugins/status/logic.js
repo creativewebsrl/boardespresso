@@ -12,19 +12,14 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
               type: 'status',
               
               show_text_value : true,
-              show_visual_alarm : true,
-              show_direction : true,
               
               treshold_warn : null,
-              treshold_alert : 100,
-              
-              min_value : 0,
-              max_value : 100
+              treshold_alert : 100
           }),
           set : function(attributes,options){
             
             // XXX need an automatic converter/validator
-            var numberKeys = ['treshold_warn','treshold_alert','min_value','max_value'],
+            var numberKeys = ['treshold_warn','treshold_alert'],
                 key = null;
             
             for (var i=0,il=numberKeys.length;i<il;i++)
