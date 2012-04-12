@@ -1,0 +1,5 @@
+
+<div class="content">
+    <p class="dataRow <%- delta>0 ? 'positive' : (delta===0 ? 'equal' : 'negative') %>"><%- model.getCurrentValue()!==null ? model.getCurrentValue() : 'Empty' %></p>
+    <p class="percentage"><i class="<%- delta>0 ? 'icon-arrow-up' : (delta===0 ? 'icon-repeat' : 'icon-arrow-down') %>"></i> <%- delta %>%</p>
+</div>
