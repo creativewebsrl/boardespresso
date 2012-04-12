@@ -1,9 +1,20 @@
-<div class="widget-<%- model.get('type') %> widget template">
+
+<div class="widget-general widget-<%- jsonModel.type %>">
+  
+  <div class="titleBox">
+    <div class="title"><p><%- jsonModel.title %></p></div>
+    <a class="settings" href="#_"><i class="icon-cog"></i></a>
+  </div>
+  
+  <div class="dataContainer">
     
     <% if (content) { %>
-      <%= content %>">
+      <%= content %>
     <% } else { %>
       No content added
     <% } %>
-    
+  
+  </div>
+  
 </div>
+

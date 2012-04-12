@@ -124,10 +124,16 @@ define([
       }
     }
     
+    function getUserWidgets(user_id,cb){
+        $.get('/api/widgets/'+user_id)
+        .done(cb);
+    }
+    
     return {
         'makePluginsList' : makePluginsList,
         'getPlugin' : getPlugin,
-        'getPlugins' : getPlugins
+        'getPlugins' : getPlugins,
+        'getUserWidgets' : getUserWidgets
     };
     
 });

@@ -3,8 +3,8 @@
 if (!window.dboard) window.dboard = {};
 if (!window.dboard.plugins) window.dboard.plugins = {};
 
-define(['jquery','use!jss','jquery-ui','plugins','plugins/base/logic'],
-  function($,jss,jqueryUi,plugins,basePlugin){
+define(['jquery','use!jss','jquery-ui','plugins','main'],
+  function($,jss,jqueryUi,plugins,main){
     
     /**
      * Make a grid at elemOrSelector
@@ -205,7 +205,6 @@ define(['jquery','use!jss','jquery-ui','plugins','plugins/base/logic'],
     }
     
     function addPluginToDashboard($dboard,pluginInstance){
-      console.log('add plug to dashboard',pluginInstance);
       $dboard.trigger('insert-widget',[pluginInstance]);
     }
     
@@ -236,8 +235,7 @@ define(['jquery','use!jss','jquery-ui','plugins','plugins/base/logic'],
         });
       });
       
-      // Load user widgets
-      basePlugin.getUserWidgets(function(list_widgets){
+      plugins.getUserWidgets(main.getUserId(),function(list_widgets){
         
         _.each(list_widgets,function(elem,idx){
           

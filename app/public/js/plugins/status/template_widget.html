@@ -1,16 +1,13 @@
 
-<div class="widget-status widget template">
+<div class="content">
     
-    <% if (jsonModel.show_visual_alarm) { %>
-        <div class="visual-alarm <%- alarmClass %>"></div>
-    <% } %>
-    
-    <% if (jsonModel.show_text_value) { %>
-        <div class="text-value"><% if (model.getCurrentValue()!==null){ %><%- status.getCurrentValue() %><% } %></div>
-    <% } %>
-    
-    <% if (jsonModel.show_direction) { %>
-        <div class="value-direction <%- valueDirection %>"><%- valueDirection %></div>
-    <% } %>
+    <div class="ledWrapper <%- alarmClass %>">
+      <div class="led">
+        <span></span>
+      </led>
+      <% if (jsonModel.show_text_value) { %>
+      <p><%- alarmClass.toUpperCase() %></p>
+      <% } %>
+    </div>
     
 </div>

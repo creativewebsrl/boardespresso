@@ -296,14 +296,12 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
               
           },
           render: function(){
-              this.$el.html('');
               
-              var titleBar = _.template('<div><div class="title"><%= title %></div><div class="confButton">x</div></div>',{
-                'title' : this.model.get('title')
-              });
-              
-              this.$el.append(titleBar);
-              this.$el.append(this.doRender());
+              this.$el.html(_.template(templateWidget,{
+                'model' : this.model,
+                'jsonModel' : this.model.toJSON(),
+                'content' : $(this.doRender(this.template)).html()
+              }));
               
               var that = this;
               $('.confButton',this.$el).click(function(){
@@ -315,7 +313,7 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
               
               return this;
           },
-          doRender: function(){
+          doRender: function(template){
               return '';
           },
           remove: function(){
@@ -466,13 +464,84 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
           }
       });
       
+      
+      function makeInstance(Model,WidgetView,PreferencesView){
+          
+          var plugin = {
+              'name' : Model.prototype.defaults.type,
+              'init' : function(cb,data){
+                if (!data) data = {};
+                
+                this.confModel = new Model(data);
+                this.view = null;
+                this.confView = null;
+                
+                var that = this;
+                
+                this._getWidgetTemplate(function(templateHtml){
+                  
+                  this.view = new WidgetView({
+                      'model'    : this.confModel,
+                      'template' : templateHtml
+                  });
+                  
+                  _.extend(this.view , Backbone.Events);
+                  
+                  this.view.render();
+                  
+                  this._getConfTemplate(function(templateHtml){
+                    
+                    var confView = this.confView = new PreferencesView({
+                        'name'     : this.name,
+                        'model'    : this.confModel,
+                        'template' : templateHtml
+                    });
+                    
+                    this.view.on('conf-request',function(){
+                      confView.render();
+                      confView.$el.dialog({
+                        title : that.name + ' configuration',
+                        autoOpen: true
+                      });
+                    });
+                    
+                    confView.on('preferences-saved',function(success){
+                      confView.remove();
+                    });
+                    
+                    cb.call(this,plugin);
+                  });
+                  
+                });
+                
+              },
+              'getElement' : function(){
+                return this.view.$el;
+              },
+              '_getWidgetTemplate' : function(cb){
+                this._getTemplate(cb,'template_widget.html');
+              },
+              '_getConfTemplate' : function(cb){
+                this._getTemplate(cb,'template_conf.html');
+              },
+              '_getTemplate' : function(cb,fileName){
+                // XXX should I cache the results (and give a way to flush it) ?
+                var that = this;
+                require(['text!plugins/'+this.name+'/'+fileName],function(data){
+                    cb.call(that,data);
+                });
+              }
+          };
+          
+          return plugin;
+      }
+      
       return {
         'Model' : WidgetModel,
-        'StandardView' : StandardView,
+        'WidgetView' : StandardView,
         'PreferencesView' : PreferencesView,
-        'getUserWidgets' : function(cb){
-            $.get('/api/widgets/'+main.getUserId())
-            .done(cb);
+        'make' : function() {
+          return makeInstance(this.Model,this.WidgetView,this.PreferencesView);
         }
       };
 });
