@@ -406,7 +406,13 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
                             break;
                           }
                         }
-                      } else data[key] = this[key].value;
+                      }
+                      else if (this[key].type==='checkbox') {
+                        data[key] = this[key].checked;
+                      }
+                      else {
+                        data[key] = this[key].value;
+                      }
                     }
                    ,form);
             
