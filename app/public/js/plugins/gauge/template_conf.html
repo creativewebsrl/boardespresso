@@ -1,0 +1,21 @@
+
+<div class="content">
+    
+    <ul>
+      <li>
+        <label>
+            <span class="field">Treshold warning</span>
+            <input type="number" name="treshold_warn" placeholder="After this value we enter warning mode" value="<% if (jsonModel.treshold_warn!==null) { %><%- jsonModel.treshold_warn %><% } %>" />
+            <span class="error treshold_warn"></span>
+        </label>
+      </li>
+      <li>
+        <label>
+            <span class="field">Treshold alert</span>
+            <input type="number" name="treshold_alert" placeholder="After this value we enter alert mode" value="<% if (jsonModel.treshold_alert!==null) { %><%- jsonModel.treshold_alert %><% } %>"/>
+            <span class="error treshold_alert"></span>
+        </label>
+      </li>
+    </ul>
+    
+</div>
