@@ -304,7 +304,7 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
               }));
               
               var that = this;
-              $('.confButton',this.$el).click(function(){
+              $('.settings',this.$el).click(function(){
                 that.trigger('conf-request');
               });
               
