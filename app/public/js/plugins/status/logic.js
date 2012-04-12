@@ -2,6 +2,10 @@
 define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
     function($,_,Backbone, ModelBinding,basePlugin){
       
+      function strEndsWith(sourceStr,endStr) {
+        return sourceStr.slice(-(endStr.length))===endStr;
+      }
+      
       var StatusModel = basePlugin.Model.extend({
           defaults : _.extend({},basePlugin.Model.prototype.defaults,{
               
@@ -12,11 +16,47 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
               show_direction : true,
               
               treshold_warn : null,
-              treshold_alarm : 100,
+              treshold_alert : 100,
               
               min_value : 0,
-              max_value : Infinity
-          })
+              max_value : 100
+          }),
+          set : function(attributes,options){
+            
+            // XXX need an automatic converter/validator
+            var numberKeys = ['treshold_warn','treshold_alert','min_value','max_value'],
+                key = null;
+            
+            for (var i=0,il=numberKeys.length;i<il;i++)
+            {
+                
+                key = numberKeys[i];
+                
+                if (typeof attributes[key]==='string') {
+                    
+                    attributes[key] = $.trim(attributes[key]).toLowerCase();
+                    
+                    if (attributes[key]==='') {
+                        attributes[key] = null;
+                    }
+                    /* // cannot serialize Infinity as JSON
+                    else if (/^[+]?inf(inity)?$/i.test(attributes[key])) {
+                        attributes[key] = Infinity;
+                        
+                    } else if (/^[-]?inf(inity)?$/i.test(attributes[key])) {
+                        attributes[key] = -Infinity;
+                    }
+                    */
+                    else {
+                        attributes[key] = parseFloat(attributes[key]);
+                    }
+                }
+            }
+            
+            
+            
+            return Backbone.Model.prototype.set.call(this, attributes, options);
+          }
       });
       
       var StatusView = basePlugin.StandardView.extend({
@@ -29,7 +69,7 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
               var html = this.template({
                   'model' : this.model,
                   'jsonModel': this.model.toJSON(),
-                  'alarmClass' : curr_value > this.model.get('treshold_alarm') ? 'red' : 'green',
+                  'alarmClass' : curr_value > this.model.get('treshold_alert') ? 'red' : 'green',
                   'valueDirection' : curr_value===prev_value
                                      ? 'equal' : (curr_value > prev_value ? 'greater' : 'lesser')
               });

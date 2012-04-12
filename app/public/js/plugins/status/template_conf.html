@@ -5,21 +5,21 @@
       <li>
         <label>
             <span class="field">Show text value</span>
-            <input type="checkbox" name="show_text_value" placeholder="Show a label for that level" checked="<% if (jsonModel.show_text_value) { %>checked<% } %>"/>
+            <input type="checkbox" name="show_text_value" placeholder="Show a label for that level" <% if (jsonModel.show_text_value) { %>checked="checked"<% } %> />
             <span class="error show_text_value"></span>
         </label>
       </li>
       <li>
         <label>
             <span class="field">Show visual alarm</span>
-            <input type="checkbox" name="show_visual_alarm" placeholder="Show an icon for that level" checked="<% if (jsonModel.show_visual_alarm) { %>checked<% } %>" />
+            <input type="checkbox" name="show_visual_alarm" placeholder="Show an icon for that level" <% if (jsonModel.show_visual_alarm) { %>checked="checked"<% } %> />
             <span class="error show_visual_alarm"></span>
         </label>
       </li>
       <li>
         <label>
             <span class="field">Show direction arrow</span>
-            <input type="checkbox" name="show_direction" placeholder="Show an arrow to know the progression" checked="<% if (jsonModel.show_direction) { %>checked<% } %>" />
+            <input type="checkbox" name="show_direction" placeholder="Show an arrow to know the progression" <% if (jsonModel.show_direction) { %>checked="checked"<% } %> />
             <span class="error show_direction"></span>
         </label>
       </li>
@@ -33,8 +33,8 @@
       <li>
         <label>
             <span class="field">Treshold alert</span>
-            <input type="number" name="treshold_alarm" placeholder="After this value we enter alert mode" value="<% if (jsonModel.treshold_alarm!==null) { %><%- jsonModel.treshold_alarm %><% } %>"/>
-            <span class="error treshold_alarm"></span>
+            <input type="number" name="treshold_alert" placeholder="After this value we enter alert mode" value="<% if (jsonModel.treshold_alert!==null) { %><%- jsonModel.treshold_alert %><% } %>"/>
+            <span class="error treshold_alert"></span>
         </label>
       </li>
       <li>
