@@ -218,6 +218,7 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
                   if (last_values.length > this.get('keep_last_n_values')) {
                       last_values.splice(0,1); // FIFO queue (drop the oldest)
                   }
+                  attributes['last_values'] = last_values;
                 }
                 
                 delete(attributes['value']);
@@ -225,7 +226,7 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
               
               if (this.hasChanged('service_id') || this.hasChanged('data_source')) this._rebind_socketio();
               
-              return Backbone.Model.prototype.set.call(this, attributes, options);
+              return WidgetModel.__super__.set.call(this, attributes, options);
           },
           validate : function(attrs){
             var errors = {},
@@ -298,12 +299,11 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
           initialize: function(opts){
               this.template = _.template(opts['template']);
               
-              _.bindAll(this, 'render', 'remove','doDelete');
+              _.bindAll(this, 'render', 'remove','doDelete','doRender','doUpdateRender');
               
               this.model.on('destroy', this.remove);
               
               //comment to use Backbone.ModelBinding to listen to model changes
-              this.model.on('change', this.render);
               
           },
           render: function(){
@@ -311,21 +311,26 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
               this.$el.html(_.template(templateWidget,{
                 'model' : this.model,
                 'jsonModel' : this.model.toJSON(),
-                'content' : $(this.doRender(this.template)).html()
+                'content' : $(this.doRender()).html()
               }));
               
-              var that = this;
-              $('.settings',this.$el).click(function(){
-                that.trigger('conf-request');
-              });
+              $('.settings',this.$el).click(_.bind(function(){
+                this.trigger('conf-request');
+              },this));
+              
+              this.model.on('change', this.doUpdateRender);
+              this.model.trigger('change');
               
               //uncomment to use Backbone.ModelBinding to listen to model changes
-              //Backbone.ModelBinding.bind(this);
+              //ModelBinding.bind(this);
               
               return this;
           },
-          doRender: function(template){
-              return '';
+          doRender : function(attrs){
+              return this.template(attrs || {});
+          },
+          doUpdateRender: function(){
+            this.doRender();
           },
           remove: function(){
               this.model.off('change',this.render);

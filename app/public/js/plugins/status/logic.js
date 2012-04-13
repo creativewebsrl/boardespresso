@@ -48,13 +48,31 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
                 }
             }
             
-            
-            
-            return Backbone.Model.prototype.set.call(this, attributes, options);
+            return StatusModel.__super__.set.call(this, attributes, options);
           }
       });
       
       var StatusView = parentPlugin.WidgetView.extend({
+          getAlarmClass : function(){
+            var curr_value = this.model.getCurrentValue();
+            
+            return curr_value > this.model.get('treshold_alert') ?
+                               'error' :
+                               (curr_value > this.model.get('treshold_warn') ?
+                                'warning' :
+                                'ok'
+                               );
+          },
+          getDelta : function(){
+            var curr_value = this.model.getCurrentValue();
+            
+            return curr_value===null ?
+                          0 :
+                          (this.model.getPreviousValue()===null ?
+                           0 :
+                           curr_value*100/this.model.getPreviousValue()-100
+                          );
+          },
           doRender: function(){
               
               var curr_value = this.model.getCurrentValue();
@@ -62,18 +80,8 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
               return this.template({
                 'model' : this.model,
                 'jsonModel' : this.model.toJSON(),
-                'alarmClass' : curr_value > this.model.get('treshold_alert') ?
-                               'error' :
-                               (curr_value > this.model.get('treshold_warn') ?
-                                'warning' :
-                                'ok'
-                              ),
-                'delta' : curr_value===null ?
-                          0 :
-                          (this.model.getPreviousValue()===null ?
-                           0 :
-                           curr_value*100/this.model.getPreviousValue()-100
-                          )
+                'alarmClass' : this.getAlarmClass(),
+                'delta' : this.getDelta()
               });
           }
       });
