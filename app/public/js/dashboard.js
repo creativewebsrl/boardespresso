@@ -31,7 +31,8 @@ define(['jquery','use!jss','jquery-ui','plugins','main'],
             heightRatio : 1,
             gutterAmp : 10,  // % of square side, is the distance between squares
             boxesDraggable : true,
-            dragHandle : '.drag-handle'
+            dragHandle : '.drag-handle',
+            fontRatio : 1/36 // base font size in pixels will be height * fontRatio
             
         },options || {});
         
@@ -86,7 +87,7 @@ define(['jquery','use!jss','jquery-ui','plugins','main'],
             $grid.height(height);
             $grid.width(width);
             
-            $grid.css('position','relative');
+            $grid.css({'position':'relative','font-size':(height*o.fontRatio)+'px'});
             
             jss('.g-box', {
                 position:'absolute'
