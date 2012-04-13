@@ -74,7 +74,6 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
                           );
           },
           doRender: function(){
-              
               var curr_value = this.model.getCurrentValue();
               
               return this.template({
@@ -83,6 +82,17 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
                 'alarmClass' : this.getAlarmClass(),
                 'delta' : this.getDelta()
               });
+          },
+          doUpdateRender: function(){
+              var alarmClass = this.getAlarmClass();
+              
+              // update label
+              this.$('.ledWrapper .label').html(this.model.get('show_text_value') ? alarmClass.toUpperCase() : '');
+              
+              // update icon
+              this.$('.ledWrapper')
+              .removeClass('ok warning error')
+              .addClass(alarmClass);
           }
       });
       

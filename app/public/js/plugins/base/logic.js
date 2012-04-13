@@ -297,7 +297,7 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
           },
           
           initialize: function(opts){
-              this.template = _.template(opts['template']);
+              this.template = _.bind(_.template(opts['template']),this);
               
               _.bindAll(this, 'render', 'remove','doDelete','doRender','doUpdateRender');
               
@@ -335,6 +335,7 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
           remove: function(){
               this.model.off('change',this.render);
               this.model.off('destroy',this.remove);
+              this.model.off('change', this.doUpdateRender);
               Backbone.ModelBinding.unbind(this);
               
               this.$el.remove();
@@ -494,7 +495,7 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
                 
                 var that = this;
                 
-                this._getWidgetTemplate(function(templateHtml){
+                this._getWidgetTemplate(_.bind(function(templateHtml){
                   
                   this.view = new WidgetView({
                       'model'    : this.confModel,
@@ -528,7 +529,7 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
                     cb.call(this,plugin);
                   });
                   
-                });
+                },this));
                 
               },
               'getElement' : function(){
