@@ -62,9 +62,15 @@ p{margin:0;}
 
 .positive{
   color:@green !important;
+  *{
+    color:@green !important;
+  }
 }
 .negative{
   color:@pink !important;
+  *{
+    color:@pink !important;
+  }
 }
 
 .widget-general{	  
@@ -250,12 +256,12 @@ p{margin:0;}
 
     &.ledRow{
       @led-size:1em;
-      .border-radius(@led-size/1.5);
+      // .border-radius(@led-size/1.5);
       .box-shadow(inset 0 -@led-size/15 @black);
       text-align:left;
       width:100%;
-      height:@led-size;
-      padding: @led-size*1.5 0;
+      // height:@led-size;
+      padding: @led-size*0.8 0;
       margin: 0;
       border-bottom:@led-size/10 solid rgba(255,255,255,0.3);
 
@@ -263,10 +269,19 @@ p{margin:0;}
         text-transform:none;
         text-align: left;
         display: inline-block;
-        line-height:1em;
-        margin:0 0 0 1em;
+        line-height:@led-size;
+        margin:0 0 0 @led-size;
         font-size: @led-size;
         height:1em;
+        font-weight:bold;
+        width:85%;
+        span{
+          font-weight:normal;
+          font-size:@led-size*0.8;
+          margin-top:@led-size*0.5;
+          display:block;
+          background:none !important;
+        }
       }
       .led{
         font-size:@font-size;
@@ -394,7 +409,7 @@ p{margin:0;}
     }
   }
 
-  [data-kind="calendar"]{
+  .calendar{
     padding:0;
   }
   /******** List ************/
@@ -416,6 +431,7 @@ p{margin:0;}
       border:@itemSize/4 solid @black;
       background:@lightGray;
       overflow: hidden;
+      margin:0 auto;
       img{
         width:150%;
         margin-left:-25%;
@@ -442,7 +458,7 @@ p{margin:0;}
       }
       .data{
         font-size:@itemSize/1.4;
-        color:@mediumGray;
+        color:lighten(@mediumGray,15%);
       }
     }
     &:nth-child(2n){
@@ -503,9 +519,15 @@ p{margin:0;}
   
   /******** Level ************/
   @itemSize:1em;
-  [data-kind="level"]{
+  .levelContainer{
     padding:0;
     position:relative;
+      .positive > div > div{
+        background:@green;
+      }
+      .negative > div > div{
+        background:@pink;
+      }
   }
   .levelMask{
     position:absolute;
@@ -531,12 +553,6 @@ p{margin:0;}
       left:0;
       background:@blue;
       z-index:999;
-      &.positive{
-        background:@green;
-      }
-      &.negative{
-        background:@pink;
-      }
     }
   }
   
