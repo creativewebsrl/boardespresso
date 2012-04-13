@@ -19,26 +19,26 @@
           <tbody>
             <tr>
               <td>
-                <label><input type="radio" name="data_source" value="service_id" checked="<% if (jsonModel.data_source==='service_id') { %>checked<% } %>"></label>
+                <label><input type="radio" name="data_source" value="service_id" <% if (jsonModel.data_source==='service_id') { %>checked="checked"<% } %> /></label>
               </td>
               <td>
                 <label>
                   <span class="field">Service id</span>
-                  <input type="text" name="service_id" placeholder="id used by an app on your own server to push updates" value="<%- jsonModel.service_id ? service_id : '' %>" />
+                  <input type="text" name="service_id" placeholder="id used by an app on your own server to push updates" value="<%- jsonModel.service_id ? jsonModel.service_id : '' %>" />
                   <span class="error service_id"></span>
                 </label>
               </td>
             </tr>
             <tr>
               <td>
-                <label><input type="radio" name="data_source" value="url" checked="<% if (jsonModel.data_source==='url') { %>checked<% } %>"</label>
+                <label><input type="radio" name="data_source" value="url" <% if (jsonModel.data_source==='url') { %>checked="checked"<% } %> /></label>
               </td>
               <td>
                 <ol>
                   <li>
                     <label>
                       <span class="field">Url</span>
-                      <input type="text" name="url" placeholder="address where to take the data from" value="<%- jsonModel.url %>" />
+                      <input type="text" name="url" placeholder="address where to take the data from" value="<%- jsonModel.url!==null ? jsonModel.url : '' %>" />
                     </label>
                     <span class="error url"></span>
                   </li>

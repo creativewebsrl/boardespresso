@@ -177,16 +177,24 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
               return '/api/widget/'+main.getUserId()+(_id ? '/'+_id : '');
           },
           initialize : function(){
-              var that = this;
-              main.getSocket().on('service-update', function(data) {
-                // update the model status without syncing to the server (no love for infinite loops)
-                
-                that.set({
-                  value : data['last_value'],
-                  title : data['desc'],
-                  updated_at : data['updated_at']
-                });
-              });
+            this._on_service_update = _.bind(this._on_service_update,this);
+            this._rebind_socketio();
+          },
+          _on_service_update : function(data){
+            this.set({
+                      value : data['last_value'],
+                      title : data['desc'],
+                      updated_at : data['updated_at']
+                     });
+          },
+          _rebind_socketio : function(){
+            if (this.previous('service_id')) {
+              main.getSocket().removeListener('service-update-'+this.previous('service_id'),this._on_service_update);  
+            }
+            
+            if (this.get('service_id') && this.get('data_source')==='service_id') {
+              main.getSocket().on('service-update-'+this.get('service_id'), this._on_service_update);
+            }
           },
           getCurrentValue : function(){
               var part = this.get('last_values').slice(-1);
@@ -214,6 +222,9 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
                 
                 delete(attributes['value']);
               }
+              
+              if (this.hasChanged('service_id') || this.hasChanged('data_source')) this._rebind_socketio();
+              
               return Backbone.Model.prototype.set.call(this, attributes, options);
           },
           validate : function(attrs){

@@ -144,7 +144,7 @@ module.exports = {
                             
                             if (!result) res.send(500);
                             else {
-                                GLOBAL['GLOB']['sio'].sockets.in(user_id).emit('service-update',result);
+                                GLOBAL['GLOB']['sio'].sockets.volatile.in(user_id).emit('service-update-'+service_id,result);
                                 res.json(result);
                             }
                         }
