@@ -179,6 +179,12 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
           initialize : function(){
             this._on_service_update = _.bind(this._on_service_update,this);
             this._rebind_socketio();
+            
+            this.on('change',function(){
+              if (this.hasChanged('service_id') || this.hasChanged('data_source')) {
+                this._rebind_socketio();
+              }
+            });
           },
           _on_service_update : function(data){
             this.set({
@@ -223,8 +229,6 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
                 
                 delete(attributes['value']);
               }
-              
-              if (this.hasChanged('service_id') || this.hasChanged('data_source')) this._rebind_socketio();
               
               return WidgetModel.__super__.set.call(this, attributes, options);
           },
@@ -316,9 +320,15 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
               
               $('.settings',this.$el).click(_.bind(function(){
                 this.trigger('conf-request');
+                return false;
               },this));
               
-              this.model.on('change', this.doUpdateRender);
+              this.model.on('change', _.bind(function(){
+                if (this.model.hasChanged('title')) {
+                  this.$('.title').html(this.model.get('title'));
+                }
+                this.doUpdateRender();
+              },this));
               this.model.trigger('change');
               
               //uncomment to use Backbone.ModelBinding to listen to model changes
