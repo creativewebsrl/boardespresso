@@ -515,43 +515,61 @@ p{margin:0;}
   
   
   /******** Level ************/
-  @itemSize:1em;
-  .levelContainer{
-    padding:0;
-    position:relative;
-      .positive > div > div{
-        background:@green;
-      }
-      .negative > div > div{
-        background:@pink;
-      }
-  }
-  .levelMask{
-    position:absolute;
-    top:0;
-    left:50%;
-    z-index:1001;
-    margin-left:-@itemSize*6.8/2;
-    svg{
-    height:@itemSize*12.6;
-    width:@itemSize*6.8;
+  
+  .widget-noiselevel {
+    
+    @itemSize:1em;
+    
+    .dataContainer {
+        padding:0;
+        position:relative;
+        
+        .positive .level .value {
+          background:@green;
+        }
+        .negative .level .value {
+          background:@pink;
+        }
+        .equal .level .value {
+          background:@blue;
+        }
+        
+        .mask {
+          position:absolute;
+          top:0;
+          left:50%;
+          z-index:1001;
+          margin-left:-@itemSize*6.8/2;
+          
+          svg {
+            height:@itemSize*12.6;
+            width:@itemSize*6.8;
+          }
+          
+        }
+        
+        .level {
+          .display-block(@itemSize*6.5,@itemSize*12.5);
+          background:@mediumGray;
+          position:relative;
+          z-index:1000;
+          margin:@itemSize auto;
+          
+          .value {
+            .display-block(@itemSize*6.5,20%);
+            position:absolute;
+            bottom:0;
+            left:0;
+            z-index:999;
+          }
+          
+        }
+        
     }
+    
+    
   }
-  .level{
-    .display-block(@itemSize*6.5,@itemSize*12.5);
-    background:@mediumGray;
-    position:relative;
-    z-index:1000;
-     margin:@itemSize auto;
-    & > div{
-      .display-block(@itemSize*6.5,20%);
-      position:absolute;
-      bottom:0;
-      left:0;
-      background:@blue;
-      z-index:999;
-    }
-  }
+  
   
   /****** Percentage Box ************/
  
