@@ -176,17 +176,36 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
               var _id = this.get('_id');
               return '/api/widget/'+main.getUserId()+(_id ? '/'+_id : '');
           },
-          initialize : function(){
-            this._on_service_update = _.bind(this._on_service_update,this);
-            this._rebind_socketio();
+          initialize : function(options){
+            this.options = _.extend({
+              'can_sync' : true, // whether it has the ability to sync
+              'sync_paused' : false // pause/start the sync
+            },options || {});
             
-            this.on('change',function(){
-              if (this.hasChanged('service_id') || this.hasChanged('data_source')) {
-                this._rebind_socketio();
-              }
-            });
+            this._on_service_update = _.bind(this._on_service_update,this);
+            
+            if (! this.options['can_sync']) {
+                
+              this.unset('data_source',{'silent':true});
+              this.unset('service_id',{'silent':true});
+              this.unset('poll_frequency',{'silent':true});
+              this.unset('url',{'silent':true});
+              
+              this._rebind_socketio = function(){};
+              
+              this.on('change',function(){
+                if (this.hasChanged('service_id') || this.hasChanged('data_source')) {
+                  this._rebind_socketio();
+                }
+              });
+              
+            }
+            
+            this._rebind_socketio();
           },
           _on_service_update : function(data){
+            if (this.options['sync_paused']) return;
+            
             this.set({
                       value : data['last_value'],
                       title : data['desc'],
@@ -297,13 +316,16 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
                 errors['service_id'] = 'Cannot be empty';
               }
             }
-            else {
+            else if (this.options['can_sync']) {
              errors['data_source'] = 'data source must be one of "url" | "service_id"'
             }
             
             if (!_.isEmpty(errors)) {
               return errors;
             }
+          },
+          toggleSync : function(activate){
+            this.options['sync_paused'] = activate ? false : !this.options['sync_paused'];
           }
           
       });

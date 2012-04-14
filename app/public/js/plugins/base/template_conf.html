@@ -11,6 +11,7 @@
         <span class="error title"></span>
       </label>
       
+      <% if (model.options.can_sync) { %>
       <fieldset><legend>Data source</legend>
         
         <span class="error data_source"></span>
@@ -62,7 +63,7 @@
         </label>
       
       </fieldset>
-      
+      <% } /* endif can_sync */ %>
       
       <% if (content) { %>
       <div class="custom-conf">
