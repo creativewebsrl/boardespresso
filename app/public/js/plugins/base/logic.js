@@ -211,26 +211,42 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
               if (last_values.length>1) return last_values[last_values.length-2];
               else return null;
           },
-          set: function(attributes, options) {
+          set: function(key, value, options) {
+              /* normalization copied by backbone.js */
+              var attrs, attr, val;
+              if (_.isObject(key) || key == null) {
+                attrs = key;
+                options = value;
+              } else {
+                attrs = {};
+                attrs[key] = value;
+              }
+              
+              // Extract attributes and options.
+              options || (options = {});
+              if (!attrs) return this;
+              if (attrs instanceof Backbone.Model) attrs = attrs.attributes;
+              /* end of normalization code */
+              
               // update the values' history, dropping the oldest if needed
-              if (attributes['value'] !== undefined){
+              if (attrs['value'] !== undefined){
                 
-                if (!attributes['last_values']) {
+                if (!attrs['last_values']) {
                   var last_values = this.get('last_values');
                   
-                  attributes['value'] = parseFloat(attributes['value']);
+                  attrs['value'] = parseFloat(attrs['value']);
                   
-                  last_values.push(attributes['value']);
+                  last_values.push(attrs['value']);
                   if (last_values.length > this.get('keep_last_n_values')) {
                       last_values.splice(0,1); // FIFO queue (drop the oldest)
                   }
-                  attributes['last_values'] = last_values;
+                  attrs['last_values'] = last_values;
                 }
                 
-                delete(attributes['value']);
+                delete(attrs['value']);
               }
               
-              return WidgetModel.__super__.set.call(this, attributes, options);
+              return WidgetModel.__super__.set.call(this, attrs, options);
           },
           validate : function(attrs){
             var errors = {},

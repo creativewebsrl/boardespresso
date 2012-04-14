@@ -16,7 +16,23 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
               treshold_warn : null,
               treshold_alert : 100
           }),
-          set : function(attributes,options){
+          set : function(key, value, options) {
+            
+            /* normalization copied by backbone.js */
+            var attrs, attr, val;
+            if (_.isObject(key) || key == null) {
+              attrs = key;
+              options = value;
+            } else {
+              attrs = {};
+              attrs[key] = value;
+            }
+      
+            // Extract attributes and options.
+            options || (options = {});
+            if (!attrs) return this;
+            if (attrs instanceof Backbone.Model) attrs = attrs.attributes;
+            /* end of normalization code */
             
             // XXX need an automatic converter/validator
             var numberKeys = ['treshold_warn','treshold_alert'],
@@ -27,28 +43,28 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
                 
                 key = numberKeys[i];
                 
-                if (typeof attributes[key]==='string') {
+                if (typeof attrs[key]==='string') {
                     
-                    attributes[key] = $.trim(attributes[key]).toLowerCase();
+                    attrs[key] = $.trim(attrs[key]).toLowerCase();
                     
-                    if (attributes[key]==='') {
-                        attributes[key] = null;
+                    if (attrs[key]==='') {
+                        attrs[key] = null;
                     }
                     /* // cannot serialize Infinity as JSON
-                    else if (/^[+]?inf(inity)?$/i.test(attributes[key])) {
-                        attributes[key] = Infinity;
+                    else if (/^[+]?inf(inity)?$/i.test(attrs[key])) {
+                        attrs[key] = Infinity;
                         
-                    } else if (/^[-]?inf(inity)?$/i.test(attributes[key])) {
-                        attributes[key] = -Infinity;
+                    } else if (/^[-]?inf(inity)?$/i.test(attrs[key])) {
+                        attrs[key] = -Infinity;
                     }
                     */
                     else {
-                        attributes[key] = parseFloat(attributes[key]);
+                        attrs[key] = parseFloat(attrs[key]);
                     }
                 }
             }
             
-            return StatusModel.__super__.set.call(this, attributes, options);
+            return StatusModel.__super__.set.call(this, attrs, options);
           }
       });
       
