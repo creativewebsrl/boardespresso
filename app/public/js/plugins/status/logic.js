@@ -122,7 +122,7 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
           }
       });
       
-      return _.extend(parentPlugin,{
+      return _.extend({},parentPlugin,{
           Model : StatusModel,
           WidgetView : StatusView,
           PreferencesView : StatusPreferencesView

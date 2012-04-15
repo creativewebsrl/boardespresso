@@ -33,7 +33,7 @@ define(['jquery','underscore','backbone','modelbinding','plugins/status/logic'],
           
       });
       
-      return _.extend(parentPlugin,{
+      return _.extend({},parentPlugin,{
           Model : TrendModel,
           WidgetView : TrendView,
           PreferencesView : TrendPreferencesView
