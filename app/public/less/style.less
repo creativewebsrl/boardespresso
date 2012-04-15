@@ -110,6 +110,8 @@ p{margin:0;}
             text-transform:uppercase;
             color: @lightGray;   
             text-shadow:@textShadow;
+            i{float:left;margin-right:1em;}
+            i + p{float:left;}
 		}
   
 /********** Settings ************/
@@ -524,6 +526,9 @@ p{margin:0;}
       .col1,.col2,.col3{
         font-weight:bold;
         color:@white !important;
+        &:hover{
+          text-decoration:none;
+        }
       }
     }
     .col1{
@@ -539,12 +544,11 @@ p{margin:0;}
       text-overflow: ellipsis;
       overflow:hidden;
       white-space:nowrap;
-      &a{
       text-decoration:none;
         &:hover{
           text-decoration:underline;
         }
-        }     
+       
     }
     .col2{
       .col1;
@@ -674,11 +678,17 @@ p{margin:0;}
     width:@itemSize*16;
     }
   }
+  
+/****** VIDEO ******/
+  
+  
+  
+/****** SCROLLBAR ******/
 .scrollbar{
   height:10em;
 }
-.lb-v-dummy { width: 100%; display: block; height: 1px; }
-.lb-h-dummy { height: 100%; display: block; width: 1px; }
+.lb-v-dummy { width: 100%; display: block; height: 0.5em; }
+// .lb-h-dummy { height: 100%; display: block; width: 1px; }
 .lb-clear { clear: both; }
 .lb-wrap { z-index: 0; overflow: auto; position: relative; }
 .lb-v-scrollbar {
