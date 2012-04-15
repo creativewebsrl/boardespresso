@@ -1,5 +1,5 @@
 
-define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
+define(['jquery','underscore','backbone','modelbinding','plugins/status/logic'],
     function($,_,Backbone, ModelBinding,parentPlugin){
       
       var NoiseLevelModel = parentPlugin.Model.extend({

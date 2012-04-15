@@ -35,8 +35,8 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
             /* end of normalization code */
             
             // XXX need an automatic converter/validator
-            var numberKeys = ['treshold_warn','treshold_alert'],
-                key = null;
+            var numberKeys = ['treshold_warn','treshold_alert'];
+            key = null;
             
             for (var i=0,il=numberKeys.length;i<il;i++)
             {
@@ -64,7 +64,7 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
                 }
             }
             
-            return StatusModel.__super__.set.call(this, attrs, options);
+            return parentPlugin.Model.prototype.set.call(this, attrs, options);
           }
       });
       

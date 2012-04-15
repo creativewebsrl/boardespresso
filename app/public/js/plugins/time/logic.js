@@ -15,7 +15,7 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
                 {'can_sync' : false},
                 options || {}
             );
-            TimeModel.__super__.initialize.call(this,options);
+            parentPlugin.Model.prototype.initialize.call(this,options);
           }
       });
       

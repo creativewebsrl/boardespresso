@@ -15,14 +15,14 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
                 {'can_sync' : false},
                 options || {}
             );
-            DateModel.__super__.initialize.call(this,options);
+            parentPlugin.Model.prototype.initialize.call(this,options);
           }
       });
       
       var DateView = parentPlugin.WidgetView.extend({
         initialize : function(options){
           this.updateAt = this._getTomorrowDate().getTime();
-          DateView.__super__.initialize.call(this,options);
+          parentPlugin.WidgetView.prototype.initialize.call(this,options);
         },
         _getTomorrowDate : function(){
           var tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
