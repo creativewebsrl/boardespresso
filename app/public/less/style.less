@@ -25,6 +25,8 @@
 
 @font-size:1em;
 
+@textShadow:0 -0.1em @black;
+
 //Fonts
 
 @FontA:"BebasNeue-webfont";
@@ -107,7 +109,7 @@ p{margin:0;}
             font-family:@sansSerifFamily;
             text-transform:uppercase;
             color: @lightGray;   
-            text-shadow:0 -0.08em  @black;
+            text-shadow:@textShadow;
 		}
   
 /********** Settings ************/
@@ -125,7 +127,7 @@ p{margin:0;}
       bottom:0;
 			width:@settingsWidth;
 			text-align: center;
-      text-shadow:0 -0.08em  @black;          
+      text-shadow:@textShadow;          
 		  line-height: @titleBoxHeight;
 			border-left: 0.08em solid @widgetBorder; /* pixel, problema */
   		&:hover{
@@ -143,7 +145,7 @@ p{margin:0;}
 	  // overflow:hidden;
     text-align:center;
 	  p,.colon{
-	    text-shadow:0 -0.08em  @black;
+	    text-shadow:@textShadow;
 	    text-align:left; 
 	  }
 
@@ -418,8 +420,9 @@ p{margin:0;}
     list-style: none;
     .imgWrapper{
       height:100%;
-      width:10%;
+      width:@itemSize*2.5;
       float:left;
+      margin-right:@itemSize;
     }
     .imgStyle{
       .display-block(@itemSize*2,@itemSize*2);
@@ -437,12 +440,11 @@ p{margin:0;}
     .textWrapper{
       .box-sizing(border-box);
       color: @white;
-      padding:0 0 0 @itemSize;
       font-size:@itemSize/1.2;
       font-family: @sansSerifFamily;
-      width:90%;
-      float: left;
-      text-shadow:0 -@itemSize*0.08 @black;
+      // min-width:90%;
+
+      text-shadow:@textShadow;
       h4{
         font-size:@itemSize;
         margin:0;
@@ -465,7 +467,6 @@ p{margin:0;}
   
   .item2{     
       @itemSize:1em;
-      .border-radius(@itemSize/1.5);
       .box-shadow(inset 0 -@itemSize/15 @black);
       text-align:left;
       width:100%;
@@ -474,7 +475,7 @@ p{margin:0;}
       margin: 0;
       border-bottom:@itemSize/10 solid rgba(255,255,255,0.3);
       i{
-        text-shadow: 0 -@itemSize*0.08 @black;
+        text-shadow: @textShadow;
         margin:0 0 0 @itemSize*0.5;
       }
       p{
@@ -488,7 +489,7 @@ p{margin:0;}
         height:@itemSize;
       }
       span{
-          text-shadow: 0 -@itemSize*0.08 @black;
+          text-shadow: @textShadow;
           font-family:@baseFontFamily;
           float:right;
           font-size:@itemSize*1.5;
@@ -512,6 +513,59 @@ p{margin:0;}
       }
     }
     }
+    
+   /******Table********/
+  .table{
+    .titRow{
+      .item2;
+      #gradient > .vertical(@titleBxGradientTop,@titleBxGradientBottom);
+     .border-radius(@itemSize*0.5 @itemSize*0.5 0 0);
+      display:block;
+      .col1,.col2,.col3{
+        font-weight:bold;
+        color:@white !important;
+      }
+    }
+    .col1{
+      color:@lightGray;
+      font-family:@sansSerifFamily;
+      width:53%;
+      padding-right:4%;
+      padding-left:3%;
+      float:left;
+      font-size:@itemSize*0.8;
+      text-align:left;
+      text-shadow:@textShadow;
+      text-overflow: ellipsis;
+      overflow:hidden;
+      white-space:nowrap;
+      &a{
+      text-decoration:none;
+        &:hover{
+          text-decoration:underline;
+        }
+        }     
+    }
+    .col2{
+      .col1;
+      padding-left:0;
+      float:left;
+      width:20%;
+      margin-right:0;
+      padding-right:0;
+    }
+    .col3{
+      .col2;
+      width:19%;
+      padding-right:1%;
+    }
+    ul{
+      li{
+        display:block;
+        clear:both;
+      }
+    }
+  }
   
   
   /******** Level ************/
@@ -584,7 +638,7 @@ p{margin:0;}
    background:@darkGray;
    border-top:@fontSize/20 solid @black;
    border-bottom:@fontSize/20 solid rgba(255,255,255,0.5);
-   text-shadow: 0 @fontSize*-0.08 @black;
+   text-shadow: @textShadow;
  }
   
   /****** Counter ************/
@@ -620,5 +674,32 @@ p{margin:0;}
     width:@itemSize*16;
     }
   }
+.scrollbar{
+  height:10em;
+}
+.lb-v-dummy { width: 100%; display: block; height: 1px; }
+.lb-h-dummy { height: 100%; display: block; width: 1px; }
+.lb-clear { clear: both; }
+.lb-wrap { z-index: 0; overflow: auto; position: relative; }
+.lb-v-scrollbar {
+  .border-radius(1em);
+   z-index: 1;
+   position: absolute;
+   right: 0;
+   top: 0.1em;
+   width: 0.5em; 
+   height: 100%; 
+   background: transparent;
+    }
+// .lb-h-scrollbar { z-index: 1; position: absolute; bottom: 2px; left: 2px; width: 100%; height: 7px; background: #cfcfcf; opacity: 0.3; -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=40)"; border-radius: 7px; -webkit-border-radius: 7px; -moz-border-radius: 7px; }
+.lb-v-scrollbar-slider { 
+  position: absolute; 
+  width: 7px; 
+  height: 50px; 
+  left: 0; 
+  top: 0; 
+  background:@mediumGray;
+   border-radius: 7px; -webkit-border-radius: 7px; -moz-border-radius: 7px; }
 
+// .lb-h-scrollbar-slider { position: absolute; height: 7px; width: 50px; left: 0; top: 0; background: #000; -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)"; border-radius: 7px; -webkit-border-radius: 7px; -moz-border-radius: 7px; }
 
