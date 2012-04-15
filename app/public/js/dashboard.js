@@ -172,6 +172,8 @@ define(['jquery','use!jss','jquery-ui','plugins','main'],
                                 return css.replace(/\bg-pos-[xy]-\d+/g,'');
                             })
                             .addClass('g-pos-x-'+leftIdx+' g-pos-y-'+topIdx);
+                            
+                            $(this).trigger('moved',[leftIdx,topIdx]);
                         }
                         
                         $(this).css({left:'',top:'',zIndex:''});

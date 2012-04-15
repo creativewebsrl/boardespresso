@@ -369,6 +369,10 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
               },this));
               this.model.trigger('change');
               
+              this.$el.bind('moved',_.bind(function(ev,x,y){
+                this.model.save({'x':x,'y':y});
+              },this));
+              
               //uncomment to use Backbone.ModelBinding to listen to model changes
               //ModelBinding.bind(this);
               
