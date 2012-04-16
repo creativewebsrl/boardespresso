@@ -779,9 +779,11 @@ p{margin:0;}
   .control-label{
     color:@white;
     text-align:left;
+    width:100%;
   }
   .controls{
     margin-left:0;
+    input[type="text"]{margin-top:10px;}
   }
   .data-source{
     .border-radius(10px);
@@ -805,10 +807,11 @@ p{margin:0;}
   .inputWrapper{
     float:left;
     width:94%;
-    color:@lightGray;
     margin-bottom:15px;
+    label{color:@lightGray;}
     input{
       margin-bottom:10px;
+      margin-top:0 !important;
     }
   }
 }

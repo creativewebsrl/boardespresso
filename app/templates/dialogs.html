@@ -17,38 +17,43 @@
 			</div>
 			<form class="form-horizontal">
 				<div class="control-group">
-					<label class="control-label" for="input01">Title</label>
-					<div class="controls">
-						<input type="text" class="input-xlarge" value="<%- jsonModel.title %>" />
-						<p class="help-block">
-							the widget's title
-						</p>
-					</div>
+					<label class="control-label" >Title
+						<div class="controls">
+							<input type="text" class="input-xlarge" value="<%- jsonModel.title %>" />
+							<p class="help-block">
+								the widget's title
+							</p>
+						</div>
+					</label>
 				</div>
 				<div class="control-group">
 					<label class="control-label">Data Source</label>
 					<div class="controls data-source">
-						<label class="radio">
+						<div class="radio">
 							<input type="radio"  name="data_source"/>
-						</label>
-						<div class="inputWrapper">
-							<b>Service ID</b>
-							<br />
-							id used by an app on your own server to push updates
-							<input type="text" name="service_id" class="input-xlarge" value="<%- jsonModel.service_id ? jsonModel.service_id : '' %>" />
 						</div>
-						<label class="radio">
-							<input type="radio" name="data_source"/>
-						</label>
 						<div class="inputWrapper">
-							<b>Url</b>
-							<br />
-							address where to take the data from
-							<input type="text" class="input-xlarge" name="url"  value="<%- jsonModel.url!==null ? jsonModel.url : '' %>" />
-							<b>Poll frequency</b>
-							<br />
-							how often to read the url
-							<input type="text" class="input-xlarge" name="poll_frequency" value="<%- jsonModel.poll_frequency %>" />
+							<label><b>Service ID</b>
+								<br />
+								id used by an app on your own server to push updates
+								<input type="text" name="service_id" class="input-xlarge" value="<%- jsonModel.service_id ? jsonModel.service_id : '' %>" />
+							</label>
+						</div>
+						<div class="radio">
+							<input type="radio" name="data_source"/>
+						</div>
+						<div class="inputWrapper">
+							<label><b>Url</b>
+								<br />
+								address where to take the data from
+								<input type="text" class="input-xlarge" name="url"  value="<%- jsonModel.url!==null ? jsonModel.url : '' %>" />
+							</label>
+							<label>
+								<b>Poll frequency</b>
+								<br />
+								how often to read the url
+								<input type="text" class="input-xlarge" name="poll_frequency" value="<%- jsonModel.poll_frequency %>" />
+							</label>
 						</div>
 					</div>
 				</div>
@@ -56,13 +61,14 @@
 			<ul>
 				<li>
 					<div class="control-group">
-						<label class="control-label" for="input01">Minimum value</label>
-						<div class="controls">
-							<input type="text" class="input-xlarge" value="<%- jsonModel.min_value %>"/>
-							<p class="help-block">
-								Value representing 0%
-							</p>
-						</div>
+						<label class="control-label">Minimum value
+							<div class="controls">
+								<input type="text" class="input-xlarge" value="<%- jsonModel.min_value %>"/>
+								<p class="help-block">
+									Value representing 0%
+								</p>
+							</div>
+						</label>
 					</div>
 				</li>
 			</ul>
