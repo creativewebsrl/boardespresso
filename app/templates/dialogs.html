@@ -16,44 +16,57 @@
 				</div><a href="" class="closeBtn"><i class="icon-remove"></i></a>
 			</div>
 			<form class="form-horizontal">
-				<div class="control-group">
+				<div class="control-group ">
 					<label class="control-label" >Title
 						<div class="controls">
 							<input type="text" class="input-xlarge" value="<%- jsonModel.title %>" />
-							<p class="help-block">
+							<p class="help-block description">
 								the widget's title
 							</p>
+							<p class="help-block error">Please correct the error</p>
 						</div>
 					</label>
 				</div>
 				<div class="control-group">
 					<label class="control-label">Data Source</label>
 					<div class="controls data-source">
-						<div class="radio">
-							<input type="radio"  name="data_source"/>
-						</div>
-						<div class="inputWrapper">
-							<label><b>Service ID</b>
-								<br />
-								id used by an app on your own server to push updates
-								<input type="text" name="service_id" class="input-xlarge" value="<%- jsonModel.service_id ? jsonModel.service_id : '' %>" />
-							</label>
-						</div>
+						<fieldset class="control-group">
+							<div class="radio">
+								<input type="radio"  name="data_source"/>
+							</div>
+							<div class="inputWrapper">
+								<label><b>Service ID</b>
+									<input type="text" name="service_id" class="input-xlarge" value="<%- jsonModel.service_id ? jsonModel.service_id : '' %>" />
+									<p class="help-block description">
+										id used by an app on your own server to push updates
+									</p>
+									<p class="help-block error">Please correct the error</p>								
+								</label>
+							</div>
+						</fieldset>
 						<div class="radio">
 							<input type="radio" name="data_source"/>
 						</div>
 						<div class="inputWrapper">
-							<label><b>Url</b>
-								<br />
-								address where to take the data from
-								<input type="text" class="input-xlarge" name="url"  value="<%- jsonModel.url!==null ? jsonModel.url : '' %>" />
-							</label>
-							<label>
-								<b>Poll frequency</b>
-								<br />
-								how often to read the url
-								<input type="text" class="input-xlarge" name="poll_frequency" value="<%- jsonModel.poll_frequency %>" />
-							</label>
+							<fieldset class="control-group">
+								<label><b>Url</b>
+									<input type="text" class="input-xlarge" name="url"  value="<%- jsonModel.url!==null ? jsonModel.url : '' %>" />
+										<p class="help-block description">
+											address where to take the data from
+										</p>
+										<p class="help-block error">Please correct the error</p>								
+								</label>
+							</fieldset>
+							<fieldset class="control-group">
+								<label>
+									<b>Poll frequency</b>								
+									<input type="text" class="input-xlarge" name="poll_frequency" value="<%- jsonModel.poll_frequency %>" />
+										<p class="help-block description">
+											address where to take the data from
+										</p>
+										<p class="help-block error">Please correct the error</p>								
+								</label>
+							</fieldset>
 						</div>
 					</div>
 				</div>
