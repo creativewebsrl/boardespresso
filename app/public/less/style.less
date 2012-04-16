@@ -344,7 +344,7 @@ p{margin:0;}
     .singlePart{
       display: inline-block;
       
-      > div{
+       .timeIntSx,.timeIntDx{
         color:@black;
         font-size:@timeFontSize;
         display:inline-block;
@@ -680,7 +680,14 @@ p{margin:0;}
   }
   
 /****** VIDEO ******/
-  
+  .dataContainer.video{    
+    height:20em;
+    .videoFrame{
+      // .border-radius(1em);
+      height:100%;
+      overflow:hidden;
+    }
+  }
   
   
 /****** SCROLLBAR ******/
@@ -713,3 +720,85 @@ p{margin:0;}
 
 // .lb-h-scrollbar-slider { position: absolute; height: 7px; width: 50px; left: 0; top: 0; background: #000; -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)"; border-radius: 7px; -webkit-border-radius: 7px; -moz-border-radius: 7px; }
 
+
+/****** DIALOG ******/
+
+.conf{
+  .border-radius(10px);
+  .box-shadow();
+  .box-sizing(border-box);
+  text-shadow:@textShadow;
+  width:400px;
+  height:600px;
+  background:@widgetBackgroundColor;
+  font-family:@sansSerifFamily;
+  border-bottom:1px solid darken(@lightGray,10%);
+    .titleBox{
+    .box-shadow(0 1px @mediumGray);
+    #gradient > .vertical(@titleBxGradientTop,@titleBxGradientBottom);
+    .border-radius(10px 10px 0 0);
+    padding:5px 15px;
+    color:@white;
+    font-size:18px;
+    position: relative;
+    height: 2em;
+    line-height:2em;
+    overflow: hidden;
+    border-bottom: 1px solid @widgetBorder; /* pixel, problema */
+   .title{
+     float:left;
+   }
+   a{
+     float:right;
+     color:@white;
+     &:hover{
+       color:@lightGray;
+       text-decoration:none;
+     }
+   }
+  }
+  .control-group{
+    .box-sizing(border-box);
+    width:100%;
+    padding:15px;
+    margin-bottom:0;
+  }
+  b{
+    color:@white;
+    margin-top:10px;
+  }
+  legend{
+    color:@white;
+    width:auto;
+    border-bottom:none;
+    margin-bottom:0;
+  }
+  .control-label{
+    color:@white;
+    text-align:left;
+  }
+  .controls{
+    margin-left:0;
+  }
+  .data-source{
+    .border-radius(10px);
+    .box-sizing(border-box);
+    padding:10px;
+  }
+  .input-xlarge{
+    width:97%;
+    margin-bottom:0;
+  }
+  .help-block{
+    color:@lightGray;
+    margin-top:0;
+  }
+  .radio{
+    clear:both;
+    color:@lightGray;
+    input{
+      margin-bottom:10px;
+    }
+
+  }
+}

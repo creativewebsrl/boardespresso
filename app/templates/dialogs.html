@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+	<head>
+		<meta charset="UTF-8">
+		<title>Dashboard</title>
+		<link rel="stylesheet" type="text/css" href="../public/css/normalize.css">
+		<link rel="stylesheet" type="text/css" href="../public/css/bootstrap.css" />
+		<link rel="stylesheet/less" type="text/css" href="../public/less/style.less">
+		<script src="../public/js/less.min.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div class="widget-<%-jsonModel.type %> conf template">
+			<div class="titleBox">
+				<div class="title">
+					Settings
+				</div><a href="" class="closeBtn"><i class="icon-remove"></i></a>
+			</div>
+			<form class="form-horizontal">
+				<div class="control-group">
+					<label class="control-label" for="input01">Title</label>
+					<div class="controls">
+						<input type="text" class="input-xlarge" value="<%- jsonModel.title %>" >
+						<p class="help-block">
+							the widget's title
+						</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Data Source</label>
+					<div class="controls data-source">
+						<label class="radio">
+							<input type="radio" checked="" value="option1" id="optionsRadios1" name="optionsRadios">
+							<b>Service ID</b>
+							<br />
+							id used by an app on your own server to push updates
+							<input type="text" name="service_id" class="input-xlarge" value="<%- jsonModel.service_id ? jsonModel.service_id : '' %>" >
+						</label>
+						<label class="radio">
+							<input type="radio" name="data_source" value="option2" id="optionsRadios2" name="optionsRadios" value="">
+							<b>Url</b>
+							<br />
+							address where to take the data from
+							<input type="text" class="input-xlarge" name="url"  value="<%- jsonModel.url!==null ? jsonModel.url : '' %>" />
+							<b>Poll frequency</b>
+							<br />
+							how often to read the url
+							<input type="text" class="input-xlarge" name="poll_frequency" value="<%- jsonModel.poll_frequency %>" />
+						</label>
+					</div>
+				</div>
+			</form>
+			<ul>
+				<li>
+					<div class="control-group">
+						<label class="control-label" for="input01">Minimum value</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" value="<%- jsonModel.min_value %>" >
+							<p class="help-block">
+								Value representing 0%
+							</p>
+						</div>
+					</div>
+				</li>
+			</ul>
+	</body>
+</html>
