@@ -23,9 +23,10 @@
 							<p class="help-block description">
 								the widget's title
 							</p>
-							<p class="help-block error">Please correct the error</p>
-						</div>
-					</label>
+							<p class="help-block error">
+								Please correct the error
+							</p>
+						</div> </label>
 				</div>
 				<div class="control-group">
 					<label class="control-label">Data Source</label>
@@ -40,8 +41,9 @@
 									<p class="help-block description">
 										id used by an app on your own server to push updates
 									</p>
-									<p class="help-block error">Please correct the error</p>								
-								</label>
+									<p class="help-block error">
+										Please correct the error
+									</p> </label>
 							</div>
 						</fieldset>
 						<div class="radio">
@@ -51,23 +53,41 @@
 							<fieldset class="control-group">
 								<label><b>Url</b>
 									<input type="text" class="input-xlarge" name="url"  value="<%- jsonModel.url!==null ? jsonModel.url : '' %>" />
-										<p class="help-block description">
-											address where to take the data from
-										</p>
-										<p class="help-block error">Please correct the error</p>								
-								</label>
+									<p class="help-block description">
+										address where to take the data from
+									</p>
+									<p class="help-block error">
+										Please correct the error
+									</p> </label>
 							</fieldset>
 							<fieldset class="control-group">
-								<label>
-									<b>Poll frequency</b>								
+								<label> <b>Poll frequency</b>
 									<input type="text" class="input-xlarge" name="poll_frequency" value="<%- jsonModel.poll_frequency %>" />
-										<p class="help-block description">
-											address where to take the data from
-										</p>
-										<p class="help-block error">Please correct the error</p>								
-								</label>
+									<p class="help-block description">
+										address where to take the data from
+									</p>
+									<p class="help-block error">
+										Please correct the error
+									</p> </label>
 							</fieldset>
 						</div>
+					</div>
+				</div>
+				<div class="control-group">
+					<label for="optionsCheckboxList" class="control-label">Checkboxes</label>
+					<div class="controls">
+						<label class="checkbox">
+							<input type="checkbox" value="option1" name="optionsCheckboxList1">
+							Option one is this and that&mdash;be sure to include why it's great </label>
+						<label class="checkbox">
+							<input type="checkbox" value="option2" name="optionsCheckboxList2">
+							Option two can also be checked and included in form results </label>
+						<label class="checkbox">
+							<input type="checkbox" value="option3" name="optionsCheckboxList3">
+							Option three can&mdash;yes, you guessed it&mdash;also be checked and included in form results </label>
+						<p class="help-block">
+							<strong>Note:</strong> Labels surround all the options for much larger click areas and a more usable form.
+						</p>
 					</div>
 				</div>
 			</form>
@@ -80,8 +100,7 @@
 								<p class="help-block">
 									Value representing 0%
 								</p>
-							</div>
-						</label>
+							</div> </label>
 					</div>
 				</li>
 			</ul>
