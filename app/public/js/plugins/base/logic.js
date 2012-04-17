@@ -492,7 +492,8 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
           },
           onSave: function(form){
               // clean errors
-              $(form).find('.error').each(function(){$(this).html('')});
+              $(form).find('.control-group.error').each(function(){$(this).removeClass('error');});
+              $(form).find('.help-block.error, .help-inline.error').each(function(){$(this).html('')});
               
               var data = this.doGetFormData(form);
               
@@ -521,7 +522,9 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
             var $form = this.$el.find('form');
             
             for (var key in errors) {
-              $form.find('.error.'+key).html(errors[key]);
+              $form.find('.error.'+key).each(function(){
+                $(this).html(errors[key]).parents('.control-group:first').addClass('error');
+              });
             }
             
           },
@@ -573,6 +576,10 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
                     
                     this.view.on('conf-request',function(){
                       confView.render();
+                      confView.$('.titleBox .closeBtn').click(function(){
+                        confView.$el.dialog('close');
+                        return false;
+                      });
                       confView.$el.dialog({
                         title : that.name + ' configuration',
                         autoOpen: true

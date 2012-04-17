@@ -1,14 +1,17 @@
 
 <div class="content">
     
-    <ul>
-      <li>
-        <label>
-            <span class="field">Show seconds</span>
-            <input type="checkbox" name="show_seconds" placeholder="Show the seconds" <% if (jsonModel.show_seconds) {%>checked="checked"<% } %> />
-            <span class="error show_seconds"></span>
+    <div class="control-group">
+        <label class="control-label">Show seconds
+            <div class="controls">
+                <input type="checkbox" name="show_seconds" class="input-xlarge" <% if (jsonModel.show_seconds) {%>checked="checked"<% } %> />
+                <p class="help-block description">
+                    Show the seconds
+                </p>
+                <p class="help-block error show_seconds">
+                </p>
+            </div>
         </label>
-      </li>
-    </ul>
+    </div>
     
 </div>

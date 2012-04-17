@@ -1,35 +1,56 @@
 
 <div class="content">
     
-    <ul>
-      <li>
-        <label>
-            <span class="field">Treshold warning</span>
-            <input type="number" name="treshold_warn" placeholder="After this value we enter warning mode" value="<% if (jsonModel.treshold_warn!==null) { %><%- jsonModel.treshold_warn %><% } %>" />
-            <span class="error treshold_warn"></span>
+    <div class="control-group">
+        <label class="control-label">Treshold warning
+            <div class="controls">
+                <input type="number" name="treshold_warn" class="input-xlarge" value="<% if (jsonModel.treshold_warn!==null) { %><%- jsonModel.treshold_warn %><% } %>" />
+                <p class="help-block description">
+                    After this value we enter warning mode
+                </p>
+                <p class="help-block error treshold_warn">
+                </p>
+            </div>
         </label>
-      </li>
-      <li>
-        <label>
-            <span class="field">Treshold alert</span>
-            <input type="number" name="treshold_alert" placeholder="After this value we enter alert mode" value="<% if (jsonModel.treshold_alert!==null) { %><%- jsonModel.treshold_alert %><% } %>"/>
-            <span class="error treshold_alert"></span>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label">Treshold alert
+            <div class="controls">
+                <input type="number" name="treshold_alert" class="input-xlarge" value="<% if (jsonModel.treshold_alert!==null) { %><%- jsonModel.treshold_alert %><% } %>" />
+                <p class="help-block description">
+                    After this value we enter alert mode
+                </p>
+                <p class="help-block error treshold_alert">
+                </p>
+            </div>
         </label>
-      </li>
-      <li>
-        <label>
-            <span class="field">Minimum value</span>
-            <input type="number" name="min_value" placeholder="Value representing 0°" value="<%- jsonModel.min_value %>" />
-            <span class="error min_value"></span>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label">Minimum value
+            <div class="controls">
+                <input type="number" name="min_value" class="input-xlarge" value="<%- jsonModel.min_value %>" />
+                <p class="help-block description">
+                    Value representing 0%
+                </p>
+                <p class="help-block error min_value">
+                </p>
+            </div>
         </label>
-      </li>
-      <li>
-        <label>
-            <span class="field">Maximum value</span>
-            <input type="number" name="max_value" placeholder="Value representing 100°" value="<%- jsonModel.max_value %>" />
-            <span class="error max_value"></span>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label">Maximum value
+            <div class="controls">
+                <input type="number" name="max_value" class="input-xlarge" value="<%- jsonModel.max_value %>" />
+                <p class="help-block description">
+                    Value representing 100%
+                </p>
+                <p class="help-block error max_value">
+                </p>
+            </div>
         </label>
-      </li>
-    </ul>
+    </div>
     
 </div>
