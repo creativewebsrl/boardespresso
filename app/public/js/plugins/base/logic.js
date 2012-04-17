@@ -179,27 +179,32 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
           initialize : function(options){
             this.options = _.extend({
               'can_sync' : true, // whether it has the ability to sync
-              'sync_paused' : false // pause/start the sync
+              'sync_paused' : false, // pause/start the sync,
+              'sync_only_by_url' : false,
+              'sync_only_by_service_id' : false
             },options || {});
             
             this._on_service_update = _.bind(this._on_service_update,this);
             
-            if (! this.options['can_sync']) {
-                
+            if (! this.options['can_sync'] ) {
               this.unset('data_source',{'silent':true});
+              this._rebind_socketio = function(){};
+            }
+            
+            if (! this.options['can_sync'] || this.options['sync_only_by_url']) {
               this.unset('service_id',{'silent':true});
+            }
+            
+            if (! this.options['can_sync'] || this.options['sync_only_by_service_id']) {
               this.unset('poll_frequency',{'silent':true});
               this.unset('url',{'silent':true});
-              
-              this._rebind_socketio = function(){};
-              
-              this.on('change',function(){
+            }
+            
+            this.on('change:service_id change:data_source',function(){
                 if (this.hasChanged('service_id') || this.hasChanged('data_source')) {
                   this._rebind_socketio();
                 }
-              });
-              
-            }
+            });
             
             this._rebind_socketio();
           },
