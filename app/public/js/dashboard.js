@@ -63,7 +63,15 @@ define(['jquery','use!jss','jquery-ui','plugins','main'],
         
         var getDraggableOptions = function(){ return {}; };
         
+        // Whenever a resize event is received, wait a little to ensure it
+        // isn't raised too soon once again
+        var resizeTimeout = null;
         $(o.sizeTarget).resize(function(){
+          clearInterval(resizeTimeout);
+          resizeTimeout = setTimeout(resize,20);
+        });
+        
+        function resize(){
             
             var rows = o.rows,
                 ratio = o.ratio, 
@@ -184,8 +192,10 @@ define(['jquery','use!jss','jquery-ui','plugins','main'],
                 $('.g-box').draggable(getDraggableOptions());
             }
             
+          $grid.trigger('grid-resized');
+        }
         
-        }).resize();
+        $(o.sizeTarget).resize();
         
         $grid.bind('insert-widget',function(ev,plugin) {
             
