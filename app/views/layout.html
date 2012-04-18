@@ -65,10 +65,14 @@
             'text'         : 'lib/text',
             'jss'          : 'lib/jss',
             'plugins'      : 'plugins',
-            'boardWidget'  : 'widget'
+            'boardWidget'  : 'widget',
+            'd3'           : 'lib/d3.v2',
+            'rickshaw'     : 'lib/rickshaw.min'
           },
           use: {
-            jss: { attach: 'jss' }
+            jss: { attach: 'jss' },
+            d3: { attach: 'd3'},
+            rickshaw : { deps: ['use!d3'], attach: 'Rickshaw' }
           },
           priority: ['jquery']
       });
