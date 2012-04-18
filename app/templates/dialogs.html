@@ -13,96 +13,109 @@
 			<div class="titleBox">
 				<div class="title">
 					Settings
-				</div><a href="" class="closeBtn"><i class="icon-remove"></i></a>
+				</div>
+				<a href="" class="closeBtn"><i class="icon-remove"></i></a>
+				<a href="" class="deleteBtn"><i class="icon-trash"></i></a>
 			</div>
-			<form class="form-horizontal">
-				<div class="control-group ">
-					<label class="control-label" >Title
-						<div class="controls">
-							<input type="text" class="input-xlarge" value="<%- jsonModel.title %>" />
-							<p class="help-block description">
-								the widget's title
-							</p>
-							<p class="help-block error">
-								Please correct the error
-							</p>
-						</div> </label>
-				</div>
-				<div class="control-group">
-					<label class="control-label">Data Source</label>
-					<div class="controls data-source">
-						<fieldset class="control-group">
-							<div class="radio">
-								<input type="radio"  name="data_source"/>
-							</div>
-							<div class="inputWrapper">
-								<label><b>Service ID</b>
-									<input type="text" name="service_id" class="input-xlarge" value="<%- jsonModel.service_id ? jsonModel.service_id : '' %>" />
-									<p class="help-block description">
-										id used by an app on your own server to push updates
-									</p>
-									<p class="help-block error">
-										Please correct the error
-									</p> </label>
-							</div>
-						</fieldset>
-						<div class="radio">
-							<input type="radio" name="data_source"/>
-						</div>
-						<div class="inputWrapper">
-							<fieldset class="control-group">
-								<label><b>Url</b>
-									<input type="text" class="input-xlarge" name="url"  value="<%- jsonModel.url!==null ? jsonModel.url : '' %>" />
-									<p class="help-block description">
-										address where to take the data from
-									</p>
-									<p class="help-block error">
-										Please correct the error
-									</p> </label>
-							</fieldset>
-							<fieldset class="control-group">
-								<label> <b>Poll frequency</b>
-									<input type="text" class="input-xlarge" name="poll_frequency" value="<%- jsonModel.poll_frequency %>" />
-									<p class="help-block description">
-										address where to take the data from
-									</p>
-									<p class="help-block error">
-										Please correct the error
-									</p> </label>
-							</fieldset>
-						</div>
-					</div>
-				</div>
-				<div class="control-group">
-					<label for="optionsCheckboxList" class="control-label">Checkboxes</label>
-					<div class="controls">
-						<label class="checkbox">
-							<input type="checkbox" value="option1" name="optionsCheckboxList1">
-							Option one is this and that&mdash;be sure to include why it's great </label>
-						<label class="checkbox">
-							<input type="checkbox" value="option2" name="optionsCheckboxList2">
-							Option two can also be checked and included in form results </label>
-						<label class="checkbox">
-							<input type="checkbox" value="option3" name="optionsCheckboxList3">
-							Option three can&mdash;yes, you guessed it&mdash;also be checked and included in form results </label>
-						<p class="help-block">
-							<strong>Note:</strong> Labels surround all the options for much larger click areas and a more usable form.
-						</p>
-					</div>
-				</div>
-			</form>
-			<ul>
-				<li>
-					<div class="control-group">
-						<label class="control-label">Minimum value
+			<div class="scrollbar">
+				<form class="form-horizontal">
+					<div class="control-group ">
+						<label class="control-label" >Title
 							<div class="controls">
-								<input type="text" class="input-xlarge" value="<%- jsonModel.min_value %>"/>
-								<p class="help-block">
-									Value representing 0%
+								<input type="text" class="input-xlarge" value="<%- jsonModel.title %>" />
+								<p class="help-block description">
+									the widget's title
+								</p>
+								<p class="help-block error">
+									Please correct the error
 								</p>
 							</div> </label>
 					</div>
-				</li>
-			</ul>
+					<div class="control-group">
+						<label class="control-label">Data Source</label>
+						<div class="controls data-source">
+							<fieldset class="control-group">
+								<div class="radio">
+									<input type="radio"  name="data_source"/>
+								</div>
+								<div class="inputWrapper">
+									<label><b>Service ID</b>
+										<input type="text" name="service_id" class="input-xlarge" value="<%- jsonModel.service_id ? jsonModel.service_id : '' %>" />
+										<p class="help-block description">
+											id used by an app on your own server to push updates
+										</p>
+										<p class="help-block error">
+											Please correct the error
+										</p> </label>
+								</div>
+							</fieldset>
+							<div class="radio">
+								<input type="radio" name="data_source"/>
+							</div>
+							<div class="inputWrapper">
+								<fieldset class="control-group">
+									<label><b>Url</b>
+										<input type="text" class="input-xlarge" name="url"  value="<%- jsonModel.url!==null ? jsonModel.url : '' %>" />
+										<p class="help-block description">
+											address where to take the data from
+										</p>
+										<p class="help-block error">
+											Please correct the error
+										</p> </label>
+								</fieldset>
+								<fieldset class="control-group">
+									<label> <b>Poll frequency</b>
+										<input type="text" class="input-xlarge" name="poll_frequency" value="<%- jsonModel.poll_frequency %>" />
+										<p class="help-block description">
+											address where to take the data from
+										</p>
+										<p class="help-block error">
+											Please correct the error
+										</p> </label>
+								</fieldset>
+							</div>
+						</div>
+					</div>
+					<div class="control-group">
+						<label for="optionsCheckboxList" class="control-label">Checkboxes</label>
+						<div class="controls">
+							<label class="checkbox">
+								<input type="checkbox" value="option1" name="optionsCheckboxList1">
+								Option one is this and that&mdash;be sure to include why it's great </label>
+							<label class="checkbox">
+								<input type="checkbox" value="option2" name="optionsCheckboxList2">
+								Option two can also be checked and included in form results </label>
+							<label class="checkbox">
+								<input type="checkbox" value="option3" name="optionsCheckboxList3">
+								Option three can&mdash;yes, you guessed it&mdash;also be checked and included in form results </label>
+							<p class="help-block">
+								<strong>Note:</strong> Labels surround all the options for much larger click areas and a more usable form.
+							</p>
+						</div>
+					</div>
+					<button class="btn btn-large">Invia richiesta</button>
+				</form>
+				<ul>
+					<li>
+						<div class="control-group">
+							<label class="control-label">Minimum value
+								<div class="controls">
+									<input type="text" class="input-xlarge" value="<%- jsonModel.min_value %>"/>
+									<p class="help-block">
+										Value representing 0%
+									</p>
+								</div> </label>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+<script src="../public/js/lib/jquery-1.7.1.min.js" type="text/javascript"></script>
+<script src="../public/js/lib/jquery.lionbars.0.3.js" type="text/javascript"></script>
+<script type="text/javascript">
+	$(document).ready(function(){	
+		$( ".scrollbar").lionbars();
+	});
+</script>
 	</body>
 </html>

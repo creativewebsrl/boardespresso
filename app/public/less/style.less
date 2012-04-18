@@ -51,10 +51,11 @@ body{
 	background:url("../images/bodyBk.png") repeat 0 0 @backgroundColor;
 	font-family:@baseFontFamily;
   color: @primaryTxtColor;
+  line-height:inherit;
 }
 
 ul{margin: 0;padding: 0;list-style:none}
-p{margin:0;}
+p{margin:0;line-height:inherit;font-family:@baseFontFamily;}
 
 .display-block(@w,@h){
   width:@w;
@@ -728,34 +729,74 @@ p{margin:0;}
   .box-shadow();
   .box-sizing(border-box);
   text-shadow:@textShadow;
-  width:400px;
+  width:415px;
   height:600px;
   background:@widgetBackgroundColor;
   font-family:@sansSerifFamily;
   border-bottom:1px solid darken(@lightGray,10%);
+  overflow:hidden;
+    p{font-family:@sansSerifFamily;}
     .titleBox{
     .box-shadow(0 1px @mediumGray);
-    #gradient > .vertical(@titleBxGradientTop,@titleBxGradientBottom);
-    .border-radius(10px 10px 0 0);
-    padding:5px 15px;
-    color:@white;
-    font-size:18px;
-    position: relative;
-    height: 2em;
-    line-height:2em;
-    overflow: hidden;
-    border-bottom: 1px solid @widgetBorder; /* pixel, problema */
-   .title{
-     float:left;
-   }
-   a{
-     float:right;
-     color:@white;
-     &:hover{
-       color:@lightGray;
-       text-decoration:none;
-     }
-   }
+      #gradient > .vertical(@titleBxGradientTop,@titleBxGradientBottom);
+      .border-radius(10px 10px 0 0);
+      padding:5px 15px;
+      color:@white;
+      font-size:18px;
+      position: relative;
+      height: 2em;
+      line-height:2em;
+      overflow: hidden;
+      border-bottom: 1px solid @widgetBorder;
+       .title{
+         float:left;
+       }
+       a{
+         float:right;
+         color:@white;
+         &:hover{
+           color:@lightGray;
+           text-decoration:none;
+         }
+       }
+      .closeBtn,.deleteBtn{
+        /* dimensions */
+         #gradient > .vertical(@titleBxGradientTop,@titleBxGradientBottom);
+         .box-shadow(-1px 0 @mediumGray);
+        .border-radius(0 10px 0 0);
+        position:absolute;
+        color: @mediumGray;
+        text-decoration:none;
+        top:0;
+        right:0;
+        bottom:0;
+        width:45px;
+        text-align: center;
+        text-shadow:@textShadow;          
+        line-height: 2em;
+        line-height:46px;
+        border-left: 1px solid @widgetBorder; /* pixel, problema */
+      &:hover{
+          #gradient > .vertical(lighten(@titleBxGradientTop,5%),lighten(@titleBxGradientBottom,5%));
+          color: lighten(@mediumGray,15%);
+      }
+    }
+    .deleteBtn{
+      .border-radius(0);
+      right:47px;
+    } 
+  }
+  .scrollbar{
+    height:554px;
+    .lb-v-scrollbar{
+      .border-radius(0);
+      width:10px;
+      right:0;
+      background:@lightGray;
+    }
+    .lb-v-scrollbar-slider{
+      width:10px;
+    }
   }
   .control-group{
     .box-sizing(border-box);
@@ -806,7 +847,7 @@ p{margin:0;}
     padding:10px;
   }
   .input-xlarge{
-    width:97%;
+    width:96%;
     margin-bottom:0;
   }
   .help-block{
@@ -833,5 +874,8 @@ p{margin:0;}
       margin-top:0 !important;
       width:100%;
     }
+  }
+  .btn{
+    margin:15px;
   }
 }
