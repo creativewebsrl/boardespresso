@@ -7,8 +7,8 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
               type: 'date',
               replace_title_with_year: true,
               
-              width: 3,
-              height: 5
+              width: 2,
+              height: 3
           }),
           initialize : function(options){
             options = _.extend(

@@ -7,8 +7,8 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
               type: 'time',
               show_seconds: false,
               
-              width: 7,
-              height: 5
+              width: 6,
+              height: 4
           }),
           initialize : function(options){
             options = _.extend(
