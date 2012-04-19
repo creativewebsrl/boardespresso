@@ -643,7 +643,7 @@ p{margin:0;line-height:inherit;font-family:@baseFontFamily;}
   /****** Percentage Box ************/
  
  .percentageBox{
-    @fontSize:0.9em;
+    @fontSize:0.8em;
    .display-block(@fontSize*2,@fontSize);
    .border-radius(@fontSize/5);
    margin:0 auto @fontSize/2;
@@ -658,7 +658,7 @@ p{margin:0;line-height:inherit;font-family:@baseFontFamily;}
  }
   
   /****** Counter ************/
-  @itemSize:0.9em;
+  @itemSize:0.8em;
   .widget-gauge .dataContainer{
     padding:0;
     position:relative;
@@ -887,6 +887,11 @@ p{margin:0;line-height:inherit;font-family:@baseFontFamily;}
     }
   }
   .btn{
+    width:150px;
     margin:15px;
+  }
+  .btn-danger{
+    float:right;
+    margin-right:30px;
   }
 }
