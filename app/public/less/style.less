@@ -181,7 +181,7 @@ p{margin:0;line-height:inherit;font-family:@baseFontFamily;}
   /********** Led ************/
 
   .ledWrapper{
-    @led-size:5em;
+    @led-size:4em;
     @led-color:@mediumGray;
     display: inline-block; 
     margin:0 1em;
@@ -339,12 +339,11 @@ p{margin:0;line-height:inherit;font-family:@baseFontFamily;}
  /********** Time + Calendar ************/
 
   .time{
-    @timeFontSize:6em;
+    @timeFontSize:4em;
     display: inline-block;
     // margin:5% 20%;
     .singlePart{
       display: inline-block;
-      
        .timeIntSx,.timeIntDx{
         color:@black;
         font-size:@timeFontSize;
@@ -399,7 +398,7 @@ p{margin:0;line-height:inherit;font-family:@baseFontFamily;}
           }
           .timePartBottom{
             .box-shadow(none);
-            height:@timeFontSize/20;
+            height:@timeFontSize/12;
           }
         }
       }
@@ -410,10 +409,16 @@ p{margin:0;line-height:inherit;font-family:@baseFontFamily;}
       }
     }
   }
-
-  .calendar{
-    padding:0;
+  
+  .widget-date{
+    font-size:1em;
+    .dataContainer{
+      padding:0;
+      margin-top:-5px;
+    }
   }
+  
+
   /******** List ************/
   .item1{
     @itemSize:1em;
@@ -577,7 +582,7 @@ p{margin:0;line-height:inherit;font-family:@baseFontFamily;}
   
   .widget-noiselevel {
     
-    @itemSize:1em;
+    @itemSize:0.8em;
     
     .dataContainer {
         padding:0;
@@ -633,13 +638,14 @@ p{margin:0;line-height:inherit;font-family:@baseFontFamily;}
   /****** Percentage Box ************/
  
  .percentageBox{
-    @fontSize:1em;
+    @fontSize:0.9em;
    .display-block(@fontSize*2,@fontSize);
    .border-radius(@fontSize/5);
    margin:0 auto @fontSize/2;
    color:@blue;
    padding:@fontSize/4;
    font-size:@fontSize*3;
+   line-height:1em;
    background:@darkGray;
    border-top:@fontSize/20 solid @black;
    border-bottom:@fontSize/20 solid rgba(255,255,255,0.5);
@@ -647,7 +653,7 @@ p{margin:0;line-height:inherit;font-family:@baseFontFamily;}
  }
   
   /****** Counter ************/
-  @itemSize:1em;
+  @itemSize:0.9em;
   .widget-gauge .dataContainer{
     padding:0;
     position:relative;
@@ -800,7 +806,7 @@ p{margin:0;line-height:inherit;font-family:@baseFontFamily;}
   }
   .control-group{
     .box-sizing(border-box);
-    width:100%;
+    width:99%;
     padding:15px 15px 0 15px;
     margin-bottom:0;
     p.error{
