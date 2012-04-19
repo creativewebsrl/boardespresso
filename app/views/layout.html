@@ -67,12 +67,14 @@
             'plugins'      : 'plugins',
             'boardWidget'  : 'widget',
             'd3'           : 'lib/d3.v2',
-            'rickshaw'     : 'lib/rickshaw.min'
+            'rickshaw'     : 'lib/rickshaw.min',
+            'scrollbars'   : 'lib/jquery.lionbars.0.3'
           },
           use: {
             jss: { attach: 'jss' },
             d3: { attach: 'd3'},
-            rickshaw : { deps: ['use!d3'], attach: 'Rickshaw' }
+            rickshaw : { deps: ['use!d3'], attach: 'Rickshaw' },
+            scrollbars : { deps: ['jquery'], attach: 'scrollbars' }
           },
           priority: ['jquery']
       });

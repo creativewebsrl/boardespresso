@@ -1,7 +1,9 @@
 
 
-define(['jquery','underscore','backbone','modelbinding','main','text!plugins/base/template_widget.html','text!plugins/base/template_conf.html'],
-    function($,_,Backbone,ModelBinding,main,templateWidget,templateConf){
+define(['jquery','underscore','backbone','modelbinding','main',
+        'text!plugins/base/template_widget.html','text!plugins/base/template_conf.html',
+        'use!scrollbars'],
+    function($,_,Backbone,ModelBinding,main,templateWidget,templateConf,scrollbars){
       
       var Validator = {
         isNumber : function(value) {
@@ -435,6 +437,9 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
                   'jsonModel' : this.model.toJSON()
                 })
               }));
+              
+              // XXX the scrollabar should be created when the element is show indipendently from the dialog
+              this.$el.on('dialogopen',function(){$(this).find('.scrollbar').lionbars()});
               
               //uncomment to use Backbone.ModelBinding to listen to model changes
               //ModelBinding.bind(this, { all: "name" });

@@ -13,7 +13,6 @@ a {
   right:10px;
 }
 
-form span.error {
-  display: block;
-  color:red;
+.ui-dialog-titlebar {
+  display:none;
 }

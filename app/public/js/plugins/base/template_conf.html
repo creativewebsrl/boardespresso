@@ -4,105 +4,109 @@
     <div class="titleBox">
         <div class="title">
             <%- jsonModel.type %> settings
-        </div><a href="#" class="closeBtn"><i class="icon-remove"></i></a>
+        </div>
+        <a href="#" class="closeBtn"><i class="icon-remove"></i></a>
+        <a href="#" class="deleteBtn"><i class="icon-trash"></i></a>
     </div>
     
-    <form class="form-horizontal">
-      
-        <span class="error generic"></span>
+    <div class="scrollbar">
+      <form class="form-horizontal">
         
-        <div class="control-group ">
-            <label class="control-label">Title
-                <div class="controls">
-                  <input type="text" name="title" class="input-xlarge" value="<%- jsonModel.title %>" />
-                  <p class="help-block description">the widget's title</p>
-                  <p class="help-block error title"></p>
-                </div>
-            </label>
-        </div>
+          <span class="error generic"></span>
+          
+          <div class="control-group ">
+              <label class="control-label">Title
+                  <div class="controls">
+                    <input type="text" name="title" class="input-xlarge" value="<%- jsonModel.title %>" />
+                    <p class="help-block description">the widget's title</p>
+                    <p class="help-block error title"></p>
+                  </div>
+              </label>
+          </div>
+          
+          <% if (model.options.can_sync) { %>
+          
+          <div class="control-group">
+              <label class="control-label">Data Source</label>
+              
+              <div class="controls data-source">
+                  
+                  <% if (!model.options.sync_only_by_url) { %>
+                  
+                  <fieldset class="control-group">
+                      <div class="radio" <% if (model.options.sync_only_by_service_id) { %>style="display:none"<% } %> >
+                          <input type="radio" name="data_source" value="service_id" <% if (jsonModel.data_source==='service_id' || model.options.sync_only_by_service_id) { %>checked="checked"<% } %> />
+                      </div>
+                      <div class="inputWrapper">
+                          <label><b>Service ID</b>
+                              <input type="text" name="service_id" class="input-xlarge" value="<%- jsonModel.service_id ? jsonModel.service_id : '' %>" />
+                              <p class="help-block description">
+                                  id used by an app on your own server to push updates
+                              </p>
+                              <p class="help-block error service_id">
+                              </p>
+                          </label>
+                      </div>
+                  </fieldset>
+                  <% } %>
+                  
+                  <% if (!model.options.sync_only_by_service_id) { %>
+                  
+                  <div class="radio" <% if (model.options.sync_only_by_url) { %>style="display:none"<% } %>>
+                      <input type="radio" name="data_source" value="url" <% if (jsonModel.data_source==='url' || model.options.sync_only_by_url) { %>checked="checked"<% } %> />
+                  </div>
+                  <div class="inputWrapper">
+                      <fieldset class="control-group">
+                          <label><b>Url</b>
+                              <input type="text" class="input-xlarge" name="url" value="<%- jsonModel.url!==null ? jsonModel.url : '' %>" />
+                              <p class="help-block description">
+                                  address where to take the data from
+                              </p>
+                              <p class="help-block error url">
+                              </p>
+                          </label>
+                      </fieldset>
+                      <fieldset class="control-group">
+                          <label><b>Poll frequency</b>
+                              <input type="text" class="input-xlarge" name="poll_frequency" value="<%- jsonModel.poll_frequency %>" />
+                              <p class="help-block description">
+                                  address where to take the data from
+                              </p>
+                              <p class="help-block error poll_frequency">
+                              </p>
+                          </label>
+                      </fieldset>
+                  </div>
+                  
+                  <% } %>
+                  
+              </div> <!--//end of .controls.data-source -->
+          </div>
+          
+          <div class="control-group">
+              <label class="control-label">Timeout (seconds)
+                  <div class="controls">
+                      <input type="text" name="timeout" class="input-xlarge" value="<%- jsonModel.timeout %>" />
+                      <p class="help-block description">
+                          Maximum waiting time
+                      </p>
+                      <p class="help-block error timeout">
+                      </p>
+                  </div>
+              </label>
+          </div>
         
-        <% if (model.options.can_sync) { %>
+          <% } /* endif can_sync */ %>
         
-        <div class="control-group">
-            <label class="control-label">Data Source</label>
-            
-            <div class="controls data-source">
-                
-                <% if (!model.options.sync_only_by_url) { %>
-                
-                <fieldset class="control-group">
-                    <div class="radio" <% if (model.options.sync_only_by_service_id) { %>style="display:none"<% } %> >
-                        <input type="radio" name="data_source" value="service_id" <% if (jsonModel.data_source==='service_id' || model.options.sync_only_by_service_id) { %>checked="checked"<% } %> />
-                    </div>
-                    <div class="inputWrapper">
-                        <label><b>Service ID</b>
-                            <input type="text" name="service_id" class="input-xlarge" value="<%- jsonModel.service_id ? jsonModel.service_id : '' %>" />
-                            <p class="help-block description">
-                                id used by an app on your own server to push updates
-                            </p>
-                            <p class="help-block error service_id">
-                            </p>
-                        </label>
-                    </div>
-                </fieldset>
-                <% } %>
-                
-                <% if (!model.options.sync_only_by_service_id) { %>
-                
-                <div class="radio" <% if (model.options.sync_only_by_url) { %>style="display:none"<% } %>>
-                    <input type="radio" name="data_source" value="url" <% if (jsonModel.data_source==='url' || model.options.sync_only_by_url) { %>checked="checked"<% } %> />
-                </div>
-                <div class="inputWrapper">
-                    <fieldset class="control-group">
-                        <label><b>Url</b>
-                            <input type="text" class="input-xlarge" name="url" value="<%- jsonModel.url!==null ? jsonModel.url : '' %>" />
-                            <p class="help-block description">
-                                address where to take the data from
-                            </p>
-                            <p class="help-block error url">
-                            </p>
-                        </label>
-                    </fieldset>
-                    <fieldset class="control-group">
-                        <label><b>Poll frequency</b>
-                            <input type="text" class="input-xlarge" name="poll_frequency" value="<%- jsonModel.poll_frequency %>" />
-                            <p class="help-block description">
-                                address where to take the data from
-                            </p>
-                            <p class="help-block error poll_frequency">
-                            </p>
-                        </label>
-                    </fieldset>
-                </div>
-                
-                <% } %>
-                
-            </div> <!--//end of .controls.data-source -->
-        </div>
+          <% if (content) { %>
+          <div class="custom-conf">
+            <%= content %>
+          </div>
+          <% } %>
         
-        <div class="control-group">
-            <label class="control-label">Timeout (seconds)
-                <div class="controls">
-                    <input type="text" name="timeout" class="input-xlarge" value="<%- jsonModel.timeout %>" />
-                    <p class="help-block description">
-                        Maximum waiting time
-                    </p>
-                    <p class="help-block error timeout">
-                    </p>
-                </div>
-            </label>
-        </div>
-      
-        <% } /* endif can_sync */ %>
-      
-        <% if (content) { %>
-        <div class="custom-conf">
-          <%= content %>
-        </div>
-        <% } %>
-      
-        <input type="submit" />
-      
-    </form>
+          <button type="submit" class="btn btn-large">Save</button>
+        
+      </form>
+    </div><!--/.scrollbar -->
     
 </div>
