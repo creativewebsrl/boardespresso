@@ -355,10 +355,13 @@ define(['jquery','underscore','backbone','modelbinding','main','text!plugins/bas
           },
           render: function(){
               
+              var $innerContent = $(this.doRender());
+              
               this.$el.html(_.template(templateWidget,{
                 'model' : this.model,
                 'jsonModel' : this.model.toJSON(),
-                'content' : $(this.doRender()).html()
+                'content' : $innerContent.html(),
+                'contentClasses' : ($innerContent.attr('class') || '').replace('content','')
               }));
               
               $('.settings',this.$el).click(_.bind(function(){

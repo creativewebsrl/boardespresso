@@ -76,51 +76,52 @@ p{margin:0;line-height:inherit;font-family:@baseFontFamily;}
   }
 }
 
-.widget-general{	  
-    @widgetBorderRadius:0.5em;
-    @titleBoxHeight: 2em;
-    @settingsWidth: 2em;
-    .border-radius(@widgetBorderRadius);
-    background:@widgetBackgroundColor;
-    border-top:0.07em solid @black;
-    border-bottom:0.07em solid darken(@lightGray,10%);
-    height: 100%;
+.widget-general{ 
+  @widgetBorderRadius:0.5em;
+  @titleBoxHeight: 2em;
+  @borderThickness: 0.08em;
+  @settingsWidth: 2em;
+  .border-radius(@widgetBorderRadius);
+  background:@widgetBackgroundColor;
+  border-top:0.07em solid @black;
+  border-bottom:0.07em solid darken(@lightGray,10%);
+  height: 100%;
   
 	.titleBox{
     #gradient > .vertical(@titleBxGradientTop,@titleBxGradientBottom);
     .border-radius(@widgetBorderRadius @widgetBorderRadius 0 0);
-    .box-shadow(0 0.08em @mediumGray);
+    .box-shadow(0 @borderThickness @mediumGray);
     position: relative;
 		height: @titleBoxHeight;
 		overflow: hidden;
-		border-bottom: 0.08em solid @widgetBorder; /* pixel, problema */
-		.title{	        
-            @paddingRight: 0em;
-            @paddingLeft:1em;
-            @paddingTop: 0em; /* use em for y padding because the parent use em for height *//*try (@titleBoxHeight - @font-size)/2*/
-            @paddingBottom: 0em; /* note: use 0em instead of 0 to not forget the unit to use */
-            padding: @paddingTop @paddingRight @paddingBottom @paddingLeft;
-            float: left;
-             /* reset the browser font-size (e.g. h3 has 1.17em in firefox) */
-            height:100%;
-            line-height:2em;
-            margin: 0;
-            
-            font-size: @font-size;
-            font-family:@sansSerifFamily;
-            text-transform:uppercase;
-            color: @lightGray;   
-            text-shadow:@textShadow;
-            i{float:left;margin-right:1em;}
-            i + p{float:left;}
-		}
-  
-/********** Settings ************/
+		border-bottom: @borderThickness solid @widgetBorder; /* pixel, problema */
+    
+		.title {
+      @paddingRight: 0em;
+      @paddingLeft:1em;
+      @paddingTop: 0em; /* use em for y padding because the parent use em for height *//*try (@titleBoxHeight - @font-size)/2*/
+      @paddingBottom: 0em; /* note: use 0em instead of 0 to not forget the unit to use */
+      padding: @paddingTop @paddingRight @paddingBottom @paddingLeft;
+      float: left;
+       /* reset the browser font-size (e.g. h3 has 1.17em in firefox) */
+      height:100%;
+      line-height:2em;
+      margin: 0;
       
-		.settings{
+      font-size: @font-size;
+      font-family:@sansSerifFamily;
+      text-transform:uppercase;
+      color: @lightGray;   
+      text-shadow:@textShadow;
+      i{float:left;margin-right:1em;}
+      i + p{float:left;}
+		}
+    
+    /********** Settings ************/
+    .settings{
       /* dimensions */
-       #gradient > .vertical(@titleBxGradientTop,@titleBxGradientBottom);
-       .box-shadow(-0.08em 0 @mediumGray);
+      #gradient > .vertical(@titleBxGradientTop,@titleBxGradientBottom);
+      .box-shadow(-@borderThickness 0 @mediumGray);
       .border-radius(0 @widgetBorderRadius 0 0);
       position:absolute;
       color: @mediumGray;
@@ -128,34 +129,41 @@ p{margin:0;line-height:inherit;font-family:@baseFontFamily;}
       top:0;
       right:0;
       bottom:0;
-			width:@settingsWidth;
-			text-align: center;
+      width:@settingsWidth;
+      text-align: center;
       text-shadow:@textShadow;          
-		  line-height: @titleBoxHeight;
-			border-left: 0.08em solid @widgetBorder; /* pixel, problema */
-  		&:hover{
+      line-height: @titleBoxHeight;
+      border-left: @borderThickness solid @widgetBorder; /* pixel, problema */
+      &:hover{
         #gradient > .vertical(lighten(@titleBxGradientTop,5%),lighten(@titleBxGradientBottom,5%));
         color: lighten(@mediumGray,15%);
       }
-    }	
+    }
 
 	}
-}
-
-/********** Data Container ************/
+  
+  /********** Data Container ************/
 	.dataContainer{
-	  padding:1em 1em 1em 1em;
+	  position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    
+    margin-top: @titleBoxHeight + @borderThickness;
+    padding:1em 1em 1em 1em;
+    
 	  // overflow:hidden;
     text-align:center;
 	  p,.colon{
 	    text-shadow:@textShadow;
 	    text-align:left; 
 	  }
-
-  /********** Data Row ************/
+    
+    /********** Data Row ************/
     .dataRow{
       color: @blue;
-      font-size:2em;
+      font-size: 2em;
       & + .percentage{
         color: lighten(@blue,15%);
       }
@@ -171,12 +179,17 @@ p{margin:0;line-height:inherit;font-family:@baseFontFamily;}
           color: lighten(@pink,15%);
         }
       }
-      }
+    }
     .percentage{
       font-size:1.5em;
       color:#000;
     }
+    
+    &.fullSpace {
+      padding:0;
+    }
   }
+}
 
   /********** Led ************/
 
