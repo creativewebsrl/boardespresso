@@ -1,4 +1,30 @@
 
 <div class="content">
     
+    <div class="control-group">
+        <label class="control-label">Show summary
+            <div class="controls">
+                <input type="checkbox" name="show_summary" class="input-xlarge" <% if (jsonModel.show_summary) {%>checked="checked"<% } %> />
+                <p class="help-block description">
+                    Show a brief summary after the news' title
+                </p>
+                <p class="help-block error show_summary">
+                </p>
+            </div>
+        </label>
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label">Show timestamp
+            <div class="controls">
+                <input type="checkbox" name="show_timestamp" class="input-xlarge" <% if (jsonModel.show_timestamp) {%>checked="checked"<% } %> />
+                <p class="help-block description">
+                    Show the news' timestamp
+                </p>
+                <p class="help-block error show_timestamp">
+                </p>
+            </div>
+        </label>
+    </div>
+  
 </div>

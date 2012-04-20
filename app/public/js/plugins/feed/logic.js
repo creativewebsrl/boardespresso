@@ -152,8 +152,11 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
               
               poll_frequency : 60,
               
-              width: 5,
-              height: 4
+              show_summary: false,
+              show_timestamp: false,
+              
+              width: 6,
+              height: 8
           }),
           initialize : function(options){
             options = _.extend(
@@ -170,15 +173,35 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
         initialize : function(options) {
           this._latestEntries = [];
           this._dateOfMostRecentEntry = null;
+          this._intervalId = null;
           
           var view = this;
-          setInterval(function(){
+          this.model.on('change:url change:poll_frequency',function(){
+            view._setupPolling();
+          });
+          
+          parentPlugin.WidgetView.prototype.initialize.call(this,options);
+        },
+        doOnBoxInserted: function(){
+          this._setupPolling();
+        },
+        _setupPolling: function(){
+          clearInterval(this._intervalId);
+          
+          var view = this;
+          
+          function update(){
             if (view.model.get('url')) {
               retrieveFeed(view.model.get('url'),view._dateOfMostRecentEntry,_.bind(view._onFeedRead,view));
             }
-            
+          }
+          
+          this._intervalId = setInterval(function(){
+            update();
           },(view.model.get('poll_frequency') || 60)*1000);
-          parentPlugin.WidgetView.prototype.initialize.call(this,options);
+          
+          update(); // do not wait poll_frequency for the first update
+          
         },
         _onFeedRead : function(data){
           if (data.success) {
@@ -210,24 +233,20 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
           
         },
         doRender : function(){
-          if (this.model.get('url')) {
-            var view = this;
-            setTimeout(function(){
-                retrieveFeed(view.model.get('url'),_.bind(view._onFeedRead,view));
-            },2*1000); // wait some seconds before loading the feed for the first time // XXX find a better solution
-          }
-          
-          return this.template({});
+          return this.template({model:this.model,jsonModel:this.model.toJSON()});
         },
         doUpdateRender : function(){
-          
-          var $dummyItem = this.$('.dummy .item'),
+          var $dummyItem = this.$('.dummy .entry'),
               $item = null,
               entry = null,
               title;
           
+          $('.feed')
+          .toggleClass('no-timestamp',!this.model.get('show_timestamp'))
+          .toggleClass('no-summary',!this.model.get('show_summary'));
+          
           // ### we can show at most n elements, so we remove now the items that are going to rotate out ###
-          var currentItems = this.$('.feed .item'),
+          var currentItems = this.$('.feed .entry'),
               entriesToKeep = 0;
           
           if ((currentItems.length + this._latestEntries.length) >= this.model.get('keep_last_n_values')) {
@@ -249,18 +268,22 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
             
             // link the title only if there isn't yet something similar to an anchor
             if (entry.link && title.indexOf('<a ')<0) {
-              title = $('<a />').attr({'href':entry.link,'target':'_blank'}).html(title);
+              title = $('<a />').attr({'href':entry.link,'target':'_blank'}).html($('<div/>').html(title).text());
             }
             
             $item.find('.title').html(title);
             $item.find('.message').html($('<div/>').html(entry.summary || entry.content).text().slice(0,250));
             $item.find('.date').html(formatDate(entry.published));
             
-            this.$('.feed').prepend($item);
+            $item.hide().prependTo(this.$('.feed')).slideDown("slow");
           }
           
           this._latestEntries = [];
           
+        },
+        remove: function(){
+          clearInterval(this._intervalId);
+          parentPlugin.WidgetView.prototype.remove.call(this);
         }
       });
       

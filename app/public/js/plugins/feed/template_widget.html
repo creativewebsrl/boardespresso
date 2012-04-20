@@ -2,16 +2,16 @@
 <div class="content">
     
     <ul class="dummy" style="display:none">
-        <li class="item item1">
+        <li class="entry">
             <div class="textWrapper">
               <h4 class="title">title</h4>
               <div class="message">description</div>
-              <span class="date data">date</span>
+              <span class="date">date</span>
             </div>
         </li>
     </ul>
     
-    <ul class="feed">
+    <ul class="feed <% if (!jsonModel.show_summary) {%>no-summary<% } %>  <% if (!jsonModel.show_timestamp) {%>no-timestamp<% } %>">
         
     </ul>
     
