@@ -421,7 +421,7 @@ define(['jquery','underscore','backbone','modelbinding','main',
               this.model.off('change',this.render);
               this.model.off('destroy',this.remove);
               this.model.off('change', this.doUpdateRender);
-              Backbone.ModelBinding.unbind(this);
+              ModelBinding.unbind(this);
               
               this.$el.remove();
           },
@@ -480,6 +480,11 @@ define(['jquery','underscore','backbone','modelbinding','main',
                 }
                 return false;
               });
+              
+              this.$el.find('.deleteBtn').click(_.bind(function(){
+                this.model.destroy();
+                return false;
+              },this));
               
               // The error callback will receive model,error,options as arguments
               this.model.on('error',_.bind(this.onError,this));
