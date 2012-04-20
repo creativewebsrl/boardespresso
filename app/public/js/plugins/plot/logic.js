@@ -12,63 +12,72 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic','us
       });
       
       var PlotView = parentPlugin.WidgetView.extend({
-        doRender : function(){
+        _renderAfterDomInsertion: function(){
+          this.$('.dataContainer').css({'padding':0,'position':'absolute','margin-top':'2em','top':0,'bottom':0,'left':0,'right':0});
+            
+          this.$graphContainer = this.$('.plot');
           
+          for(var i=0;i<100;i++) this.model.set('value',{x:i,y:i});
+          
+          var graph = new Rickshaw.Graph( {
+              element: this.$('.plot')[0],
+              renderer: 'line',
+              series: [{
+                  color: '#30c020',
+                  data: this.model.get('last_values')/*[ 
+                      { x: 0, y: 40 }, 
+                      { x: 1, y: 49 }, 
+                      { x: 2, y: 38 }, 
+                      { x: 3, y: 30 }, 
+                      { x: 4, y: 32 } ]*/
+              }]
+          });
+          
+           // rickshaw graph resize
+          graph.resize = function(width, height) {
+              var svg = this.element.getElementsByTagName('svg')[0];
+              
+              if (width) {
+                  this.width = width;
+                  //this.element.style.width = this.width + 'px'; // no need, is 100%
+                  svg.setAttribute("width", this.width);
+              }
+              
+              if (height) {
+                  this.height = height;
+                  //this.element.style.height = this.height + 'px'; // no need, is 100%
+                  svg.setAttribute("height", this.height);
+              }
+              
+              this.update();
+          }
+          
+          this.graph = graph;
+          graph.render();
+          var k=0, view = this;
+          setInterval(function(){
+            //console.log('set1');
+            view.model.set('value',{x: k+++100,y:Math.random()*10});
+            
+            view.model.trigger('change');
+            //console.log('set2');
+          },30);
+        },
+        doRender : function(){
           this.$graphContainer = null;
           this.graph = null;
-          
-          var view = this;
-          
-          setTimeout(function(){
-            view.$('.dataContainer').css({'padding':0,'position':'absolute','margin-top':'2em','top':0,'bottom':0,'left':0,'right':0});
-            
-            view.$graphContainer = view.$('.plot');
-            $(window).resize(_.bind(view.onResize,view));
-            
-            var graph = new Rickshaw.Graph( {
-                element: view.$('.plot')[0],
-                series: [{
-                    color: 'steelblue',
-                    data: [ 
-                        { x: 0, y: 40 }, 
-                        { x: 1, y: 49 }, 
-                        { x: 2, y: 38 }, 
-                        { x: 3, y: 30 }, 
-                        { x: 4, y: 32 } ]
-                }]
-            });
-            
-             // rickshaw graph resize
-            graph.resize = function(width, height) {
-                var svg = this.element.getElementsByTagName('svg')[0];
-                
-                if (width) {
-                    this.width = width;
-                    this.element.style.width = this.width + 'px';
-                    svg.setAttribute("width", this.width);
-                }
-                
-                if (height) {
-                    this.height = height;
-                    this.element.style.height = this.height + 'px';
-                    svg.setAttribute("height", this.height);
-                }
-            }
-            
-            view.graph = graph;
-            graph.render();
-            
-            setInterval(function(){view.model.set('value',[Math.random()*10,Math.random()*10]);},30);
-            
-          },1000);
-          
           return this.template();
         },
-        onResize: function(){
+        doOnBoxInserted: function(){
+          this._renderAfterDomInsertion();
+        },
+        doOnResizeEnd: function(){
           this.graph.resize(this.$graphContainer.width(),this.$graphContainer.height());
         },
         doUpdateRender : function(){
-          return;
+          //console.log(this.model.get('last_values'));
+          //console.log('up');
+          if (this.graph) this.graph.update();
         }
       });
       

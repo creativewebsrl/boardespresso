@@ -260,7 +260,7 @@ define(['jquery','underscore','backbone','modelbinding','main',
                 if (!attrs['last_values']) {
                   var last_values = this.get('last_values');
                   
-                  attrs['value'] = parseFloat(attrs['value']);
+                  attrs['value'] = attrs['value'];
                   
                   last_values.push(attrs['value']);
                   if (last_values.length > this.get('keep_last_n_values')) {
