@@ -379,9 +379,32 @@ define(['jquery','underscore','backbone','modelbinding','main',
               },this));
               this.model.trigger('change');
               
-              this.$el.bind('moved',_.bind(function(ev,x,y){
+              this.$el.bind('box-moved',_.bind(function(ev,x,y){
                 this.model.save({'x':x,'y':y});
               },this));
+              
+              
+              var originalFontSize = null,
+                  $dataContainer = this.$el.find('.dataContainer');
+              
+              this.$el.bind('resize',_.bind(function(ev){
+                var width = Math.round(this.$el.width()/this.$el.parent().data('cell-size'));
+                $dataContainer.css('font-size', (width/this.model.defaults.width)+'em');
+              },this));
+              
+              this.$el.bind('box-resize-start',_.bind(function(ev){
+                originalFontSize = $dataContainer.css('font-size');
+              },this));
+              
+              this.$el.bind('box-resize-success',_.bind(function(ev,width,height){
+                this.model.save({'width':width,'height':height});
+                $dataContainer.css('font-size', (width/this.model.defaults.width)+'em');
+              },this));
+              
+              this.$el.bind('box-resize-failure',_.bind(function(ev,width,height){
+                $dataContainer.css('font-size', originalFontSize);
+              },this));
+              
               
               //uncomment to use Backbone.ModelBinding to listen to model changes
               //ModelBinding.bind(this);

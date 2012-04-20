@@ -3,8 +3,8 @@
 if (!window.dboard) window.dboard = {};
 if (!window.dboard.plugins) window.dboard.plugins = {};
 
-define(['jquery','use!jss','jquery-ui','plugins','main'],
-  function($,jss,jqueryUi,plugins,main){
+define(['jquery','underscore','use!jss','jquery-ui','plugins','main'],
+  function($,_,jss,jqueryUi,plugins,main){
     
     /**
      * Make a grid at elemOrSelector
@@ -61,7 +61,8 @@ define(['jquery','use!jss','jquery-ui','plugins','main'],
         
         var $grid = $(elemOrSelector);
         
-        var getDraggableOptions = function(){ return {}; };
+        var getDraggableOptions = function(){ return {}; },
+            getResizableOptions = function(){ return {}; };
         
         // Whenever a resize event is received, wait a little to ensure it
         // isn't raised too soon once again
@@ -135,14 +136,19 @@ define(['jquery','use!jss','jquery-ui','plugins','main'],
             }
             
             if (o.boxesDraggable) {
+                
+                function overlap(a1,a2,b1,b2){
+                    return ( a1>=b1 && a1<=b2 ) || (a2>=b1 && a2<=b2);
+                }
+                
                 getDraggableOptions = function(){return {
                     containment : 'parent',
                     grid : [(squareSide+gutterWidth),(squareSide+gutterWidth)],
                     handle : o.dragHandle,
                     stack : '.g-box',
                     stop: function(ev,ui){
-                        // jquery ui will snap using left/top. We want to use the grid classes
-                        // so that grid resizing doesn't stop working
+                        // jquery ui will snap using left/top. We need to change it to
+                        //  use the grid classes so that grid resizing doesn't stop working
                         
                         var leftPx = $(this).position().left,
                             topPx  = $(this).position().top,
@@ -150,10 +156,6 @@ define(['jquery','use!jss','jquery-ui','plugins','main'],
                             topIdx  =  Math.ceil((topPx +squareSide/2)/(squareSide+gutterWidth)),
                             cellAvailable = true
                         ;
-                        
-                        function overlap(a1,a2,b1,b2){
-                            return ( a1>=b1 && a1<=b2 ) || (a2>=b1 && a2<=b2);
-                        }
                         
                         // check if the drop point is over another box
                         // (it would be best to use an r-tree to do it)
@@ -181,15 +183,86 @@ define(['jquery','use!jss','jquery-ui','plugins','main'],
                             })
                             .addClass('g-pos-x-'+leftIdx+' g-pos-y-'+topIdx);
                             
-                            $(this).trigger('moved',[leftIdx,topIdx]);
+                            $(this).trigger('box-moved',[leftIdx,topIdx]);
                         }
                         
-                        $(this).css({left:'',top:'',zIndex:''});
+                        $(this).css({left:'',top:'',width:'',height:'',zIndex:''});
                     }
                   };
                 };
                 
-                $('.g-box').draggable(getDraggableOptions());
+                getResizableOptions = function(){
+                  
+                  var initClasses = {};
+                  
+                  return {
+                    containment : 'parent',
+                    //grid : [(squareSide+gutterWidth),(squareSide+gutterWidth)],
+                    aspectRatio : true,
+                    handles: 'se',
+                    start: function(ev,ui){
+                      $(this).trigger('box-resize-start');
+                    },
+                    stop: function(ev,ui){
+                        // jquery ui will snap using left/top. We need to change it to
+                        //  use the grid classes so that grid resizing doesn't stop working
+                        
+                        var leftPx = $(this).position().left,
+                            topPx  = $(this).position().top,
+                            leftIdx =  Math.ceil((leftPx+squareSide/2)/(squareSide+gutterWidth)),
+                            topIdx  =  Math.ceil((topPx +squareSide/2)/(squareSide+gutterWidth)),
+                            cellAvailable = true
+                        ;
+                        
+                        var origBoxInfo = getBoxInfo(ev.target),
+                            updatedBoxInfo = _.clone(origBoxInfo);
+                        
+                        updatedBoxInfo.width = Math.ceil($(this).width()/(squareSide+gutterWidth));
+                        updatedBoxInfo.height = Math.ceil($(this).height()/(squareSide+gutterWidth));
+                        
+                        // check if the drop point is over another box
+                        // (it would be best to use an r-tree to do it)
+                        $grid.find('.g-box').each(function(){
+                            if (ev.target == this) return;
+                            
+                            var src = updatedBoxInfo,
+                                dst = getBoxInfo(this);
+                            
+                            // can't use src.x because it has the old position
+                            if (    overlap(leftIdx, leftIdx + src.width-1,  dst.x, dst.x + dst.width-1)
+                                &&
+                                    overlap(topIdx , topIdx  + src.height-1, dst.y, dst.y + dst.height-1)
+                               ) {
+                                cellAvailable = false;
+                                return false;
+                            }
+                        
+                        });
+                        
+                        $(this).css({left:'',top:'',width:'',height:'',zIndex:''});
+                        
+                        if (cellAvailable && origBoxInfo.width/origBoxInfo.height == +updatedBoxInfo.width/updatedBoxInfo.height) {
+                            $(this)
+                            .attr('class',function(idx,css){
+                                return css.replace(/\bg-(width|height)-\d+/g,'');
+                            })
+                            .addClass('g-width-'+updatedBoxInfo.width+' g-height-'+updatedBoxInfo.height);
+                            
+                            $(this).trigger('box-resize-success',[updatedBoxInfo.width,updatedBoxInfo.height]);
+                        } else {
+                          $(this).trigger('box-resize-failure',[updatedBoxInfo.width,updatedBoxInfo.height]);
+                        }
+                        
+                    }
+                  };
+                };
+                
+                $('.g-box')
+                .draggable(getDraggableOptions())
+                .resizable(getResizableOptions());
+                
+                $grid.data('cell-size',squareSide+gutterWidth);
+                $grid.data('cell-gutter-width',gutterWidth);
             }
             
           $grid.trigger('grid-resized');
@@ -210,9 +283,12 @@ define(['jquery','use!jss','jquery-ui','plugins','main'],
             
             if (o.boxesDraggable) {
               $elem.draggable(getDraggableOptions());
+              $elem.resizable(getResizableOptions());
             }
             
+            $grid.bind('grid-resized',function(){$elem.trigger('cell-resized');});
             $grid.append($elem);
+            $elem.trigger('cell-inserted');
         });
         
     }
