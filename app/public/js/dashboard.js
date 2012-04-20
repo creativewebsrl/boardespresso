@@ -286,9 +286,13 @@ define(['jquery','underscore','use!jss','jquery-ui','plugins','main'],
               $elem.resizable(getResizableOptions());
             }
             
-            $grid.bind('grid-resized',function(){$elem.trigger('cell-resized');});
+            $grid.bind('grid-resized',function(){
+              var boxInfo = getBoxInfo($elem);
+              $elem.trigger('box-resize-success',[boxInfo.width,boxInfo.height]);
+            });
+            
             $grid.append($elem);
-            $elem.trigger('cell-inserted');
+            $elem.trigger('box-inserted');
         });
         
     }
