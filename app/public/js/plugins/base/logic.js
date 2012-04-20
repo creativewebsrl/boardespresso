@@ -390,6 +390,7 @@ define(['jquery','underscore','backbone','modelbinding','main',
               this.$el.bind('resize',_.bind(function(ev){
                 var width = Math.round(this.$el.width()/this.$el.parent().data('cell-size'));
                 $dataContainer.css('font-size', (width/this.model.defaults.width)+'em');
+                this.doOnResize();
               },this));
               
               this.$el.bind('box-resize-start',_.bind(function(ev){
@@ -397,19 +398,34 @@ define(['jquery','underscore','backbone','modelbinding','main',
               },this));
               
               this.$el.bind('box-resize-success',_.bind(function(ev,width,height){
-                this.model.save({'width':width,'height':height});
+                this.model.set({'width':width,'height':height});
                 $dataContainer.css('font-size', (width/this.model.defaults.width)+'em');
+                this.doOnResizeEnd();
               },this));
               
               this.$el.bind('box-resize-failure',_.bind(function(ev,width,height){
                 $dataContainer.css('font-size', originalFontSize);
               },this));
               
+              this.$el.bind('box-inserted',_.bind(function(){
+                var width = Math.round(this.$el.width()/this.$el.parent().data('cell-size'));
+                $dataContainer.css('font-size',(width/this.model.defaults.width)+'em');
+                this.doOnBoxInserted();
+              },this));
               
               //uncomment to use Backbone.ModelBinding to listen to model changes
               //ModelBinding.bind(this);
               
               return this;
+          },
+          doOnResize: function(){
+              // overriddable
+          },
+          doOnResizeEnd: function(){
+              // overriddable
+          },
+          doOnBoxInserted: function(){
+              // overriddable
           },
           doRender : function(attrs){
               return this.template(attrs || {});
