@@ -152,7 +152,7 @@ define(['jquery','underscore','backbone','modelbinding','main',
       var WidgetModel = Backbone.Model.extend({
           defaults : {
               _id : null,
-              title : "widget title",
+              title : "",
               
               last_values : [],
               keep_last_n_values : 2,
@@ -185,6 +185,8 @@ define(['jquery','underscore','backbone','modelbinding','main',
               'sync_only_by_url' : false,
               'sync_only_by_service_id' : false
             },options || {});
+            
+            if (!this.get('title')) this.set('title','widget '+this.get('type'),{'silent': true});
             
             this._on_service_update = _.bind(this._on_service_update,this);
             
@@ -387,6 +389,7 @@ define(['jquery','underscore','backbone','modelbinding','main',
               var originalFontSize = null,
                   $dataContainer = this.$el.find('.dataContainer');
               
+              /* ### UPDATE THE FONT SIZE DURING PLUGINS RESIZE ### */
               this.$el.bind('resize',_.bind(function(ev){
                 var width = Math.round(this.$el.width()/this.$el.parent().data('cell-size'));
                 $dataContainer.css('font-size', (width/this.model.defaults.width)+'em');
@@ -406,6 +409,7 @@ define(['jquery','underscore','backbone','modelbinding','main',
               this.$el.bind('box-resize-failure',_.bind(function(ev,width,height){
                 $dataContainer.css('font-size', originalFontSize);
               },this));
+              /* ### END UPDATE THE FONT SIZE ### */
               
               this.$el.bind('box-inserted',_.bind(function(){
                 var width = Math.round(this.$el.width()/this.$el.parent().data('cell-size'));
@@ -477,7 +481,7 @@ define(['jquery','underscore','backbone','modelbinding','main',
                 })
               }));
               
-              // XXX the scrollabar should be created when the element is show indipendently from the dialog
+              // XXX the scrollabar should be created when the element is shown indipendently from the dialog
               this.$el.on('dialogopen',function(){$(this).find('.scrollbar').lionbars()});
               
               //uncomment to use Backbone.ModelBinding to listen to model changes
