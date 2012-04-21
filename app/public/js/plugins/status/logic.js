@@ -103,7 +103,7 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
               var alarmClass = this.getAlarmClass();
               
               // update label
-              this.$('.ledWrapper .label').html(this.model.get('show_text_value') ? alarmClass.toUpperCase() : '');
+              this.$('.status-text').html(this.model.get('show_text_value') ? alarmClass.toUpperCase() : '');
               
               // update icon
               this.$('.ledWrapper')

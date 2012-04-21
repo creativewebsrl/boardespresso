@@ -217,8 +217,7 @@ p{margin:0;line-height:inherit;font-family:@baseFontFamily;}
         margin:(@led-size/10)/2;
       }      
     }
-    p{
-        display: block;
+    p.status-text {
         color: @led-color;
         font-family:@sansSerifFamily;
         text-transform:uppercase;
@@ -226,7 +225,7 @@ p{margin:0;line-height:inherit;font-family:@baseFontFamily;}
         line-height:(@led-size/5)*2;
         margin:@led-size/5 0;
         text-align:center;
-      }
+    }
     @box-shadow-blur:@led-size/6;
     &.ok{
          @led-color:@green;
