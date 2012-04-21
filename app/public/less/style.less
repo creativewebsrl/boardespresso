@@ -76,6 +76,44 @@ p{margin:0;line-height:inherit;font-family:@baseFontFamily;}
   }
 }
 
+#pluginListTrigger {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 2em;
+  width: 2em;
+  
+  #pluginsList {
+    position:absolute;
+    top:0px;
+    right:0px;
+    visibility: hidden;
+    font-size: 2em;
+    z-index: 99999;
+    padding: 0.1em 0.1em 0 0.1em;
+    background-color: rgba(255,255,255,0.8);
+    
+    .pluginListItem {  
+      line-height: 1em;
+    }
+    
+    .pluginListItem:hover {
+      color: #327732;
+      cursor: pointer;
+    }
+  }
+  
+  &:hover #pluginsList {
+    visibility: visible;
+  }
+}
+
+
+
+
+
+
+
 .widget-general{ 
   @widgetBorderRadius:0.5em;
   @titleBoxHeight: 2em;

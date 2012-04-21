@@ -7,12 +7,6 @@ a {
   color: #00B7FF;
 }
 
-#pluginsList {
-  position:fixed;
-  top:10px;
-  right:10px;
-}
-
 .ui-dialog-titlebar {
   display:none;
 }

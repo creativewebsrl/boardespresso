@@ -352,7 +352,7 @@ define(['jquery','underscore','use!jss','jquery-ui','plugins','main'],
       });
       
       
-      $('body').append($pluginsList);
+      $('#dashboard').append($('<div id="pluginListTrigger"/>').append($pluginsList));
     }
     ;
     return {

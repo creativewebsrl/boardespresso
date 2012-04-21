@@ -53,7 +53,7 @@ define([
     
     var PluginsListItemViewClass = Backbone.View.extend({
         tagName: "li",
-        className : "",
+        className : "pluginListItem",
         events : {},
         
         initialize: function(){ 
