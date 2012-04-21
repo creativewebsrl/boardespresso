@@ -6,7 +6,10 @@ define(['jquery','underscore','backbone','modelbinding','plugins/status/logic'],
           defaults : _.extend({},parentPlugin.Model.prototype.defaults,{
               type: 'gauge',
               min_value: 0,
-              max_value: 100
+              max_value: 100,
+              
+              width: 5,
+              height: 5
           })
       });
       

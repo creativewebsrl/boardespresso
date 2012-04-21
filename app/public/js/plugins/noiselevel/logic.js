@@ -9,7 +9,7 @@ define(['jquery','underscore','backbone','modelbinding','plugins/status/logic'],
               max_value: 100,
               
               width: 3,
-              height: 8
+              height: 6
           })
       });
       
