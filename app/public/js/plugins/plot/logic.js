@@ -7,7 +7,10 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic','us
               type: 'plot',
               yAxis: {'min': 0, 'max':50},
               xAxis: {'min': 0, 'max':50},
-              keep_last_n_values: 100
+              keep_last_n_values: 100,
+              
+              width: 6,
+              height: 7
           })
       });
       
@@ -22,8 +25,13 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic','us
           var graph = new Rickshaw.Graph( {
               element: this.$('.plot')[0],
               renderer: 'line',
+              padding: {
+                  top: 0.05,
+                  bottom: 0.05
+              },
               series: [{
                   color: '#30c020',
+                  name: 'example',
                   data: this.model.get('last_values')/*[ 
                       { x: 0, y: 40 }, 
                       { x: 1, y: 49 }, 
@@ -50,18 +58,52 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic','us
               }
               
               this.update();
-          }
+          };
+          
+          var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+              graph: graph
+          } );
+          
+          var legend = new Rickshaw.Graph.Legend( {
+              graph: graph,
+              element: document.getElementById('legend')
+          
+          } );
+          
+          var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
+              graph: graph,
+              legend: legend
+          } );
+          
+          
+          
+          var ticksTreatment = 'glow';
+          
+          var xAxis = new Rickshaw.Graph.Axis.Time( {
+              graph: graph,
+              ticksTreatment: ticksTreatment
+          } );
+          
+          xAxis.render();
+          
+          var yAxis = new Rickshaw.Graph.Axis.Y( {
+              graph: graph,
+              ticksTreatment: ticksTreatment
+          } );
+          
+          yAxis.render();
           
           this.graph = graph;
           graph.render();
           var k=0, view = this;
+          /*
           setInterval(function(){
             //console.log('set1');
             view.model.set('value',{x: k+++100,y:Math.random()*10});
             
             view.model.trigger('change');
             //console.log('set2');
-          },30);
+          },400);*/
         },
         doRender : function(){
           this.$graphContainer = null;
