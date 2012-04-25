@@ -217,7 +217,6 @@ define(['jquery','underscore','backbone','modelbinding','main',
             
             this.set({
                       value : data['last_value'],
-                      title : data['desc'],
                       updated_at : data['updated_at']
                      });
           },
