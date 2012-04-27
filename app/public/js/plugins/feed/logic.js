@@ -236,10 +236,6 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
           return this.template({model:this.model,jsonModel:this.model.toJSON()});
         },
         doUpdateRender : function(){
-          var $dummyItem = this.$('.dummy .entry'),
-              $item = null,
-              entry = null,
-              title;
           
           $('.feed')
           .toggleClass('no-timestamp',!this.model.get('show_timestamp'))
@@ -258,27 +254,44 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
           }
           // ################################### //
           
-          // add the new entries
-          for (var i=0,il=this._latestEntries.length;i<il;i++) {
+          (function (latestEntries){
             
-            entry = this._latestEntries[i];
-            $item = $dummyItem.clone();
+            var $dummyItem = this.$('.dummy .entry'),
+                entry = null,
+                $item = null,
+                title = null,
+                i = 0;
             
-            title = entry.title || 'News';
+            function update(idx){
+              
+              entry = latestEntries[i++];
+              $item = $dummyItem.clone();
+              
+              title = entry.title || 'News';
+              
+              // link the title only if there isn't yet something similar to an anchor
+              if (entry.link && title.indexOf('<a ')<0) {
+                title = $('<a />').attr({'href':entry.link,'target':'_blank'}).html($('<div/>').html(title).text());
+              }
+              
+              $item.find('.title').html(title);
+              $item.find('.message').html($('<div/>').html(entry.summary || entry.content).text().slice(0,250));
+              $item.find('.date').html(formatDate(entry.published));
+              
+              $item.hide().prependTo(this.$('.feed')).slideDown(1000,function(){
+                if (i >= latestEntries.length){
+                  latestEntries.splice(0);
+                } else {
+                  setTimeout(function(){update(i);},1000);
+                }
+              });
+              
+            };
             
-            // link the title only if there isn't yet something similar to an anchor
-            if (entry.link && title.indexOf('<a ')<0) {
-              title = $('<a />').attr({'href':entry.link,'target':'_blank'}).html($('<div/>').html(title).text());
-            }
+            if (latestEntries.length) update(0);
             
-            $item.find('.title').html(title);
-            $item.find('.message').html($('<div/>').html(entry.summary || entry.content).text().slice(0,250));
-            $item.find('.date').html(formatDate(entry.published));
-            
-            $item.hide().prependTo(this.$('.feed')).slideDown("slow");
-          }
+          })(this._latestEntries);
           
-          this._latestEntries = [];
           
         },
         remove: function(){
