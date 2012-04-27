@@ -7,12 +7,78 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic','us
               type: 'plot',
               yAxis: {'min': 0, 'max':50},
               xAxis: {'min': 0, 'max':50},
-              keep_last_n_values: 100,
+              keep_last_n_values: 20,
               
               width: 6,
               height: 7
           })
       });
+      
+      Rickshaw.Graph.Axis.X = function(args) {
+      
+          var self = this;
+      
+          this.graph = args.graph;
+          this.elements = [];
+          this.ticksTreatment = args.ticksTreatment || 'plain';
+          
+          this.tickOffsets = function() {
+
+              var domain = this.graph.x.domain();
+      
+              var unit = {
+                'formatter': function(value){ return value.toFixed(0); },
+                'render':function(){ console.debug('x unit render'); }
+              };
+              
+              var parts = 4;
+              var step = Math.ceil((domain[1] - domain[0]) / parts);
+              
+              var runningTick = domain[0];
+              
+              var offsets = [];
+      
+              for (var i = 0; i < parts; i++) {
+                  tickValue = runningTick;
+                  runningTick = tickValue + step;
+                  offsets.push( { value: tickValue, unit: unit } );
+              }
+              
+              return offsets;
+          };
+          
+          this.render = function() {
+      
+              this.elements.forEach( function(e) {
+                  e.parentNode.removeChild(e);
+              } );
+      
+              this.elements = [];
+      
+              var offsets = this.tickOffsets();
+      
+              offsets.forEach( function(o) {
+                
+                  if (self.graph.x(o.value) > self.graph.x.range()[1]) return;
+          
+                  var element = document.createElement('div');
+                  element.style.left = self.graph.x(o.value) + 'px';
+                  element.classList.add('x_tick');
+                  element.classList.add(self.ticksTreatment);
+      
+                  var title = document.createElement('div');
+                  title.classList.add('title');
+                  title.innerHTML = o.unit.formatter(o.value);
+                  element.appendChild(title);
+                  
+                  self.graph.element.appendChild(element);
+                  self.elements.push(element);
+      
+              } );
+          };
+      
+          this.graph.onUpdate( function() { self.render() } );
+      };
       
       var PlotView = parentPlugin.WidgetView.extend({
         _renderAfterDomInsertion: function(){
@@ -20,7 +86,9 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic','us
             
           this.$graphContainer = this.$('.plot');
           
-          for(var i=0;i<100;i++) this.model.set('value',{x:i,y:i});
+          if (_.isEmpty(this.model.get('last_values'))) {
+            this.model.set('value',{x:0,y:0});
+          }
           
           var graph = new Rickshaw.Graph( {
               element: this.$('.plot')[0],
@@ -32,17 +100,13 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic','us
               series: [{
                   color: '#30c020',
                   name: 'example',
-                  data: this.model.get('last_values')/*[ 
-                      { x: 0, y: 40 }, 
-                      { x: 1, y: 49 }, 
-                      { x: 2, y: 38 }, 
-                      { x: 3, y: 30 }, 
-                      { x: 4, y: 32 } ]*/
+                  data: this.model.get('last_values')
               }]
           });
           
            // rickshaw graph resize
           graph.resize = function(width, height) {
+              
               var svg = this.element.getElementsByTagName('svg')[0];
               
               if (width) {
@@ -60,9 +124,12 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic','us
               this.update();
           };
           
-          var hoverDetail = new Rickshaw.Graph.HoverDetail( {
-              graph: graph
-          } );
+          var hoverDetail = new Rickshaw.Graph.HoverDetail({
+              graph: graph,
+              xFormatter: function(x){
+                return x.toFixed(2);
+              }
+          });
           
           var legend = new Rickshaw.Graph.Legend( {
               graph: graph,
@@ -70,16 +137,16 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic','us
           
           } );
           
-          var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
-              graph: graph,
-              legend: legend
-          } );
-          
-          
+          if (graph.series.length > 1) {
+            var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
+                graph: graph,
+                legend: legend
+            } );
+          }
           
           var ticksTreatment = 'glow';
           
-          var xAxis = new Rickshaw.Graph.Axis.Time( {
+          var xAxis = new Rickshaw.Graph.Axis.X( {
               graph: graph,
               ticksTreatment: ticksTreatment
           } );
@@ -95,15 +162,6 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic','us
           
           this.graph = graph;
           graph.render();
-          var k=0, view = this;
-          /*
-          setInterval(function(){
-            //console.log('set1');
-            view.model.set('value',{x: k+++100,y:Math.random()*10});
-            
-            view.model.trigger('change');
-            //console.log('set2');
-          },400);*/
         },
         doRender : function(){
           this.$graphContainer = null;
@@ -117,8 +175,6 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic','us
           this.graph.resize(this.$graphContainer.width(),this.$graphContainer.height());
         },
         doUpdateRender : function(){
-          //console.log(this.model.get('last_values'));
-          //console.log('up');
           if (this.graph) this.graph.update();
         }
       });
