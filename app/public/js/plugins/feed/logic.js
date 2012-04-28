@@ -171,9 +171,9 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
       
       var FeedView = parentPlugin.WidgetView.extend({
         initialize : function(options) {
-          this._latestEntries = [];
           this._dateOfMostRecentEntry = null;
           this._intervalId = null;
+          this._entriesToInsert = [];
           
           var view = this;
           this.model.on('change:url change:poll_frequency',function(){
@@ -217,15 +217,19 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
               end = data.message.length;
             }
             
-            this._latestEntries = [];
             for (var i=start;i<end;i++){
                // add them one by one so that our last_values FIFO queue works correctly
-              this.model.set('value',data.message[i],{silent:true});
-              this._latestEntries.push(data.message[i]);
+              this._entriesToInsert.push(data.message[i]);
+              if (this._entriesToInsert > this.model.get('keep_last_n_values')) {
+                this._entriesToInsert.splice(0,1);
+              }
               this._dateOfMostRecentEntry = new Date(data.message[i].published);
+              
+              this.model.set('value',data.message[i],{silent:true});
             }
             
-            if (this._latestEntries.length) this.model.set('updated_at',new Date());
+            // trigger view rendering
+            if (this._entriesToInsert.length) this.model.set('updated_at',new Date());
             
           } else {
             console.error(data.message); // XXX need serious error handling
@@ -245,8 +249,8 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
           var currentItems = this.$('.feed .entry'),
               entriesToKeep = 0;
           
-          if ((currentItems.length + this._latestEntries.length) >= this.model.get('keep_last_n_values')) {
-            entriesToKeep = this.model.get('keep_last_n_values') - this._latestEntries.length;
+          if ((currentItems.length + this._entriesToInsert.length) >= this.model.get('keep_last_n_values')) {
+            entriesToKeep = this.model.get('keep_last_n_values') - this._entriesToInsert.length;
             for (var i=currentItems.length-1; i >= entriesToKeep ;i--) {
               $(currentItems[i]).remove();
             }
@@ -254,7 +258,7 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
           }
           // ################################### //
           
-          (function (latestEntries){
+          (function (entriesToInsert){
             
             var $dummyItem = this.$('.dummy .entry'),
                 entry = null,
@@ -264,7 +268,7 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
             
             function update(idx){
               
-              entry = latestEntries[i++];
+              entry = entriesToInsert[0];
               $item = $dummyItem.clone();
               
               title = entry.title || 'News';
@@ -279,18 +283,19 @@ define(['jquery','underscore','backbone','modelbinding','plugins/base/logic'],
               $item.find('.date').html(formatDate(entry.published));
               
               $item.hide().prependTo(this.$('.feed')).slideDown(1000,function(){
-                if (i >= latestEntries.length){
-                  latestEntries.splice(0);
-                } else {
-                  setTimeout(function(){update(i);},1000);
+                if (entriesToInsert.length){
+                  entriesToInsert.splice(0,1);
+                  
+                  // wait some time before rendering the next item
+                  setTimeout(function(){update();},1000);
                 }
               });
               
             };
             
-            if (latestEntries.length) update(0);
+            if (entriesToInsert.length) update();
             
-          })(this._latestEntries);
+          })(this._entriesToInsert);
           
           
         },
