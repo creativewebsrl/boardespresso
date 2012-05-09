@@ -1,6 +1,7 @@
 .nvm/
 /node_modules/
-*local.js
+app/config/database.js
+app/config/common.js
 *pyc
 *pyo
 webServer.py
