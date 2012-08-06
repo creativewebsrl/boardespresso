@@ -2,34 +2,33 @@
 
 {% block content %}
 
-{% if not everyauth.loggedIn %}
+{% if not session.user %}
     
-    <form action="{{ url_login }}" method="POST">
-        {% if errors.generic %}
-        <span class="error">{{ errors.generic }}</span>
+    <form action="{{ routing.login }}" method="POST">
+        {% if errors.login %}
+        <span class="error">{{ errors.login }}</span>
         {% endif %}
         
         <div class="field">
             <label for="login">Username</label>
-            <input id="login" type="text" name="{{ everyauth.password.loginFormFieldName }}" value="{{ login }}" />
-            {% if errors.login %}
-            <span class="error">{{ errors.login }}</span>
+            <input id="login" type="text" name="login[username]" value="" />
+            {% if errors.username %}
+            <span class="error">{{ errors.username }}</span>
             {% endif %}
         </div>
         
         <div class="field">
             <label for="password">Password</label>
-            <input id="password" type="password" name="{{ everyauth.password.passwordFormFieldName }}"/>
+            <input id="password" type="password" name="login[password]"/>
             {% if errors.password %}
             <span class="error">{{ errors.password }}</span>
             {% endif %}
         </div>
-        <input type="hidden"     name="PIO" value="MIAO" />
-        <input type="submit" value="send"/>
+        <input type="submit" value="login"/>
     </form>
-    <p>New user? <a href="{{ url_register }}">register</a></p>
+    <p>New user? <a href="{{ routing.register }}">register</a></p>
 {% else %}
-    <p>Logged in as {{ everyauth.user.name.first }} {{ everyauth.user.name.last }} <a href="{{ url_logout }}">(logout)</a></p>
+    <p>{{ session.user.email }}<a href="{{ routing.logout }}">(logout)</a></p>
 {% endif %}
 
 {% endblock %}

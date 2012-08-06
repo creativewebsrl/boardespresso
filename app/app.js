@@ -10,17 +10,24 @@ var express = require('express'),
     swig = require('swig'),
     io = require('socket.io'),
     mongoose = require('mongoose'),
-    mongooseAuth = require('mongoose-auth'),
     mongoStore = require('connect-mongodb'),
     sessionStore = null;
 
 var conf = require('./config'),
     routes = require('./routes'),
     db = require('database'),
-    session_key = 'dashboard.sid';
+    session_key = 'dashboard.sid',
+    routing;
 
-var dashboardAuth = require('dashboard-auth');
-dashboardAuth.init(conf.auth);
+var _ = function(x){ return x }; // i18n
+
+routing = {
+    home: _('/'),
+    login: _('/login'),
+    loggedin: _('/logged_in'),
+    logout: _('/logout'),
+    register: _('/register')
+};
 
 db.init(conf.db);
 sessionStore = new mongoStore({db:mongoose.connection.db}); // I should put it after the event 'db connected'
@@ -58,9 +65,15 @@ app.configure(function(){
     store : sessionStore,
     key : session_key
   }));
-  //  mongooseAuth will add routing, must not use the default app.router
-  //  app.use(app.router);
-  app.use(mongooseAuth.middleware());
+  
+  app.use(function(req,res,next){
+    res.local("session", req.session || {});
+    res.local("routing", routing);
+    res.local("errors",{});
+    next();
+  });
+  
+  app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
 
@@ -71,8 +84,6 @@ app.configure('development', function(){
 app.configure('production', function(){
   app.use(express.errorHandler()); 
 });
-
-mongooseAuth.helpExpress(app);
 
 // Routes
 app.get('/', routes.index);
@@ -103,6 +114,121 @@ app.get('/api/plugins', routes.api.plugins.read);
 
 // single plugin api
 app.get('/api/plugin/:name', routes.api.plugin.read);
+
+////////////////////////////////////////////////////////////////////////////////
+
+function restrict(req, res, next) {
+  if (req.session.user) {
+    next();
+  } else {
+    req.session.error = 'Access denied!';
+    res.redirect(routing.login);
+  }
+}
+
+app.get(routing.register, function(req, res){
+    if (req.session && req.session.user) {
+        res.redirect(routing.home);
+        return;
+    }
+    
+    res.render('user_register', { });
+});
+
+app.post('/register', function(req, res){
+  
+    if (req.session && req.session.user) {
+        res.redirect(routing.home);
+        return;
+    }
+    
+    delete(req.body.user._id); // ensures no one can overwrite an existing _id
+    
+    var User = db.model('User'),
+        userObj = new User(req.body.user);
+    
+    if (req.body.user.password !== req.body.user.password2) {
+        res.render('user_register', { user: userObj, errors: {'password2':"You must write twice the same password"} });
+          return;
+    }
+  
+    userObj.save(function(err){
+        if (err) {
+            
+            var errors = {};
+            
+            if (err.code === 11000) { // duplicate key (surely "email" here)
+                errors.generic = 'That e-mail has yet been used';
+            } else {
+                errors.generic = 'An error occurred, please try again in a few minutes';
+                console.error(err);
+            }
+            
+            res.render('user_register', { user: userObj, errors: errors });
+        } else {
+            console.log("registrato correttamente",userObj);
+            // Regenerate session when signing in to prevent fixation
+            req.session.regenerate(function(){
+              req.session.user = {id: userObj.id, email: userObj.email};
+              res.redirect(routing.loggedin);
+            });
+        }
+    });
+  
+});
+
+
+app.get(routing.logout, function(req, res){
+  if (req.session) {
+    req.session.destroy(function(){});
+  }
+  res.redirect('/');
+});
+
+app.get(routing.login, function(req, res){
+  res.render('login',{});
+});
+
+app.post(routing.login, function(req,res){
+  
+  if (!req.body.login.username || !req.body.login.password) {
+    res.render('login', { errors: { login: "You must provide username and password"} });
+    return;
+  }
+  
+  var User = db.model('User');
+  User.find({email:req.body.login.username},function(err,users){
+    if (err) {
+        console.error(err);
+        res.render('login', { errors: {login:'An error occurred, please try again'} });
+    } else if (users.length === 0) {
+        res.render('login', { errors: {login:'No match found'} }); // don't tell if the username exist or not
+    }
+    else {
+        var userObj = new User(users[0]);
+        if (userObj.authenticate(req.body.login.password))
+        {
+            // Regenerate session when signing in to prevent fixation
+            req.session.regenerate(function(){
+              req.session.user = {id: userObj.id, email: userObj.email};;
+              res.redirect(routing.loggedin);
+            });
+        }
+        else {
+            res.render('login', { errors: {login:'No match found'} }); // don't tell if the username exist or not
+        }
+    }
+    
+  });
+  
+});
+
+app.get(routing.loggedin, restrict,function(req, res){
+  res.render('logged_in',{});
+});
+
+
+////////////////////////////////////////////////////////////////////////////////
 
 if (require.main === module) {
     

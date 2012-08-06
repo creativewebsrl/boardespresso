@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+{# if not active and we're using emails, show a link to have sent a confirmation e-mail #}
+
+<form action="{{ url_user_settings }}" method="POST">
+    {% if errors.generic %}
+    <span class="error">{{ errors.generic }}</span>
+    {% endif %}
+    
+    <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="text" name="user[email]" value="{{ user.email }}"/>
+        {% if errors.email %}
+        <span class="error">{{ errors.email }}</span>
+        {% endif %}
+    </div>
+    
+    <div class="field">
+        <label for="password">password</label>
+        <input id="password" type="password" name="user[password]" value="{{ user.password }}"/>
+        {% if errors.password %}
+        <span class="error">{{ errors.password }}</span>
+        {% endif %}
+    </div>
+    
+    <div class="field">
+        <label for="password2">repeat password</label>
+        <input id="password2" type="password" name="user[password2]" value="{{ user.password2 }}"/>
+        {% if errors.password2 %}
+        <span class="error">{{ errors.password2 }}</span>
+        {% endif %}
+    </div>
+    
+    <input type="submit" value="Register" />
+    
+</form>
+
+
+{% endblock%}
