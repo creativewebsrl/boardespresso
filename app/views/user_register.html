@@ -4,7 +4,7 @@
 
 {# if not active and we're using emails, show a link to have sent a confirmation e-mail #}
 
-<form action="{{ url_user_settings }}" method="POST">
+<form action="{{ routing.register }}" method="POST">
     {% if errors.generic %}
     <span class="error">{{ errors.generic }}</span>
     {% endif %}
