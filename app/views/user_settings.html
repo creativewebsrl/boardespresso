@@ -64,7 +64,7 @@
 require(['jquery','user_settings'],
     function($,userSettings){
         
-        var user_id = '{{ user._id }}';
+        var user_id = '{{ user.id }}';
         var startingServices = {{ user.services|json_encode|raw }};
         
         var settings = userSettings.init(user_id);

@@ -8,8 +8,8 @@ module.exports = {
         // retrieve all the widgets owned by a user
         'read' : function(req,res){
             var user_id = req.params.user_id;
-            
-            if (!req.user || req.user._id != user_id) {
+             
+            if (!req.user || req.user.id != user_id) {
                 res.send(403);
             }
             else return db.model('User').getWidgets(user_id,
@@ -28,7 +28,7 @@ module.exports = {
             var user_id = req.params.user_id
                 ;
             
-            if (!req.user || req.user._id != user_id) {
+            if (!req.user || req.user.id != user_id) {
                 res.send(403);
             }
             else {
@@ -73,7 +73,7 @@ module.exports = {
             var user_id = req.params.user_id
                 widget_id = req.params.widget_id;
             
-            if (!req.user || req.user._id != user_id) {
+            if (!req.user || req.user.id != user_id) {
                 res.send(403);
             }
             else {
@@ -102,7 +102,7 @@ module.exports = {
                 widget_id = req.params.widget_id
                 ;
             
-            if (!req.user || req.user._id != user_id) {
+            if (!req.user || req.user.id != user_id) {
                 res.send(403);
             }
             
@@ -153,7 +153,7 @@ module.exports = {
                 widget_id = req.params.widget_id
                 ;
             
-            if (!req.user || req.user._id != user_id) {
+            if (!req.user || req.user.id != user_id) {
                 res.send(403);
             }
             else {

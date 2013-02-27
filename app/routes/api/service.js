@@ -7,7 +7,7 @@ module.exports = {
         'read' : function(req,res){
             var user_id = req.params.user_id;
             
-            if (!req.user || req.user._id != user_id) {
+            if (!req.user || req.user.id != user_id) {
                 res.send(403);
             }
             else return db.model('User').getServices(user_id,
@@ -27,7 +27,7 @@ module.exports = {
                 description = req.body.desc || ''
                 ;
             
-            if (!req.user || req.user._id != user_id) {
+            if (!req.user || req.user.id != user_id) {
                 res.send(403);
             }
             else {
@@ -73,7 +73,7 @@ module.exports = {
             var user_id = req.params.user_id
                 service_id = req.params.service_id;
             
-            if (!req.user || req.user._id != user_id) {
+            if (!req.user || req.user.id != user_id) {
                 res.send(403);
             }
             else {
@@ -104,7 +104,7 @@ module.exports = {
                 last_value = req.body.last_value 
                 ;
             
-            if (!req.user || req.user._id != user_id) {
+            if (!req.user || req.user.id != user_id) {
                 res.send(403);
             }
             
@@ -159,7 +159,7 @@ module.exports = {
                 service_id = req.params.service_id
                 ;
             
-            if (!req.user || req.user._id != user_id) {
+            if (!req.user || req.user.id != user_id) {
                 res.send(403);
             }
             else {
