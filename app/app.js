@@ -59,6 +59,12 @@ app.configure(function(){
     res.local("session", req.session || {});
     res.local("routing", require('routing'));
     res.local("errors",{});
+    
+    if (req.session && req.session.user)
+    {
+      req.user = req.session.user;
+      res.local('user',req.session.user);
+    }
     next();
   });
   
